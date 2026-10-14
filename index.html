@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.320</title>
+<title>小役カウンター v1.1.321</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -107,7 +107,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.320</span></footer>
+<footer><span>Ver. 1.1.321</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -1192,7 +1192,21 @@ document.getElementById('entryCounter').onclick=()=>enterFromModeScreen('counter
 document.getElementById('entryIncome').onclick=()=>enterFromModeScreen('income');
 chooseEntryMode('counter');
 
-if("serviceWorker"in navigator)window.addEventListener("load",async()=>{try{const reg=await navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"});await reg.update()}catch(e){}});migrateHistory();save();render();showMachineListScreen();
+if("serviceWorker" in navigator){
+  let refreshingForUpdate=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(refreshingForUpdate)return;
+    refreshingForUpdate=true;
+    window.location.reload();
+  });
+  window.addEventListener('load',async()=>{
+    try{
+      const reg=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});
+      await reg.update();
+      document.addEventListener('visibilitychange',()=>{if(!document.hidden)reg.update().catch(()=>{})});
+    }catch(e){console.warn('自動更新の確認',e)}
+  });
+}migrateHistory();save();render();showMachineListScreen();
 
 /* Cloud machine-definition sync: public read; authenticated write on PC only. */
 const CLOUD_REPO='medaka449/sulot',CLOUD_FILE='machines-sync.json',CLOUD_API='https://api.github.com/repos/'+CLOUD_REPO+'/contents/'+CLOUD_FILE;
