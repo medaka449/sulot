@@ -789,20 +789,20 @@
               "alias": ""
             },
             {
-              "name": "カウント7",
+              "name": "下段ベル",
               "count": 0,
-              "color": "",
+              "color": "#eab308",
               "countMethod": "プッシュ",
               "countFormula": "",
               "gameFormula": "",
               "displayFormat": "fraction",
               "settingRates": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
+                "1/121.1",
+                "1/114.4",
+                "1/112.8",
+                "1/106.2",
+                "1/104.2",
+                "1/99.1"
               ],
               "zeroCountGuess": true,
               "countOnly": false,
