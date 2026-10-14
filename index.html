@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.342</title>
+<title>小役カウンター v1.1.343</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -127,7 +127,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.342</span></footer>
+<footer><span>Ver. 1.1.343</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -361,6 +361,18 @@ function render(){
     let changed=false;
     bonusNames.forEach(name=>{if(!d.counters.some(item=>String(item.name||'').trim()===name)){d.counters.push({name,count:0});changed=true}});
     if(changed)localStorage.setItem(KEY,JSON.stringify(state));
+  }
+  // おみくじは既存の保存データが6個でも必ず9個表示する
+  if(state.selected===KABANERI_MACHINE && displayMode==='おみくじ' && !combined){
+    const names=['小吉','中吉','大吉','ミヤマカラスアゲハ','菖蒲の弓','来栖の刀','自決袋','無名の短銃','ツラヌキ筒'];
+    if(!Array.isArray(d.counters))d.counters=[];
+    let repaired=false;
+    for(let i=0;i<9;i++){
+      if(!d.counters[i]){d.counters[i]={name:names[i],count:0};repaired=true}
+      else if(d.counters[i].name==='おみくじ'+(i+1)){d.counters[i].name=names[i];repaired=true}
+    }
+    if(d.layout!=='2'){d.layout='2';repaired=true}
+    if(repaired)localStorage.setItem(KEY,JSON.stringify(state));
   }
   const countersToRender=d.layout==='first2four3five1'?d.counters.slice(0,6):d.counters;
   const machineSettings=(Array.isArray(current()?.settingLevels)&&current().settingLevels.length?current().settingLevels:[1,2,3,4,5,6]);
