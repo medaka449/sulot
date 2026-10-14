@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.377</title>
+<title>小役カウンター v1.1.378</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -124,6 +124,11 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 .kabaneriNormalSmallCounter .name{font-size:11px!important;min-width:0;flex:1;line-height:1.1}
 .kabaneriNormalSmallCounter .countLine{font-size:18px!important;min-width:24px}
 .kabaneriNormalSmallCounter .rate{font-size:10px!important;white-space:nowrap}
+</style><style>
+.counterGrid.bioRe3Grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.counterGrid.bioRe3Grid>.counter:first-child{grid-column:1/-1}
+.counterGrid.bioRe3Grid>.counter:nth-child(n+10){grid-column:span 2}
+.counterGrid.bioRe3Grid>.counter{min-width:0}
 </style></head>
 <body>
 <main>
@@ -144,7 +149,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.377</span></footer>
+<footer><span>Ver. 1.1.378</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -196,6 +201,22 @@ const ORIGINAL_KABANERI_MACHINE='パチスロ甲鉄城のカバネリ';
 if(!state.machines[ORIGINAL_KABANERI_MACHINE])state.machines[ORIGINAL_KABANERI_MACHINE]=blankMachine();
 const BIOHAZARD_RE3_MACHINE='スマスロ バイオハザードRE:3';
 if(!state.machines[BIOHAZARD_RE3_MACHINE])state.machines[BIOHAZARD_RE3_MACHINE]=blankMachine();
+{
+  const bio=state.machines[BIOHAZARD_RE3_MACHINE].modes.通常;
+  if(bio){
+    let changed=false;
+    if(!bio.bioCustomLayoutInitialized){
+      const old=bio.counters||[];
+      bio.counters=Array.from({length:11},(_,i)=>old[i]?{...old[i],name:i===0?'ベル':old[i].name}:{name:i===0?'ベル':'カウント'+(i+1),count:0});
+      bio.bioCustomLayoutInitialized=true;changed=true;
+    }
+    if(bio.counters[0]){
+      if(bio.counters[0].name!=='ベル'){bio.counters[0].name='ベル';changed=true}
+      if(bio.counters[0].color!=='#eab308'){bio.counters[0].color='#eab308';changed=true}
+    }
+    if(changed)localStorage.setItem(KEY,JSON.stringify(state));
+  }
+}
 if(!state.machines[KABANERI_MACHINE]){
   state.machines[KABANERI_MACHINE]=blankMachine();
 }
@@ -488,7 +509,7 @@ function render(){
   document.querySelector('.topGrid').style.display=hideGamesRow?'none':'';
   const d=displayData();
   document.getElementById("gamesInput").value=d.games;document.getElementById("startGamesInput").value=d.startGames||0;
-  const root=document.getElementById("counters");root.className='counterGrid '+(d.layout==='first2four3five1'?'firstTwoFourThreeFiveOne':d.layout==='first2four3'?'firstTwoFourThree':'');if(state.selected.includes('マイジャグラー'))root.classList.add('myJugglerTightRows');if(state.selected===KABANERI_MACHINE && displayMode==='通常' && !combined)root.classList.add('kabaneriNormalExtra');if(state.selected===KABANERI_MACHINE && displayMode==='キャラ紹介・ボイス' && !combined)root.classList.add('kabaneriOmikuji');if(state.selected===KABANERI_MACHINE && displayMode==='おみくじ' && !combined)root.classList.add('kabaneriFortuneGrid');root.innerHTML="";
+  const root=document.getElementById("counters");root.className='counterGrid '+(d.layout==='first2four3five1'?'firstTwoFourThreeFiveOne':d.layout==='first2four3'?'firstTwoFourThree':'');if(state.selected.includes('マイジャグラー'))root.classList.add('myJugglerTightRows');if(state.selected===KABANERI_MACHINE && displayMode==='通常' && !combined)root.classList.add('kabaneriNormalExtra');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='通常' && !combined)root.classList.add('bioRe3Grid');if(state.selected===KABANERI_MACHINE && displayMode==='キャラ紹介・ボイス' && !combined)root.classList.add('kabaneriOmikuji');if(state.selected===KABANERI_MACHINE && displayMode==='おみくじ' && !combined)root.classList.add('kabaneriFortuneGrid');root.innerHTML="";
   if(d.layout==='memo'){const memo=document.createElement('textarea');memo.className='memoBox';memo.placeholder='ここに自由にメモを書けます';memo.value=d.memo;memo.addEventListener('input',()=>{d.memo=memo.value;localStorage.setItem(KEY,JSON.stringify(state))});root.appendChild(memo);return}
   // マイジャグラー: チェリーの下にボーナス4種類を常設
   if(state.selected.includes('マイジャグラー') && !combined && d.layout!=='memo'){
