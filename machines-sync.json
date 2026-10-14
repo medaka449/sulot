@@ -914,7 +914,7 @@
           "startGames": 0,
           "counters": [
             {
-              "name": "おみくじ1",
+              "name": "小吉",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
@@ -935,7 +935,7 @@
               "alias": ""
             },
             {
-              "name": "おみくじ2",
+              "name": "中吉",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
@@ -956,7 +956,7 @@
               "alias": ""
             },
             {
-              "name": "おみくじ3",
+              "name": "大吉",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
@@ -977,7 +977,7 @@
               "alias": ""
             },
             {
-              "name": "おみくじ4",
+              "name": "ミヤマカラスアゲハ",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
@@ -998,7 +998,7 @@
               "alias": ""
             },
             {
-              "name": "おみくじ5",
+              "name": "菖蒲の弓",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
@@ -1019,7 +1019,7 @@
               "alias": ""
             },
             {
-              "name": "おみくじ6",
+              "name": "来栖の刀",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
