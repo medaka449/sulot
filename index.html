@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.333</title>
+<title>小役カウンター v1.1.334</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -92,7 +92,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 <main>
 <section class="topCard compactCard machineTop">
 <div class="machineTitleRow"><select id="machine" aria-label="機種名"></select></div>
-<div class="machineIconRow"><button class="mainBack machineIcon" id="mainBack" type="button" aria-label="戻る" title="戻る">&lt;</button><button class="machineIcon" id="reset" type="button" aria-label="データをリセット" title="データをリセット"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></svg></button><button class="machineIcon" id="manage" type="button" aria-label="機種の設定" title="機種の設定"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 3-1 3-3 1-2 3 2 2-1 3 3 2 3-1 2 3h3l1-3 3-1 2-3-2-2 1-3-3-2-3 1-2-3Z"/><circle cx="12" cy="11" r="3"/></svg></button><button class="machineIcon" id="saveProgress" type="button" aria-label="途中経過の保存" title="途中経過の保存"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h12l4 4v14H3V3h2Z"/><path d="M7 3v6h10V3M7 21v-8h10v8"/></svg></button><button class="machineIcon" id="showTrend" type="button" aria-label="小役確率の推移" title="小役確率の推移"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18M6 16l5-6 4 3 6-8"/></svg></button><button class="machineIcon" id="kabaneriHelp" type="button" aria-label="カバネリのメモ" title="カバネリのメモ" style="display:none;font-size:23px;font-weight:800">？</button><div class="machineEditRow"><button class="machineInput" id="machineInput" type="button">入力</button><button class="machineMinus" id="machineMinus" type="button">−</button></div></div>
+<div class="machineIconRow"><button class="mainBack machineIcon" id="mainBack" type="button" aria-label="戻る" title="戻る">&lt;</button><button class="machineIcon" id="reset" type="button" aria-label="データをリセット" title="データをリセット"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></svg></button><button class="machineIcon" id="manage" type="button" aria-label="機種の設定" title="機種の設定"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 3-1 3-3 1-2 3 2 2-1 3 3 2 3-1 2 3h3l1-3 3-1 2-3-2-2 1-3-3-2-3 1-2-3Z"/><circle cx="12" cy="11" r="3"/></svg></button><button class="machineIcon" id="saveProgress" type="button" aria-label="途中経過の保存" title="途中経過の保存"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h12l4 4v14H3V3h2Z"/><path d="M7 3v6h10V3M7 21v-8h10v8"/></svg></button><button class="machineIcon" id="showTrend" type="button" aria-label="小役確率の推移" title="小役確率の推移"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18M6 16l5-6 4 3 6-8"/></svg></button><button class="machineIcon" id="kabaneriHelp" type="button" aria-label="カバネリボーナス中のキャラ紹介の説明を開く" title="キャラ紹介の説明を開く" style="display:none;font-size:23px;font-weight:800">？</button><div class="machineEditRow"><button class="machineInput" id="machineInput" type="button">入力</button><button class="machineMinus" id="machineMinus" type="button">−</button></div></div>
 </section>
 <section id="incomePanel" hidden></section>
 <div class="modeSwitch"><button class="modeBtn active" id="normalMode">通常</button><button class="modeBtn" id="combineMode">合成</button></div>
@@ -107,7 +107,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.333</span></footer>
+<footer><span>Ver. 1.1.334</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -1261,9 +1261,8 @@ function syncEntryMode(){
  if(help){help.style.setProperty('display',!income && state.selected===KABANERI_MACHINE && displayMode!=='おみくじ・ボイス'?'flex':'none','important');}
 }
 document.getElementById('kabaneriHelp').onclick=()=>{
- const d=currentData();
- const text=prompt('カバネリのメモ（'+displayMode+'）',String(d.kabaneriHelpMemo||''));
- if(text!==null){d.kabaneriHelpMemo=text;save()}
+ const url='https://p-town.dmm.com/machines/4930#:~:text='+encodeURIComponent('カバネリボーナス中のキャラ紹介');
+ window.open(url,'_blank','noopener,noreferrer');
 };
 function incomeDraft(){const m=current();if(!m.incomeDraft)m.incomeDraft={date:new Date().toLocaleDateString('sv-SE'),investment:'',returned:'',note:''};return m.incomeDraft;}
 function renderIncome(){
