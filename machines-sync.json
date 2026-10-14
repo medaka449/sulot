@@ -813,7 +813,8 @@
           "layout": "2",
           "memo": "",
           "layoutNumber": "",
-          "layoutNumberHistory": []
+          "layoutNumberHistory": [],
+          "history": []
         },
         "おみくじ・ボイス": {
           "games": 0,
