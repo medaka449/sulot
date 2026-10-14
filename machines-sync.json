@@ -665,7 +665,7 @@
             {
               "name": "カウント1",
               "count": 0,
-              "color": "",
+              "color": "#a82e42",
               "countMethod": "プッシュ",
               "countFormula": "",
               "gameFormula": "",
@@ -686,7 +686,7 @@
             {
               "name": "カウント2",
               "count": 0,
-              "color": "",
+              "color": "#a82e42",
               "countMethod": "プッシュ",
               "countFormula": "",
               "gameFormula": "",
@@ -707,7 +707,7 @@
             {
               "name": "カウント3",
               "count": 0,
-              "color": "",
+              "color": "#258449",
               "countMethod": "プッシュ",
               "countFormula": "",
               "gameFormula": "",
@@ -728,7 +728,7 @@
             {
               "name": "カウント4",
               "count": 0,
-              "color": "",
+              "color": "#258449",
               "countMethod": "プッシュ",
               "countFormula": "",
               "gameFormula": "",
