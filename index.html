@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.338</title>
+<title>小役カウンター v1.1.339</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -127,7 +127,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.338</span></footer>
+<footer><span>Ver. 1.1.339</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -1289,7 +1289,7 @@ document.getElementById('kabaneriHelp').onclick=()=>{
    overlay.innerHTML=`<div class="kabaneriGuidePanel" role="dialog" aria-modal="true" aria-label="キャラ紹介の説明">
      <div class="kabaneriGuideHeader"><strong>キャラ紹介の説明</strong><button type="button" class="kabaneriGuideClose" aria-label="閉じる">×</button></div>
      <div class="kabaneriGuideScroll kabaneriImageScroll">
-       <img class="kabaneriCharacterImage" src="./kabaneri_character_4images_vertical.jpg" alt="キャラごとの示唆、キャラ紹介出現率、女性・男性・美馬のキャラ紹介画像" loading="eager">
+       <img class="kabaneriCharacterImage" src="./images/kabaneri/character_guide.jpg" alt="キャラごとの示唆、キャラ紹介出現率、女性・男性・美馬のキャラ紹介画像" loading="eager">
        <p class="kabaneriImageFallback" hidden>画像ファイルをまだ登録できていません。下の「画像を開く」から確認してください。</p>
      </div>
      <a class="kabaneriGuideExternal" href="https://p-town.dmm.com/machines/4930#anc-point" target="_blank" rel="noopener noreferrer">DMMの説明ページを開く ↗</a>
