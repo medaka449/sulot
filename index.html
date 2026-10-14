@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.371</title>
+<title>小役カウンター v1.1.372</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -144,7 +144,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.371</span></footer>
+<footer><span>Ver. 1.1.372</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -660,7 +660,47 @@ const target=currentData().counters.includes(c)?c:currentData().counters[counter
       voiceHelp.textContent='？';
       voiceHelp.setAttribute('aria-label','ボイスの説明');
       voiceHelp.style.cssText='display:flex;align-items:center;justify-content:center;flex:0 0 40px;width:40px;height:36px;border-radius:9px;border:1px solid #64748b;background:#293548;color:#fff;font-weight:800;font-size:20px';
-      voiceHelp.onclick=()=>{window.alert('ボイスの説明は準備中です')};
+      voiceHelp.onclick=()=>{
+        const existing=document.getElementById('kabaneriVoiceGuideOverlay');
+        if(existing){existing.remove();return}
+        const overlay=document.createElement('div');
+        overlay.id='kabaneriVoiceGuideOverlay';
+        overlay.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;padding:12px';
+        const panel=document.createElement('div');
+        panel.style.cssText='width:min(100%,720px);max-height:90vh;overflow:auto;background:#fff;color:#171717;border-radius:12px;padding:14px;font-size:14px;line-height:1.65';
+        const heading=document.createElement('div');heading.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px';
+        const title=document.createElement('strong');title.textContent='逆押しサンド目停止時のボイス・示唆';
+        const close=document.createElement('button');close.textContent='×';close.style.cssText='font-size:24px;padding:0 12px;background:#eee;border-radius:8px;color:#111';close.onclick=()=>overlay.remove();
+        heading.append(title,close);panel.appendChild(heading);
+        const desc=document.createElement('p');desc.textContent='カバネリボーナス中は逆押し指示発生時に左リールに青7のサンド目を狙えば設定示唆ボイスが発生。失敗しても黒血漿メーターは貯まる。次ゲームのレバーON前ならサブ液晶タッチまたはPUSHボタンでボイスを何度でも聞けます。';panel.appendChild(desc);
+        const sections=[
+          {title:'ボイスごとの示唆',heads:['ボイス','示唆'],rows:[
+            ['男キャラ（景之以外）','設定3・5示唆'],
+            ['女キャラ（無名の設定2以上濃厚ボイス除く）','偶数設定示唆'],
+            ['景之「なぜ言わなかった　私をヒトだと！」','高設定示唆［弱］'],
+            ['景之「私は…ヒトか、カバネか！？」','高設定示唆［中］'],
+            ['景之「今年は最後かな」','高設定示唆［強］'],
+            ['無名「やっぱりこの台…普通じゃないね」','設定2以上濃厚'],
+            ['ボイスなし','設定5以上濃厚']
+          ]},
+          {title:'ボイス時に連動するサブ液晶ランプ',heads:['ボイス','点灯部位'],rows:[
+            ['男キャラ（景之以外）','下側が発光'],
+            ['女キャラ（無名の設定2以上濃厚ボイス除く）','上側が発光'],
+            ['景之（3種類共通）','上下が発光'],
+            ['無名「やっぱりこの台…普通じゃないね」','上下＋ストロボランプ発光'],
+            ['ボイスなし','発光なし']
+          ]}
+        ];
+        sections.forEach(section=>{
+          const h=document.createElement('h3');h.textContent=section.title;h.style.cssText='background:#111;color:#fff;text-align:center;padding:7px;margin:20px 0 0';panel.appendChild(h);
+          const table=document.createElement('table');table.style.cssText='width:100%;border-collapse:collapse;text-align:center;font-size:13px';
+          const head=document.createElement('tr');section.heads.forEach(v=>{const th=document.createElement('th');th.textContent=v;th.style.cssText='background:#444;color:white;border:1px solid #222;padding:7px';head.appendChild(th)});table.appendChild(head);
+          section.rows.forEach(([a,b])=>{const tr=document.createElement('tr');[a,b].forEach((v,i)=>{const td=document.createElement('td');td.textContent=v;td.style.cssText='border:1px solid #333;padding:7px;font-weight:600;background:'+(i===0?'#666;color:white':'#fff;color:#111');tr.appendChild(td)});table.appendChild(tr)});
+          panel.appendChild(table);
+        });
+        const note=document.createElement('p');note.textContent='景之はパターンによって高設定示唆の強度が変化します。';panel.appendChild(note);
+        overlay.appendChild(panel);overlay.onclick=e=>{if(e.target===overlay)overlay.remove()};document.body.appendChild(overlay);
+      };
       voiceHeading.appendChild(voiceHelp);
       root.prepend(heading,intro,voiceHeading,voice);
     }
