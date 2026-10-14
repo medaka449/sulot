@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.311</title>
+<title>小役カウンター v1.1.312</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -106,7 +106,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.311</span></footer>
+<footer><span>Ver. 1.1.312</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -250,7 +250,7 @@ const target=currentData().counters.find(x=>x.name===c.name);if(target){const wa
 }
 function resetModalSections(){document.getElementById('newMachine').style.display='none';document.querySelector('.sheetRow').style.display='none';document.getElementById('machines').style.display='none';document.getElementById('modeSettings').style.display='none';document.getElementById('historyView').style.display='none'}
 function showMachineListScreen(){
-  cloudControls();
+  try{cloudControls()}catch(error){console.warn('同期UI',error)}
   document.getElementById("entryModeScreen").hidden=true;document.getElementById("entryModeScreen").style.display='none';
   const screen=document.getElementById('machineListScreen');
   const items=document.getElementById('machineListScreenItems');
@@ -899,7 +899,7 @@ function openLayoutEdit(machineName,mode){
   renderPreview();
   const done=document.createElement('button');done.className='primary';done.style.cssText='width:100%;height:44px;border-radius:10px;margin-top:12px';done.textContent='完了';done.onclick=()=>openCounterEdit(machineName,editMode);box.appendChild(done)
 }
-document.getElementById('mainBack').onclick=()=>showMachineListScreen();
+document.getElementById('mainBack').onclick=(event)=>{event.preventDefault();event.stopPropagation();try{showMachineListScreen()}catch(error){console.error('戻る処理',error);document.querySelector('main').style.display='none';document.getElementById('entryModeScreen').hidden=true;document.getElementById('machineListScreen').style.display='block';}};
 document.getElementById('machine').onchange=e=>{state.selected=e.target.value;displayMode=Object.keys(current().modes)[0]||'通常';combined=false;save()};
 document.getElementById('machineMinus').onclick=()=>{minusMode=!minusMode;document.getElementById('machineMinus').textContent=minusMode?'＋':'−';document.getElementById('machineMinus').style.background=minusMode?'#2563eb':'#343d49'};
 document.getElementById('machineInput').onclick=()=>{inputMode=!inputMode;const b=document.getElementById('machineInput');b.textContent=inputMode?'入力中':'入力';b.style.background=inputMode?'#2563eb':'#343d49';b.style.boxShadow=inputMode?'0 0 0 2px rgba(37,99,235,.25)':'none'};
