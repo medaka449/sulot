@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.359</title>
+<title>小役カウンター v1.1.360</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -144,7 +144,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.359</span></footer>
+<footer><span>Ver. 1.1.360</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -406,14 +406,14 @@ function render(){
       const kept=normal.counters.filter(item=>!retired.has(String(item.name||'')));
       if(kept.length!==normal.counters.length){normal.counters=kept;changed=true}
       for(let i=7;i<=10;i++){
-        if(!normal.counters.some(item=>item.name==='カウント'+i || item.name===({8:'無名当選',9:'生駒当選',10:'当選ポイント確認'}[i]))){
+        if(!normal.counters.some(item=>item.name==='カウント'+i || item.name===({7:'下段ベル',8:'無名当選',9:'生駒当選',10:'当選ポイント確認'}[i]))){
           normal.counters.push({name:'カウント'+i,count:0});changed=true;
         }
       }
       // カウンター順を揃える
-      const extra=normal.counters.filter(item=>['カウント7','カウント8','カウント9','カウント10','無名当選','生駒当選','当選ポイント確認'].includes(item.name));
-      const base=normal.counters.filter(item=>!['カウント7','カウント8','カウント9','カウント10','無名当選','生駒当選','当選ポイント確認'].includes(item.name));
-      const ordered=[...base,...['カウント7','無名当選','生駒当選','当選ポイント確認'].map(name=>extra.find(item=>item.name===name)).filter(Boolean)];
+      const extra=normal.counters.filter(item=>['カウント7','下段ベル','カウント8','カウント9','カウント10','無名当選','生駒当選','当選ポイント確認'].includes(item.name));
+      const base=normal.counters.filter(item=>!['カウント7','下段ベル','カウント8','カウント9','カウント10','無名当選','生駒当選','当選ポイント確認'].includes(item.name));
+      const ordered=[...base,...['下段ベル','無名当選','生駒当選','当選ポイント確認'].map(name=>extra.find(item=>item.name===name)).filter(Boolean)];
       if(ordered.some((item,i)=>item!==normal.counters[i])){normal.counters=ordered;changed=true}
       const rightNames=[
         ['カウント8','無名当選','#a82e42'],
@@ -427,6 +427,13 @@ function render(){
           if(color && item.color!==color){item.color=color;changed=true}
         }
       });
+      const lowerBell=normal.counters.find(x=>x.name==='カウント7'||x.name==='下段ベル');
+      if(lowerBell){
+        if(lowerBell.name!=='下段ベル'){lowerBell.name='下段ベル';changed=true}
+        if(lowerBell.color!=='#eab308'){lowerBell.color='#eab308';changed=true}
+        const bellRates=['1/121.1','1/114.4','1/112.8','1/106.2','1/104.2','1/99.1'];
+        if(JSON.stringify(lowerBell.settingRates)!==JSON.stringify(bellRates)){lowerBell.settingRates=bellRates;changed=true}
+      }
       const normalLabels=['15pt以上','1pt・不明','15pt以上','1pt・不明','発光','非発光'];
       normal.counters.slice(0,6).forEach((item,i)=>{
         if(item && item.name!==normalLabels[i]){item.name=normalLabels[i];changed=true}
@@ -505,7 +512,7 @@ const target=currentData().counters.find(x=>x.name===c.name);if(target){const wa
     root.appendChild(card);
   });
   if(state.selected===KABANERI_MACHINE && displayMode==='通常' && !combined && !rateSettingActive){
-    const names=['カウント7','無名当選','生駒当選','当選ポイント確認'];
+    const names=['下段ベル','無名当選','生駒当選','当選ポイント確認'];
     const cards=Array.from(root.children).filter(el=>el.classList.contains('counter'));
     const indices=names.map(name=>d.counters.findIndex(item=>item.name===name));
     if(indices.every(i=>i>=0 && cards[i])){
