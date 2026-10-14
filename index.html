@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.352</title>
+<title>小役カウンター v1.1.353</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -116,7 +116,15 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 .kabaneriFortuneGrid .kabaneriFortuneCard .rate{margin:0!important;padding:0!important;min-height:0!important}
 </style><style>.counterGrid.kabaneriFortuneGrid .counter.kabaneriFortuneCard{grid-template-rows:none!important;grid-auto-rows:min-content!important;align-content:start!important;justify-content:flex-start!important;height:auto!important;min-height:0!important;padding-top:0!important}.kabaneriFortuneGrid .kabaneriFortunePicture{display:block!important;flex:0 0 auto!important}.kabaneriFortuneGrid .kabaneriFortuneCard .countLine,.kabaneriFortuneGrid .kabaneriFortuneCard .rate{flex:0 0 auto!important}</style><style>/* おみくじのモード切替バーとカウンターの間隔 */
 body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{margin-top:14px!important}
-</style><style>.counterGrid.kabaneriNormalExtra{grid-template-columns:repeat(2,minmax(0,1fr))!important}.counterGrid.kabaneriNormalExtra>.counter:last-child:nth-child(odd){grid-column:1/-1}</style></head>
+</style><style>.counterGrid.kabaneriNormalExtra{grid-template-columns:repeat(2,minmax(0,1fr))!important}.counterGrid.kabaneriNormalExtra>.counter:last-child:nth-child(odd){grid-column:1/-1}</style><style>
+.counterGrid.kabaneriNormalExtra>.kabaneriNormalSplitRow{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:stretch}
+.kabaneriNormalSplitRow>.kabaneriNormalCount9{width:100%;height:100%;min-height:0!important;grid-column:auto!important}
+.kabaneriNormalSmallStack{display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:4px;min-height:0}
+.kabaneriNormalSmallStack>.kabaneriNormalSmallCounter{width:100%;min-height:0!important;height:100%;padding:2px 5px!important;display:flex;flex-direction:row!important;align-items:center;justify-content:space-between;gap:3px}
+.kabaneriNormalSmallCounter .name{font-size:11px!important;min-width:0;flex:1;line-height:1.1}
+.kabaneriNormalSmallCounter .countLine{font-size:18px!important;min-width:24px}
+.kabaneriNormalSmallCounter .rate{font-size:10px!important;white-space:nowrap}
+</style></head>
 <body>
 <main>
 <section class="topCard compactCard machineTop">
@@ -136,7 +144,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.352</span></footer>
+<footer><span>Ver. 1.1.353</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -363,7 +371,7 @@ function render(){
       let changed=false;
       // 通常モード末尾に2個＋1個のカウンターを追加
       if(!Array.isArray(normal.counters))normal.counters=[];
-      for(let i=7;i<=9;i++){
+      for(let i=7;i<=12;i++){
         if(!normal.counters.some(item=>item.name==='カウント'+i)){
           normal.counters.push({name:'カウント'+i,count:0});
           changed=true;
@@ -442,6 +450,21 @@ const target=currentData().counters.find(x=>x.name===c.name);if(target){const wa
     }
     root.appendChild(card);
   });
+  if(state.selected===KABANERI_MACHINE && displayMode==='通常' && !combined && !rateSettingActive){
+    const cards=Array.from(root.children).filter(el=>el.classList.contains('counter'));
+    const normalCounters=d.counters||[];
+    const index9=normalCounters.findIndex(x=>x.name==='カウント9');
+    const indices=[10,11,12].map(n=>normalCounters.findIndex(x=>x.name==='カウント'+n));
+    if(index9>=0 && indices.every(i=>i>=0) && cards[index9] && indices.every(i=>cards[i])){
+      const row=document.createElement('div');row.className='kabaneriNormalSplitRow';
+      const main=cards[index9];main.classList.add('kabaneriNormalCount9');
+      root.insertBefore(row,main);
+      row.appendChild(main);
+      const stack=document.createElement('div');stack.className='kabaneriNormalSmallStack';
+      indices.forEach(i=>{const card=cards[i];card.classList.add('kabaneriNormalSmallCounter');stack.appendChild(card)});
+      row.appendChild(stack);
+    }
+  }
   // ベル＋スイカを一つのカウンターとして操作（既存カウントは合算して表示）
   if(state.selected.includes('マイジャグラー') && !rateSettingActive && !combined){
     const names=countersToRender.map(item=>String(item.name||'').trim());
