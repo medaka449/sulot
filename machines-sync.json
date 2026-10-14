@@ -911,207 +911,6 @@
             }
           ]
         },
-        "おみくじ・ボイス": {
-          "games": 0,
-          "startGames": 0,
-          "counters": [
-            {
-              "name": "キャラ紹介男",
-              "count": 0,
-              "color": "#174b9a",
-              "countMethod": "プッシュ",
-              "countFormula": "",
-              "gameFormula": "",
-              "displayFormat": "fraction",
-              "settingRates": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "zeroCountGuess": true,
-              "countOnly": false,
-              "includeTrend": true,
-              "alias": ""
-            },
-            {
-              "name": "キャラ紹介女",
-              "count": 0,
-              "color": "#a82e42",
-              "countMethod": "プッシュ",
-              "countFormula": "",
-              "gameFormula": "",
-              "displayFormat": "fraction",
-              "settingRates": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "zeroCountGuess": true,
-              "countOnly": false,
-              "includeTrend": true,
-              "alias": ""
-            },
-            {
-              "name": "美馬",
-              "count": 0,
-              "color": "",
-              "countMethod": "プッシュ",
-              "countFormula": "",
-              "gameFormula": "",
-              "displayFormat": "fraction",
-              "settingRates": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "zeroCountGuess": true,
-              "countOnly": false,
-              "includeTrend": true,
-              "alias": ""
-            },
-            {
-              "name": "ボイス男",
-              "count": 0,
-              "color": "",
-              "countMethod": "プッシュ",
-              "countFormula": "",
-              "gameFormula": "",
-              "displayFormat": "fraction",
-              "settingRates": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "zeroCountGuess": true,
-              "countOnly": false,
-              "includeTrend": true,
-              "alias": ""
-            },
-            {
-              "name": "ボイス女",
-              "count": 0,
-              "color": "",
-              "countMethod": "プッシュ",
-              "countFormula": "",
-              "gameFormula": "",
-              "displayFormat": "fraction",
-              "settingRates": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "zeroCountGuess": true,
-              "countOnly": false,
-              "includeTrend": true,
-              "alias": ""
-            },
-            {
-              "name": "カウント6",
-              "count": 0,
-              "color": "",
-              "countMethod": "プッシュ",
-              "countFormula": "",
-              "gameFormula": "",
-              "displayFormat": "fraction",
-              "settingRates": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "zeroCountGuess": true,
-              "countOnly": false,
-              "includeTrend": true,
-              "alias": ""
-            },
-            {
-              "name": "カウント7",
-              "count": 0,
-              "color": "",
-              "countMethod": "プッシュ",
-              "countFormula": "",
-              "gameFormula": "",
-              "displayFormat": "fraction",
-              "settingRates": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "zeroCountGuess": true,
-              "countOnly": false,
-              "includeTrend": true,
-              "alias": ""
-            }
-          ],
-          "layout": "2",
-          "memo": "",
-          "layoutNumber": "",
-          "layoutNumberHistory": [],
-          "history": [
-            {
-              "time": "2026/10/14 19:03:53",
-              "games": 0,
-              "startGames": 0,
-              "counters": [
-                {
-                  "name": "キャラ紹介男",
-                  "count": 0,
-                  "rate": "1/0.00"
-                },
-                {
-                  "name": "キャラ紹介女",
-                  "count": 0,
-                  "rate": "1/0.00"
-                },
-                {
-                  "name": "美馬",
-                  "count": 1,
-                  "rate": "1/0.00"
-                },
-                {
-                  "name": "ボイス男",
-                  "count": 0,
-                  "rate": "1/0.00"
-                },
-                {
-                  "name": "ボイス女",
-                  "count": 0,
-                  "rate": "1/0.00"
-                },
-                {
-                  "name": "カウント6",
-                  "count": 0,
-                  "rate": "1/0.00"
-                },
-                {
-                  "name": "カウント7",
-                  "count": 0,
-                  "rate": "1/0.00"
-                }
-              ]
-            }
-          ]
-        },
         "おみくじ": {
           "games": 0,
           "startGames": 0,
@@ -1311,12 +1110,375 @@
           "layoutNumber": "",
           "layoutNumberHistory": [],
           "history": []
+        },
+        "キャラ紹介・ボイス": {
+          "games": 0,
+          "startGames": 0,
+          "counters": [
+            {
+              "name": "キャラ紹介男",
+              "count": 0,
+              "color": "#174b9a",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "キャラ紹介女",
+              "count": 0,
+              "color": "#a82e42",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "美馬",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "ボイス男",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "ボイス女",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "カウント6",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "カウント7",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            }
+          ],
+          "layout": "2",
+          "memo": "",
+          "layoutNumber": "",
+          "layoutNumberHistory": [],
+          "history": [
+            {
+              "time": "2026/10/14 19:03:53",
+              "games": 0,
+              "startGames": 0,
+              "counters": [
+                {
+                  "name": "キャラ紹介男",
+                  "count": 0,
+                  "rate": "1/0.00"
+                },
+                {
+                  "name": "キャラ紹介女",
+                  "count": 0,
+                  "rate": "1/0.00"
+                },
+                {
+                  "name": "美馬",
+                  "count": 1,
+                  "rate": "1/0.00"
+                },
+                {
+                  "name": "ボイス男",
+                  "count": 0,
+                  "rate": "1/0.00"
+                },
+                {
+                  "name": "ボイス女",
+                  "count": 0,
+                  "rate": "1/0.00"
+                },
+                {
+                  "name": "カウント6",
+                  "count": 0,
+                  "rate": "1/0.00"
+                },
+                {
+                  "name": "カウント7",
+                  "count": 0,
+                  "rate": "1/0.00"
+                }
+              ]
+            }
+          ]
         }
       },
       "modeOrder": [
         "通常",
-        "おみくじ・ボイス",
+        "キャラ紹介・ボイス",
         "おみくじ"
+      ],
+      "settingLevels": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    "パチスロ甲鉄城のカバネリ": {
+      "modes": {
+        "通常": {
+          "games": 0,
+          "startGames": 0,
+          "counters": [
+            {
+              "name": "ベル",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "スイカ",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "チェリー",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            }
+          ],
+          "layout": "2",
+          "memo": "",
+          "layoutNumber": "",
+          "layoutNumberHistory": []
+        },
+        "合成": {
+          "games": 0,
+          "startGames": 0,
+          "counters": [
+            {
+              "name": "ベル",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "スイカ",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "チェリー",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            }
+          ],
+          "layout": "2",
+          "memo": "",
+          "layoutNumber": "",
+          "layoutNumberHistory": []
+        }
+      },
+      "modeOrder": [
+        "通常",
+        "合成"
       ],
       "settingLevels": [
         1,
