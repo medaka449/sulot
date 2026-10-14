@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.365</title>
+<title>小役カウンター v1.1.366</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -144,7 +144,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.365</span></footer>
+<footer><span>Ver. 1.1.366</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -489,7 +489,7 @@ if(c.countOnly){card.querySelector('.rate').textContent='';card.querySelector('.
   const combinedCount=(d.counters||[]).slice(4,6).reduce((sum,item)=>sum+Math.max(0,Number(item.count)||0),0);
   const games=Number(d.games)||0;
   const ratio=numerator>0?combinedCount/numerator:0;
-  rateEl.textContent=numerator>0 && combinedCount>0?'1/'+(ratio>=100?ratio.toFixed(1):ratio.toFixed(2)):'1/0.00';
+  rateEl.textContent=combinedCount>0?((numerator/combinedCount)*100).toFixed(1)+'%':'0.0%';
 }else{rateEl.textContent=rate(numerator,d,c)}
 let rateFs=15;const rateLen=String(rateEl.textContent||'').length;if(rateLen>9)rateFs=14;if(rateLen>11)rateFs=13;if(rateLen>14)rateFs=12;if(rateLen>17)rateFs=11;if(rateLen>20)rateFs=10;rateEl.style.fontSize=rateFs+'px';requestAnimationFrame(()=>{let guard=0;while(rateEl.scrollWidth>rateEl.clientWidth&&rateFs>8&&guard<20){rateFs=Math.max(8,rateFs-0.5);rateEl.style.fontSize=rateFs+'px';guard++}})}}if(!combined&&!isFormula){card.addEventListener('pointerdown',()=>{if(inputMode)return;});card.addEventListener('pointerup',()=>{if(state.selected===KABANERI_MACHINE && displayMode==='通常' && !combined && !inputMode && kabaneriPointAction(String(c.name||'')))return;if(inputMode){const target=currentData().counters.includes(c)?c:currentData().counters[countersToRender.indexOf(c)];if(target){const v=prompt(`${c.name} のカウントを入力`,String(target.count));if(v!==null){const n=parseInt(v,10);if(!Number.isNaN(n)&&n>=0){target.count=n;lastCountFeedback={name:String(c.name),index:countersToRender.indexOf(c),delta:0};save()}}}}else{
 const target=currentData().counters.includes(c)?c:currentData().counters[countersToRender.indexOf(c)];if(target){const wasMinus=minusMode;const previousCount=Number(target.count)||0;const nextCount=Math.max(0,previousCount+(wasMinus?-1:1));target.count=nextCount;lastCountFeedback={name:String(c.name),index:countersToRender.indexOf(c),delta:wasMinus?-1:1};if(d.layout==='first2four3five1' && countersToRender.indexOf(c)>=2 && countersToRender.indexOf(c)<=5){d.layoutNumberHistory=Array.isArray(d.layoutNumberHistory)?d.layoutNumberHistory:[];if(wasMinus){if(nextCount<previousCount){for(let hi=d.layoutNumberHistory.length-1;hi>=0;hi--){if(String(d.layoutNumberHistory[hi].counter||'')===String(c.name)){d.layoutNumberHistory.splice(hi,1);break}}}}else{const num=String(d.layoutNumber||'').trim();if(num!==''){d.layoutNumberHistory.push({time:new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}),value:num,counter:c.name});if(d.layoutNumberHistory.length>50)d.layoutNumberHistory.splice(0,d.layoutNumberHistory.length-50);d.layoutNumber='';}}}save()}}});}else{card.style.opacity='.92';card.style.cursor='default';card.style.pointerEvents='none'}
