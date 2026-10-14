@@ -752,7 +752,7 @@
           "layoutNumber": "",
           "layoutNumberHistory": []
         },
-        "合成": {
+        "おみくじ・ボイス": {
           "games": 0,
           "startGames": 0,
           "counters": [
@@ -849,7 +849,7 @@
       },
       "modeOrder": [
         "通常",
-        "合成"
+        "おみくじ・ボイス"
       ],
       "settingLevels": [
         1,
