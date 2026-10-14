@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.368</title>
+<title>小役カウンター v1.1.369</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -144,7 +144,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.368</span></footer>
+<footer><span>Ver. 1.1.369</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -200,6 +200,15 @@ if(!state.machines[KABANERI_MACHINE]){
 {
   const machine=state.machines[KABANERI_MACHINE];
   let changed=false;
+  const renameMode=(oldName)=>{
+    if(!machine.modes?.[oldName])return;
+    if(!machine.modes['キャラ紹介・ボイス'])machine.modes['キャラ紹介・ボイス']=machine.modes[oldName];
+    delete machine.modes[oldName];
+    machine.modeOrder=(machine.modeOrder||[]).map(name=>name===oldName?'キャラ紹介・ボイス':name);
+    changed=true;
+  };
+  ['おみくじボイス','おみくじ・ボイス','おみくじ／ボイス','おみくじ ボイス'].forEach(renameMode);
+
   if(machine.modes && machine.modes['合成'] && !machine.modes['キャラ紹介・ボイス']){
     machine.modes['キャラ紹介・ボイス']=machine.modes['合成'];
     delete machine.modes['合成'];
@@ -358,6 +367,14 @@ function render(){
     const machine=state.machines[KABANERI_MACHINE];
     if(machine?.modes){
       let changed=false;
+      ['おみくじボイス','おみくじ・ボイス','おみくじ／ボイス','おみくじ ボイス'].forEach(oldName=>{
+        if(!machine.modes[oldName])return;
+        if(!machine.modes['キャラ紹介・ボイス'])machine.modes['キャラ紹介・ボイス']=machine.modes[oldName];
+        delete machine.modes[oldName];
+        machine.modeOrder=(machine.modeOrder||[]).map(name=>name===oldName?'キャラ紹介・ボイス':name);
+        if(displayMode===oldName)displayMode='キャラ紹介・ボイス';
+        changed=true;
+      });
       if(machine.modes['合成']){
         if(!machine.modes['キャラ紹介・ボイス'])machine.modes['キャラ紹介・ボイス']=machine.modes['合成'];
         delete machine.modes['合成'];
