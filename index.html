@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.358</title>
+<title>小役カウンター v1.1.359</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -144,7 +144,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.358</span></footer>
+<footer><span>Ver. 1.1.359</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -263,6 +263,37 @@ let combined=false;
 function current(){return state.machines[state.selected]}
 function currentData(){const m=current();if(!m.modes[displayMode]){displayMode=m.modeOrder[0]||Object.keys(m.modes)[0]||"通常";if(!m.modes[displayMode])m.modes.通常=blankData()}return normalizeData(m.modes[displayMode])}
 function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
+function kabaneriPointAction(name){
+  const data=currentData();
+  if(name==='当選ポイント確認'){showKabaneriPointHistory();return true}
+  if(name!=='無名当選'&&name!=='生駒当選')return false;
+  const pair=name==='無名当選'?[0,1]:[2,3];
+  const counts=pair.map(i=>Math.max(0,Number(data.counters[i]?.count)||0));
+  if(!Array.isArray(data.pointHistory))data.pointHistory=[];
+  data.pointHistory.push({type:name,high:counts[0],other:counts[1],time:new Date().toLocaleString('ja-JP')});
+  pair.forEach(i=>{if(data.counters[i])data.counters[i].count=0});
+  const clicked=data.counters.find(x=>x.name===name);
+  if(clicked)clicked.count=(Number(clicked.count)||0)+1;
+  save();return true;
+}
+function showKabaneriPointHistory(){
+  const data=currentData();
+  const old=document.getElementById('kabaneriPointOverlay');if(old)old.remove();
+  const overlay=document.createElement('div');overlay.id='kabaneriPointOverlay';
+  overlay.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.76);display:flex;align-items:center;justify-content:center;padding:12px';
+  const panel=document.createElement('div');panel.style.cssText='width:min(100%,620px);max-height:85vh;overflow:auto;background:#18212d;color:#fff;border-radius:12px;padding:14px';
+  const title=document.createElement('h3');title.textContent='当選ポイント確認';title.style.margin='0 0 12px';
+  const close=document.createElement('button');close.textContent='閉じる';close.style.cssText='float:right;padding:8px 16px;border-radius:8px;background:#334155;color:white;border:0';close.onclick=()=>overlay.remove();
+  panel.append(close,title);
+  const table=document.createElement('table');table.style.cssText='width:100%;border-collapse:collapse;text-align:center;font-size:13px';
+  const head=document.createElement('tr');
+  ['回','当選','15pt以上','1pt・不明','記録日時'].forEach(label=>{const th=document.createElement('th');th.textContent=label;th.style.cssText='padding:7px 3px;border-bottom:1px solid #64748b';head.appendChild(th)});
+  table.appendChild(head);
+  (data.pointHistory||[]).forEach((entry,i)=>{const tr=document.createElement('tr');[i+1,entry.type,entry.high,entry.other,entry.time].forEach(v=>{const td=document.createElement('td');td.textContent=String(v??'');td.style.cssText='padding:8px 3px;border-bottom:1px solid #334155';tr.appendChild(td)});table.appendChild(tr)});
+  if(!(data.pointHistory||[]).length){const msg=document.createElement('p');msg.textContent='まだ記録がありません';panel.appendChild(msg)}
+  panel.appendChild(table);overlay.appendChild(panel);overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove()});document.body.appendChild(overlay);
+}
+
 function displayData(){return currentData()}
 function resolveCounterValue(data,counter,stack=[]){
   if(!counter)return 0;
@@ -443,7 +474,7 @@ function render(){
   const ratio=numerator>0?totalOmikuji/numerator:0;
   rateEl.textContent=numerator>0?'1/'+(ratio>=100?ratio.toFixed(1):ratio.toFixed(2)):'1/0.00';
 }else{rateEl.textContent=rate(numerator,d,c)}
-let rateFs=15;const rateLen=String(rateEl.textContent||'').length;if(rateLen>9)rateFs=14;if(rateLen>11)rateFs=13;if(rateLen>14)rateFs=12;if(rateLen>17)rateFs=11;if(rateLen>20)rateFs=10;rateEl.style.fontSize=rateFs+'px';requestAnimationFrame(()=>{let guard=0;while(rateEl.scrollWidth>rateEl.clientWidth&&rateFs>8&&guard<20){rateFs=Math.max(8,rateFs-0.5);rateEl.style.fontSize=rateFs+'px';guard++}})}}if(!combined&&!isFormula){card.addEventListener('pointerdown',()=>{if(inputMode)return;});card.addEventListener('pointerup',()=>{if(inputMode){const target=currentData().counters.find(x=>x.name===c.name);if(target){const v=prompt(`${c.name} のカウントを入力`,String(target.count));if(v!==null){const n=parseInt(v,10);if(!Number.isNaN(n)&&n>=0){target.count=n;lastCountFeedback={name:String(c.name),delta:0};save()}}}}else{
+let rateFs=15;const rateLen=String(rateEl.textContent||'').length;if(rateLen>9)rateFs=14;if(rateLen>11)rateFs=13;if(rateLen>14)rateFs=12;if(rateLen>17)rateFs=11;if(rateLen>20)rateFs=10;rateEl.style.fontSize=rateFs+'px';requestAnimationFrame(()=>{let guard=0;while(rateEl.scrollWidth>rateEl.clientWidth&&rateFs>8&&guard<20){rateFs=Math.max(8,rateFs-0.5);rateEl.style.fontSize=rateFs+'px';guard++}})}}if(!combined&&!isFormula){card.addEventListener('pointerdown',()=>{if(inputMode)return;});card.addEventListener('pointerup',()=>{if(state.selected===KABANERI_MACHINE && displayMode==='通常' && !combined && !inputMode && kabaneriPointAction(String(c.name||'')))return;if(inputMode){const target=currentData().counters.find(x=>x.name===c.name);if(target){const v=prompt(`${c.name} のカウントを入力`,String(target.count));if(v!==null){const n=parseInt(v,10);if(!Number.isNaN(n)&&n>=0){target.count=n;lastCountFeedback={name:String(c.name),delta:0};save()}}}}else{
 const target=currentData().counters.find(x=>x.name===c.name);if(target){const wasMinus=minusMode;const previousCount=Number(target.count)||0;const nextCount=Math.max(0,previousCount+(wasMinus?-1:1));target.count=nextCount;lastCountFeedback={name:String(c.name),delta:wasMinus?-1:1};if(d.layout==='first2four3five1' && countersToRender.indexOf(c)>=2 && countersToRender.indexOf(c)<=5){d.layoutNumberHistory=Array.isArray(d.layoutNumberHistory)?d.layoutNumberHistory:[];if(wasMinus){if(nextCount<previousCount){for(let hi=d.layoutNumberHistory.length-1;hi>=0;hi--){if(String(d.layoutNumberHistory[hi].counter||'')===String(c.name)){d.layoutNumberHistory.splice(hi,1);break}}}}else{const num=String(d.layoutNumber||'').trim();if(num!==''){d.layoutNumberHistory.push({time:new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}),value:num,counter:c.name});if(d.layoutNumberHistory.length>50)d.layoutNumberHistory.splice(0,d.layoutNumberHistory.length-50);d.layoutNumber='';}}}save()}}});}else{card.style.opacity='.92';card.style.cursor='default';card.style.pointerEvents='none'}
     if(lastCountFeedback && lastCountFeedback.name===String(c.name)){
       card.classList.add('countFeedback');
