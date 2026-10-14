@@ -878,38 +878,7 @@
           "layoutNumber": "",
           "layoutNumberHistory": [],
           "history": [],
-          "pointHistory": [
-            {
-              "type": "生駒当選",
-              "high": 0,
-              "other": 0,
-              "time": "2026/10/14 19:36:53"
-            },
-            {
-              "type": "無名当選",
-              "high": 0,
-              "other": 0,
-              "time": "2026/10/14 19:36:54"
-            },
-            {
-              "type": "無名当選",
-              "high": 0,
-              "other": 0,
-              "time": "2026/10/14 19:36:54"
-            },
-            {
-              "type": "生駒当選",
-              "high": 0,
-              "other": 0,
-              "time": "2026/10/14 19:36:55"
-            },
-            {
-              "type": "無名当選",
-              "high": 1,
-              "other": 1,
-              "time": "2026/10/14 20:15:36"
-            }
-          ]
+          "pointHistory": []
         },
         "おみくじ": {
           "games": 0,
