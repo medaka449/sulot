@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.356</title>
+<title>小役カウンター v1.1.357</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -144,7 +144,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.356</span></footer>
+<footer><span>Ver. 1.1.357</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -369,11 +369,21 @@ function render(){
     const normal=state.machines[KABANERI_MACHINE]?.modes?.['通常'];
     if(normal){
       let changed=false;
-      // 不要になったカウンター7・8・10・11・12を除去（9は維持）
+      // 通常ページ下段: 左に7、右に8・9・10を縦配置
       if(!Array.isArray(normal.counters))normal.counters=[];
-      const removedNames=new Set(['カウント7','カウント8','カウント10','カウント11','カウント12','無名当選','生駒当選','当選ポイント確認']);
-      const kept=normal.counters.filter(item=>!removedNames.has(String(item.name||'')));
+      const retired=new Set(['カウント11','カウント12','無名当選','生駒当選','当選ポイント確認']);
+      const kept=normal.counters.filter(item=>!retired.has(String(item.name||'')));
       if(kept.length!==normal.counters.length){normal.counters=kept;changed=true}
+      for(let i=7;i<=10;i++){
+        if(!normal.counters.some(item=>item.name==='カウント'+i)){
+          normal.counters.push({name:'カウント'+i,count:0});changed=true;
+        }
+      }
+      // カウンター順を揃える
+      const extra=normal.counters.filter(item=>['カウント7','カウント8','カウント9','カウント10'].includes(item.name));
+      const base=normal.counters.filter(item=>!['カウント7','カウント8','カウント9','カウント10'].includes(item.name));
+      const ordered=[...base,...[7,8,9,10].map(i=>extra.find(item=>item.name==='カウント'+i)).filter(Boolean)];
+      if(ordered.some((item,i)=>item!==normal.counters[i])){normal.counters=ordered;changed=true}
       const normalLabels=['15pt以上','1pt・不明','15pt以上','1pt・不明','発光','非発光'];
       normal.counters.slice(0,6).forEach((item,i)=>{
         if(item && item.name!==normalLabels[i]){item.name=normalLabels[i];changed=true}
@@ -451,6 +461,19 @@ const target=currentData().counters.find(x=>x.name===c.name);if(target){const wa
     }
     root.appendChild(card);
   });
+  if(state.selected===KABANERI_MACHINE && displayMode==='通常' && !combined && !rateSettingActive){
+    const names=['カウント7','カウント8','カウント9','カウント10'];
+    const cards=Array.from(root.children).filter(el=>el.classList.contains('counter'));
+    const indices=names.map(name=>d.counters.findIndex(item=>item.name===name));
+    if(indices.every(i=>i>=0 && cards[i])){
+      const row=document.createElement('div');row.className='kabaneriNormalSplitRow';
+      root.insertBefore(row,cards[indices[0]]);
+      const left=cards[indices[0]];left.classList.add('kabaneriNormalCount9');row.appendChild(left);
+      const stack=document.createElement('div');stack.className='kabaneriNormalSmallStack';
+      indices.slice(1).forEach(i=>{cards[i].classList.add('kabaneriNormalSmallCounter');stack.appendChild(cards[i])});
+      row.appendChild(stack);
+    }
+  }
   // ベル＋スイカを一つのカウンターとして操作（既存カウントは合算して表示）
   if(state.selected.includes('マイジャグラー') && !rateSettingActive && !combined){
     const names=countersToRender.map(item=>String(item.name||'').trim());
