@@ -1123,7 +1123,7 @@ let cloudBusy=false,cloudTimer=null,cloudLastSent='',cloudApplying=false;
 function cloudPayload(){const machines={};Object.keys(state.machines||{}).forEach(n=>machines[n]=machineDefinitionForJson(state.machines[n]));return {format:'koyaku-machine-definitions',version:1,machines};}
 function cloudStatus(msg){const e=document.getElementById('cloudSyncStatus');if(e)e.textContent=msg;}
 function cloudUtf8ToBase64(s){const bytes=new TextEncoder().encode(s);let binary='';for(let i=0;i<bytes.length;i+=8192)binary+=String.fromCharCode(...bytes.subarray(i,i+8192));return btoa(binary);}
-function cloudBase64ToUtf8(s){const bytes=Uint8Array.from(atob(s.replace(/\\s/g,'')),c=>c.charCodeAt(0));return new TextDecoder().decode(bytes);}
+function cloudBase64ToUtf8(s){const bytes=Uint8Array.from(atob(s.replace(/\s/g,'')),c=>c.charCodeAt(0));return new TextDecoder().decode(bytes);}
 async function cloudFetch(){
  const res=await fetch(CLOUD_API+'?t='+Date.now(),{cache:'no-store',headers:{Accept:'application/vnd.github+json'}});
  if(res.status===404)return null;if(!res.ok)throw Error('取得 HTTP '+res.status);
