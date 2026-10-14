@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.330</title>
+<title>小役カウンター v1.1.331</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -107,7 +107,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.330</span></footer>
+<footer><span>Ver. 1.1.331</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -281,6 +281,29 @@ function render(){
       const unique=[...new Set(order.filter(x=>machine.modes[x]))];
       if(JSON.stringify(unique)!==JSON.stringify(machine.modeOrder)){machine.modeOrder=unique;changed=true}
       if(displayMode==='合成'){displayMode='おみくじ・ボイス';changed=true}
+      const omikuji=machine.modes['おみくじ・ボイス'];
+      if(omikuji){
+        const names=['キャラ紹介男','キャラ紹介女','美馬','ボイス男','ボイス女','カウント6','カウント7'];
+        const original=Array.isArray(omikuji.counters)?omikuji.counters:[];
+        const placeholders=original.length<=3 && original.every((item,i)=>['ベル','スイカ','チェリー'][i]===item.name);
+        if(placeholders){
+          omikuji.counters=names.map((name,i)=>({...original[i],name,count:Number(original[i]?.count)||0}));
+          changed=true;
+        }else{
+          for(let i=0;i<7;i++){
+            if(!original[i]){original.push({name:names[i],count:0});changed=true}
+            else if(i<5 && (original[i].name==='カウント'+(i+1) || original[i].name===['ベル','スイカ','チェリー'][i])){
+              original[i].name=names[i];changed=true;
+            }
+          }
+        }
+        for(let i=0;i<2;i++){
+          const counter=omikuji.counters[i];
+          const color=i===0?'#174b9a':'#a82e42';
+          if(counter.color!==color){counter.color=color;changed=true}
+        }
+        if(omikuji.layout!=='2'){omikuji.layout='2';changed=true}
+      }
       if(changed)localStorage.setItem(KEY,JSON.stringify(state));
     }
   }
