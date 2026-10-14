@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.339</title>
+<title>小役カウンター v1.1.340</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -127,7 +127,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.339</span></footer>
+<footer><span>Ver. 1.1.340</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -181,13 +181,19 @@ if(!state.machines[KABANERI_MACHINE]){
 {
   const machine=state.machines[KABANERI_MACHINE];
   let changed=false;
-  if(machine.modes && machine.modes['合成'] && !machine.modes['おみくじ・ボイス']){
-    machine.modes['おみくじ・ボイス']=machine.modes['合成'];
+  if(machine.modes && machine.modes['合成'] && !machine.modes['キャラ紹介・ボイス']){
+    machine.modes['キャラ紹介・ボイス']=machine.modes['合成'];
     delete machine.modes['合成'];
-    machine.modeOrder=(machine.modeOrder||[]).map(name=>name==='合成'?'おみくじ・ボイス':name);
+    machine.modeOrder=(machine.modeOrder||[]).map(name=>name==='合成'?'キャラ紹介・ボイス':name);
     changed=true;
   }
-  const omikuji=machine.modes?.['おみくじ・ボイス'];
+  if(!machine.modes['おみくじ']){
+    machine.modes['おみくじ']={...blankData(),counters:Array.from({length:6},(_,i)=>({name:'おみくじ'+(i+1),count:0})),layout:'2'};
+    changed=true;
+  }
+  machine.modeOrder=(machine.modeOrder||Object.keys(machine.modes)).filter(x=>machine.modes[x]);
+  if(!machine.modeOrder.includes('おみくじ')){machine.modeOrder.push('おみくじ');changed=true}
+  const omikuji=machine.modes?.['キャラ紹介・ボイス'];
   if(omikuji){
     const old=omikuji.counters||[];
     if(old.length===3 && old.every((item,i)=>item.name===DEFAULT_COUNTERS[i] && Number(item.count||0)===0)){
@@ -212,7 +218,7 @@ if(!state.machines[KABANERI_MACHINE]){
     if(omikuji.layout!=='2'){omikuji.layout='2';changed=true}
   }
   for(const [modeName,mode] of Object.entries(machine.modes||{})){
-    if(modeName==='おみくじ・ボイス')continue;
+    if(modeName==='キャラ紹介・ボイス')continue;
     const counters=mode.counters||[];
     if(counters.length===4 && counters.every((item,i)=>item.name==='カウント'+(i+1))){
       counters.push({name:'カウント5',count:0},{name:'カウント6',count:0});
@@ -293,15 +299,20 @@ function render(){
     if(machine?.modes){
       let changed=false;
       if(machine.modes['合成']){
-        if(!machine.modes['おみくじ・ボイス'])machine.modes['おみくじ・ボイス']=machine.modes['合成'];
+        if(!machine.modes['キャラ紹介・ボイス'])machine.modes['キャラ紹介・ボイス']=machine.modes['合成'];
         delete machine.modes['合成'];
         changed=true;
       }
-      const order=(machine.modeOrder||Object.keys(machine.modes)).map(x=>x==='合成'?'おみくじ・ボイス':x);
+      const order=(machine.modeOrder||Object.keys(machine.modes)).map(x=>x==='合成'?'キャラ紹介・ボイス':x);
       const unique=[...new Set(order.filter(x=>machine.modes[x]))];
       if(JSON.stringify(unique)!==JSON.stringify(machine.modeOrder)){machine.modeOrder=unique;changed=true}
-      if(displayMode==='合成'){displayMode='おみくじ・ボイス';changed=true}
-      const omikuji=machine.modes['おみくじ・ボイス'];
+      if(displayMode==='合成'){displayMode='キャラ紹介・ボイス';changed=true}
+      if(!machine.modes['おみくじ']){
+        machine.modes['おみくじ']={...blankData(),counters:Array.from({length:6},(_,i)=>({name:'おみくじ'+(i+1),count:0})),layout:'2'};
+        machine.modeOrder.push('おみくじ');
+        changed=true;
+      }
+      const omikuji=machine.modes['キャラ紹介・ボイス'];
       if(omikuji){
         const names=['キャラ紹介男','キャラ紹介女','美馬','ボイス男','ボイス女','カウント6','カウント7'];
         const original=Array.isArray(omikuji.counters)?omikuji.counters:[];
@@ -332,7 +343,7 @@ function render(){
   if(entryMode==='income'){renderIncome();return;}
   const d=displayData();
   document.getElementById("gamesInput").value=d.games;document.getElementById("startGamesInput").value=d.startGames||0;
-  const root=document.getElementById("counters");root.className='counterGrid '+(d.layout==='first2four3five1'?'firstTwoFourThreeFiveOne':d.layout==='first2four3'?'firstTwoFourThree':'');if(state.selected.includes('マイジャグラー'))root.classList.add('myJugglerTightRows');if(state.selected===KABANERI_MACHINE && displayMode==='おみくじ・ボイス' && !combined)root.classList.add('kabaneriOmikuji');root.innerHTML="";
+  const root=document.getElementById("counters");root.className='counterGrid '+(d.layout==='first2four3five1'?'firstTwoFourThreeFiveOne':d.layout==='first2four3'?'firstTwoFourThree':'');if(state.selected.includes('マイジャグラー'))root.classList.add('myJugglerTightRows');if(state.selected===KABANERI_MACHINE && displayMode==='キャラ紹介・ボイス' && !combined)root.classList.add('kabaneriOmikuji');root.innerHTML="";
   if(d.layout==='memo'){const memo=document.createElement('textarea');memo.className='memoBox';memo.placeholder='ここに自由にメモを書けます';memo.value=d.memo;memo.addEventListener('input',()=>{d.memo=memo.value;localStorage.setItem(KEY,JSON.stringify(state))});root.appendChild(memo);return}
   // マイジャグラー: チェリーの下にボーナス4種類を常設
   if(state.selected.includes('マイジャグラー') && !combined && d.layout!=='memo'){
@@ -1278,7 +1289,7 @@ function syncEntryMode(){
  document.getElementById('saveProgress').setAttribute('aria-label',document.getElementById('saveProgress').title);
  document.getElementById('showTrend').setAttribute('aria-label',document.getElementById('showTrend').title);
  const help=document.getElementById('kabaneriHelp');
- if(help){help.style.setProperty('display',!income && state.selected===KABANERI_MACHINE && displayMode!=='おみくじ・ボイス'?'flex':'none','important');}
+ if(help){help.style.setProperty('display',!income && state.selected===KABANERI_MACHINE && displayMode!=='キャラ紹介・ボイス'?'flex':'none','important');}
 }
 document.getElementById('kabaneriHelp').onclick=()=>{
  let overlay=document.getElementById('kabaneriGuideOverlay');
