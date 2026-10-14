@@ -971,7 +971,51 @@
           "layout": "2",
           "memo": "",
           "layoutNumber": "",
-          "layoutNumberHistory": []
+          "layoutNumberHistory": [],
+          "history": [
+            {
+              "time": "2026/10/14 19:03:53",
+              "games": 0,
+              "startGames": 0,
+              "counters": [
+                {
+                  "name": "キャラ紹介男",
+                  "count": 0,
+                  "rate": "1/0.00"
+                },
+                {
+                  "name": "キャラ紹介女",
+                  "count": 0,
+                  "rate": "1/0.00"
+                },
+                {
+                  "name": "美馬",
+                  "count": 1,
+                  "rate": "1/0.00"
+                },
+                {
+                  "name": "ボイス男",
+                  "count": 0,
+                  "rate": "1/0.00"
+                },
+                {
+                  "name": "ボイス女",
+                  "count": 0,
+                  "rate": "1/0.00"
+                },
+                {
+                  "name": "カウント6",
+                  "count": 0,
+                  "rate": "1/0.00"
+                },
+                {
+                  "name": "カウント7",
+                  "count": 0,
+                  "rate": "1/0.00"
+                }
+              ]
+            }
+          ]
         },
         "おみくじ": {
           "games": 0,
