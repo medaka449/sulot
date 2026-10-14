@@ -579,7 +579,7 @@
           "startGames": 0,
           "counters": [
             {
-              "name": "ベル",
+              "name": "カウント1",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
@@ -600,7 +600,7 @@
               "alias": ""
             },
             {
-              "name": "スイカ",
+              "name": "カウント2",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
@@ -621,7 +621,28 @@
               "alias": ""
             },
             {
-              "name": "チェリー",
+              "name": "カウント3",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "カウント4",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
@@ -652,7 +673,7 @@
           "startGames": 0,
           "counters": [
             {
-              "name": "ベル",
+              "name": "カウント1",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
@@ -673,7 +694,7 @@
               "alias": ""
             },
             {
-              "name": "スイカ",
+              "name": "カウント2",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
@@ -694,7 +715,28 @@
               "alias": ""
             },
             {
-              "name": "チェリー",
+              "name": "カウント3",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "カウント4",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
