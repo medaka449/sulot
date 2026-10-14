@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.309</title>
+<title>小役カウンター v1.1.310</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -106,7 +106,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.309</span></footer>
+<footer><span>Ver. 1.1.310</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -250,6 +250,7 @@ const target=currentData().counters.find(x=>x.name===c.name);if(target){const wa
 }
 function resetModalSections(){document.getElementById('newMachine').style.display='none';document.querySelector('.sheetRow').style.display='none';document.getElementById('machines').style.display='none';document.getElementById('modeSettings').style.display='none';document.getElementById('historyView').style.display='none'}
 function showMachineListScreen(){
+  cloudControls();
   document.getElementById("entryModeScreen").hidden=true;
   const screen=document.getElementById('machineListScreen');
   const items=document.getElementById('machineListScreenItems');
@@ -1114,6 +1115,78 @@ document.getElementById('entryIncome').onclick=()=>enterFromModeScreen('income')
 chooseEntryMode('counter');
 
 if("serviceWorker"in navigator)window.addEventListener("load",async()=>{try{const reg=await navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"});await reg.update()}catch(e){}});migrateHistory();save();render();showMachineListScreen();
+
+/* Cloud machine-definition sync: public read; authenticated write on PC only. */
+const CLOUD_REPO='medaka449/sulot',CLOUD_FILE='machines-sync.json',CLOUD_API='https://api.github.com/repos/'+CLOUD_REPO+'/contents/'+CLOUD_FILE;
+const CLOUD_TOKEN_KEY='koyaku-cloud-pat-local',CLOUD_SEND_KEY='koyaku-cloud-send';
+let cloudBusy=false,cloudTimer=null,cloudLastSent='',cloudApplying=false;
+function cloudPayload(){const machines={};Object.keys(state.machines||{}).forEach(n=>machines[n]=machineDefinitionForJson(state.machines[n]));return {format:'koyaku-machine-definitions',version:1,machines};}
+function cloudStatus(msg){const e=document.getElementById('cloudSyncStatus');if(e)e.textContent=msg;}
+function cloudUtf8ToBase64(s){const bytes=new TextEncoder().encode(s);let binary='';for(let i=0;i<bytes.length;i+=8192)binary+=String.fromCharCode(...bytes.subarray(i,i+8192));return btoa(binary);}
+function cloudBase64ToUtf8(s){const bytes=Uint8Array.from(atob(s.replace(/\\s/g,'')),c=>c.charCodeAt(0));return new TextDecoder().decode(bytes);}
+async function cloudFetch(){
+ const res=await fetch(CLOUD_API+'?t='+Date.now(),{cache:'no-store',headers:{Accept:'application/vnd.github+json'}});
+ if(res.status===404)return null;if(!res.ok)throw Error('取得 HTTP '+res.status);
+ const j=await res.json();return {sha:j.sha,payload:JSON.parse(cloudBase64ToUtf8(j.content))};
+}
+async function cloudPull(silent=false){
+ if(cloudBusy)return;cloudBusy=true;
+ try{
+  const remote=await cloudFetch();if(!remote){cloudStatus('クラウドに機種設定がまだありません');return;}
+  const p=remote.payload;if(p.format!=='koyaku-machine-definitions'||!p.machines||typeof p.machines!=='object')throw Error('設定形式が違います');
+  let changed=0;cloudApplying=true;
+  for(const [name,def] of Object.entries(p.machines)){
+   if(!name.trim()||!def||typeof def!=='object')continue;
+   const next=mergeMachineDefinition(def,state.machines[name]);
+   if(JSON.stringify(next)!==JSON.stringify(state.machines[name])){state.machines[name]=next;changed++;}
+  }
+  localStorage.setItem(KEY,JSON.stringify(state));cloudLastSent=JSON.stringify(cloudPayload());
+  if(changed){render();if(document.getElementById('machineListScreen').style.display!=='none')showMachineListScreen();}
+  cloudStatus('受信完了：'+Object.keys(p.machines).length+'機種（変更 '+changed+'）');
+ }catch(e){cloudStatus('受信失敗：'+e.message);if(!silent)alert('同期できませんでした：'+e.message)}
+ finally{cloudApplying=false;cloudBusy=false;}
+}
+async function cloudPush(){
+ if(cloudBusy||!localStorage.getItem(CLOUD_SEND_KEY))return;
+ const token=localStorage.getItem(CLOUD_TOKEN_KEY)||'';if(!token)return;
+ const payload=cloudPayload(),fingerprint=JSON.stringify(payload);
+ if(fingerprint===cloudLastSent)return;
+ cloudBusy=true;cloudStatus('機種設定を送信中…');
+ try{
+  for(let attempt=0;attempt<2;attempt++){
+   const get=await fetch(CLOUD_API+'?t='+Date.now(),{cache:'no-store',headers:{Accept:'application/vnd.github+json',Authorization:'Bearer '+token}});
+   if(!get.ok&&get.status!==404)throw Error('確認 HTTP '+get.status);
+   const current=get.status===404?null:await get.json();
+   const body={message:'Sync machine definitions from counter',content:cloudUtf8ToBase64(JSON.stringify(payload,null,2)),branch:'main'};
+   if(current)body.sha=current.sha;
+   const put=await fetch(CLOUD_API,{method:'PUT',headers:{Accept:'application/vnd.github+json',Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
+   if(put.ok){cloudLastSent=fingerprint;cloudStatus('送信完了：'+new Date().toLocaleTimeString('ja-JP'));return;}
+   if(put.status===409&&attempt===0)continue;
+   throw Error('送信 HTTP '+put.status+(put.status===401||put.status===403?'（トークン権限を確認）':''));
+  }
+ }catch(e){cloudStatus('送信失敗：'+e.message)}
+ finally{cloudBusy=false;}
+}
+function cloudSchedule(){if(cloudApplying||!localStorage.getItem(CLOUD_SEND_KEY))return;clearTimeout(cloudTimer);cloudTimer=setTimeout(cloudPush,2500);}
+function cloudControls(){
+ const screen=document.getElementById('machineListScreen');if(screen.querySelector('#cloudSyncPanel'))return;
+ const panel=document.createElement('div');panel.id='cloudSyncPanel';panel.style.cssText='margin:12px 0;padding:12px;border:1px solid #344051;border-radius:12px;color:#e5e7eb;font-size:13px';
+ const title=document.createElement('div');title.textContent='機種設定の自動同期';title.style.cssText='font-weight:800;margin-bottom:8px';panel.append(title);
+ const note=document.createElement('div');note.textContent='iPhoneは自動受信。PCで送信を有効にすると機種の追加・編集を自動反映。カウント・収支は同期しません。';note.style.marginBottom='8px';panel.append(note);
+ const status=document.createElement('div');status.id='cloudSyncStatus';status.textContent='未確認';status.style.marginBottom='8px';panel.append(status);
+ const receive=document.createElement('button');receive.textContent='今すぐ受信';receive.type='button';receive.onclick=()=>cloudPull();panel.append(receive);
+ const label=document.createElement('label');label.style.cssText='display:flex;align-items:center;gap:8px;margin:10px 0';const check=document.createElement('input');check.type='checkbox';check.checked=localStorage.getItem(CLOUD_SEND_KEY)==='1';label.append(check,document.createTextNode('この端末から自動送信（PC用）'));panel.append(label);
+ const token=document.createElement('input');token.type='password';token.placeholder='GitHubのFine-grained token（このPC内のみ保存）';token.autocomplete='off';token.style.cssText='width:100%;box-sizing:border-box;padding:9px;background:#101820;color:#fff;border:1px solid #465264;border-radius:8px';token.value=localStorage.getItem(CLOUD_TOKEN_KEY)||'';panel.append(token);
+ const store=document.createElement('button');store.textContent='トークンをこの端末に保存';store.type='button';store.style.marginTop='7px';store.onclick=()=>{localStorage.setItem(CLOUD_TOKEN_KEY,token.value.trim());cloudStatus('トークンをこの端末に保存しました');cloudSchedule();};panel.append(store);
+ const help=document.createElement('div');help.style.cssText='font-size:11px;opacity:.85;margin-top:8px';help.textContent='GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens。対象は medaka449/sulot のみ、Contents: Read and write。トークンはチャットに送らないでください。';panel.append(help);
+ check.onchange=()=>{if(check.checked){if(!localStorage.getItem(CLOUD_TOKEN_KEY)){check.checked=false;alert('先にPCでトークンを保存してください');return;}localStorage.setItem(CLOUD_SEND_KEY,'1');cloudSchedule();}else{localStorage.removeItem(CLOUD_SEND_KEY);clearTimeout(cloudTimer);}cloudStatus(check.checked?'自動送信 ON':'自動受信のみ');};
+ screen.append(panel);
+}
+const cloudOriginalSave=save;
+save=function(){cloudOriginalSave();cloudSchedule();};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)cloudPull(true)});
+window.addEventListener('load',()=>{cloudControls();cloudPull(true);setInterval(()=>{if(!document.hidden)cloudPull(true)},60000);});
+
 </script>
 </body>
 </html>
