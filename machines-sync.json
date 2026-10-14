@@ -877,7 +877,33 @@
           "memo": "",
           "layoutNumber": "",
           "layoutNumberHistory": [],
-          "history": []
+          "history": [],
+          "pointHistory": [
+            {
+              "type": "生駒当選",
+              "high": 0,
+              "other": 0,
+              "time": "2026/10/14 19:36:53"
+            },
+            {
+              "type": "無名当選",
+              "high": 0,
+              "other": 0,
+              "time": "2026/10/14 19:36:54"
+            },
+            {
+              "type": "無名当選",
+              "high": 0,
+              "other": 0,
+              "time": "2026/10/14 19:36:54"
+            },
+            {
+              "type": "生駒当選",
+              "high": 0,
+              "other": 0,
+              "time": "2026/10/14 19:36:55"
+            }
+          ]
         },
         "おみくじ・ボイス": {
           "games": 0,
