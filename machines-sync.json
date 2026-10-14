@@ -757,7 +757,49 @@
           "startGames": 0,
           "counters": [
             {
-              "name": "カウント1",
+              "name": "キャラ紹介男",
+              "count": 0,
+              "color": "#174b9a",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "キャラ紹介女",
+              "count": 0,
+              "color": "#a82e42",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "美馬",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
@@ -778,7 +820,7 @@
               "alias": ""
             },
             {
-              "name": "カウント2",
+              "name": "ボイス男",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
@@ -799,7 +841,7 @@
               "alias": ""
             },
             {
-              "name": "カウント3",
+              "name": "ボイス女",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
@@ -820,7 +862,28 @@
               "alias": ""
             },
             {
-              "name": "カウント4",
+              "name": "カウント6",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "カウント7",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
