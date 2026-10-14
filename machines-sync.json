@@ -1277,7 +1277,8 @@
           "layout": "2",
           "memo": "",
           "layoutNumber": "",
-          "layoutNumberHistory": []
+          "layoutNumberHistory": [],
+          "history": []
         }
       },
       "modeOrder": [
