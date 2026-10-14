@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.337</title>
+<title>小役カウンター v1.1.338</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -107,7 +107,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 .kabaneriGuideLocal tbody tr td:first-child:not(:only-child){background:#666;color:white}
 .kabaneriGuideLocal p{margin:14px 0}
 .kabaneriGuideLocal p strong{color:#e22}
-</style><style>.kabaneriGuideLocal .kabaneriRateTable{font-size:13px;table-layout:fixed}.kabaneriGuideLocal .kabaneriRateTable th,.kabaneriGuideLocal .kabaneriRateTable td{padding:6px 2px}.kabaneriGuideLocal .kabaneriRateTable th:not(:first-child){background:#ff8700;color:#fff}.kabaneriGuideLocal .kabaneriRateTable .rateBand th{background:#ff424b;color:#fff;font-size:14px}.kabaneriGuideLocal .kabaneriRateTable td:first-child{background:#6a6a6a;color:#fff;width:16%}</style></head>
+</style><style>.kabaneriGuideLocal .kabaneriRateTable{font-size:13px;table-layout:fixed}.kabaneriGuideLocal .kabaneriRateTable th,.kabaneriGuideLocal .kabaneriRateTable td{padding:6px 2px}.kabaneriGuideLocal .kabaneriRateTable th:not(:first-child){background:#ff8700;color:#fff}.kabaneriGuideLocal .kabaneriRateTable .rateBand th{background:#ff424b;color:#fff;font-size:14px}.kabaneriGuideLocal .kabaneriRateTable td:first-child{background:#6a6a6a;color:#fff;width:16%}</style><style>.kabaneriImageScroll{overflow-y:auto;overflow-x:hidden;background:#fff;overscroll-behavior:contain}.kabaneriCharacterImage{display:block;width:100%;height:auto;max-width:748px;margin:0 auto}.kabaneriImageFallback{padding:24px;text-align:center;color:#333}</style></head>
 <body>
 <main>
 <section class="topCard compactCard machineTop">
@@ -127,7 +127,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.337</span></footer>
+<footer><span>Ver. 1.1.338</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -1286,28 +1286,22 @@ document.getElementById('kabaneriHelp').onclick=()=>{
    overlay=document.createElement('div');
    overlay.id='kabaneriGuideOverlay';
    overlay.className='kabaneriGuideOverlay';
-   overlay.innerHTML=`<div class="kabaneriGuidePanel" role="dialog" aria-modal="true" aria-label="カバネリ キャラ紹介の説明">
-   <div class="kabaneriGuideHeader"><strong>カバネリボーナス中のキャラ紹介</strong><button type="button" class="kabaneriGuideClose" aria-label="閉じる">×</button></div>
-   <div class="kabaneriGuideScroll kabaneriGuideLocal">
-   <h3>キャラごとの示唆</h3>
-   <table><thead><tr><th>キャラ</th><th>示唆</th></tr></thead><tbody>
-   <tr><td>女性（無名・菖蒲・鰍＆侑那）</td><td>偶数設定示唆</td></tr>
-   <tr><td>男性（生駒・来栖・景之）</td><td>設定3・5示唆</td></tr>
-   <tr><td>美馬</td><td>設定4以上濃厚</td></tr>
-   </tbody></table>
-   <h3>消化ゲーム数ごとの美馬出現率</h3>
-   <table><tbody><tr><td>5001～7000G間は20倍にアップ</td></tr><tr><td>7001～8000G間は100倍にアップ</td></tr></tbody></table>
-   <p>基本的に前作のカバネリと法則性は同じで、女性キャラが偶数設定、男性キャラは奇数設定（設定3・5）を示唆。今回は<strong>美馬が出現すれば設定4以上濃厚</strong>になる。</p>
-   <p>ST終了画面と同じく、設定4以上濃厚の美馬は消化ゲーム数によって出現率が変化するところもポイントだ。</p>
-   <h3>キャラ紹介出現率</h3><table class="kabaneriRateTable"><tbody><tr class="rateBand"><th colspan="4">1～5000G / 8001G～</th></tr><tr><th>設定</th><th>女性キャラ</th><th>男性キャラ</th><th>美馬</th></tr><tr><td>1</td><td>50.0%</td><td>50.0%</td><td>—</td></tr><tr><td>2</td><td>57.5%</td><td>42.5%</td><td>—</td></tr><tr><td>3</td><td>41.5%</td><td>58.5%</td><td>—</td></tr><tr><td>4</td><td>58.5%</td><td>41.4%</td><td>0.10%</td></tr><tr><td>5</td><td>39.9%</td><td>60.0%</td><td>0.10%</td></tr><tr><td>6</td><td>60.0%</td><td>39.85%</td><td>0.15%</td></tr><tr class="rateBand"><th colspan="4">5001～7000G</th></tr><tr><th>設定</th><th>女性キャラ</th><th>男性キャラ</th><th>美馬</th></tr><tr><td>1</td><td>50.0%</td><td>50.0%</td><td>—</td></tr><tr><td>2</td><td>57.5%</td><td>42.5%</td><td>—</td></tr><tr><td>3</td><td>41.5%</td><td>58.5%</td><td>—</td></tr><tr><td>4</td><td>58.5%</td><td>39.5%</td><td>2.0%</td></tr><tr><td>5</td><td>38.0%</td><td>60.0%</td><td>2.0%</td></tr><tr><td>6</td><td>60.0%</td><td>37.0%</td><td>3.0%</td></tr><tr class="rateBand"><th colspan="4">7001～8000G</th></tr><tr><th>設定</th><th>女性キャラ</th><th>男性キャラ</th><th>美馬</th></tr><tr><td>1</td><td>50.0%</td><td>50.0%</td><td>—</td></tr><tr><td>2</td><td>57.5%</td><td>42.5%</td><td>—</td></tr><tr><td>3</td><td>41.5%</td><td>58.5%</td><td>—</td></tr><tr><td>4</td><td>58.5%</td><td>31.5%</td><td>10.0%</td></tr><tr><td>5</td><td>30.0%</td><td>60.0%</td><td>10.0%</td></tr><tr><td>6</td><td>60.0%</td><td>25.0%</td><td>15.0%</td></tr></tbody></table>
-   </div>
-   <a class="kabaneriGuideExternal" href="https://p-town.dmm.com/machines/4930#anc-point" target="_blank" rel="noopener noreferrer">元の説明ページを開く ↗</a>
+   overlay.innerHTML=`<div class="kabaneriGuidePanel" role="dialog" aria-modal="true" aria-label="キャラ紹介の説明">
+     <div class="kabaneriGuideHeader"><strong>キャラ紹介の説明</strong><button type="button" class="kabaneriGuideClose" aria-label="閉じる">×</button></div>
+     <div class="kabaneriGuideScroll kabaneriImageScroll">
+       <img class="kabaneriCharacterImage" src="./kabaneri_character_4images_vertical.jpg" alt="キャラごとの示唆、キャラ紹介出現率、女性・男性・美馬のキャラ紹介画像" loading="eager">
+       <p class="kabaneriImageFallback" hidden>画像ファイルをまだ登録できていません。下の「画像を開く」から確認してください。</p>
+     </div>
+     <a class="kabaneriGuideExternal" href="https://p-town.dmm.com/machines/4930#anc-point" target="_blank" rel="noopener noreferrer">DMMの説明ページを開く ↗</a>
    </div>`;
    document.body.appendChild(overlay);
    overlay.querySelector('.kabaneriGuideClose').onclick=()=>{overlay.style.display='none'};
    overlay.addEventListener('click',event=>{if(event.target===overlay)overlay.querySelector('.kabaneriGuideClose').click()});
+   const img=overlay.querySelector('.kabaneriCharacterImage');
+   img.onerror=()=>{img.hidden=true;overlay.querySelector('.kabaneriImageFallback').hidden=false};
  }
  overlay.style.display='flex';
+ overlay.querySelector('.kabaneriGuideScroll').scrollTop=0;
 };
 function incomeDraft(){const m=current();if(!m.incomeDraft)m.incomeDraft={date:new Date().toLocaleDateString('sv-SE'),investment:'',returned:'',note:''};return m.incomeDraft;}
 function renderIncome(){
