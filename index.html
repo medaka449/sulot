@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.315</title>
+<title>小役カウンター v1.1.316</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -28,10 +28,7 @@ button{border:0;touch-action:manipulation;color:#fff;font:inherit;font-weight:70
 .topCard{background:#151b23;border:1px solid #27303c;border-radius:14px;padding:7px}
 .judgeBtn{width:100%;height:34px;border-radius:10px;background:#2563eb;white-space:nowrap;font-size:13px}.rateBtn{width:100%;height:34px;border-radius:10px;background:#343d49;font-size:14px}.rateBtn.active{background:#2563eb}.progressTools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;margin-bottom:10px}.progressTools button{height:42px;border-radius:12px;background:#222a35}.historyRow{padding:9px 0;border-bottom:1px solid #26303b}.historyTime{font-size:12px;color:#9da8b7}.historyMain{font-size:14px;font-weight:700;margin-top:3px}.historyTabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#222a35;border-radius:10px;padding:3px;margin:10px 0}.historyTab{height:36px;border-radius:8px;background:transparent;color:#aeb4aa;font-weight:800}.historyTab.active{background:#2563eb;color:#fff}.historyTableWrap{overflow-x:auto;border:1px solid #27303c;border-radius:12px;margin-top:10px}.historyTable{width:100%;border-collapse:collapse;min-width:max-content}.historyTable th,.historyTable td{padding:9px 10px;border-bottom:1px solid #27303c;text-align:center;white-space:nowrap}.historyTable th{background:#1c2430;font-size:12px}.historyTable td{font-size:13px;font-weight:700}.historyTable tr:last-child td{border-bottom:0}
 .modeTools{display:flex;justify-content:center;margin:6px 0 8px}.modeTools .headerBtn{width:150px;height:38px;border-radius:10px} .modeSwitch{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;background:#2a2d27;border-radius:8px;padding:1px;margin:0 0 7px;width:100%;max-width:none;box-sizing:border-box;overflow:hidden}.modeBtn{position:relative;z-index:2;height:20px;border-radius:7px;background:transparent;color:#aeb4aa;font-weight:800;font-size:11px;padding:0;transition:color .24s ease}.modeBtn.active{background:transparent;color:#071114}.modeIndicator{position:absolute;z-index:1;left:1px;top:1px;height:20px;width:calc((100% - 2px) / 2);background:#19d8e8;border-radius:7px;transform:translateX(0);transition:transform .26s cubic-bezier(.22,.61,.36,1);pointer-events:none}.counterGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.counterGrid.oneCol{grid-template-columns:1fr}.counterGrid.myJugglerTightRows{column-gap:10px}
-.counterGrid .bellSuikaUnified{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #303a48;border-radius:14px;overflow:hidden;background:#10151c;min-width:0}
-.counterGrid .bellSuikaUnified>.card{min-width:0;width:100%;box-sizing:border-box;margin:0;border:0!important;border-radius:0!important;background:transparent!important}
-.counterGrid .bellSuikaUnified>.card+.card{border-left:1px solid #303a48!important}
-.counterGrid .bellSuikaUnified>.card:active{background:#26303b!important}.counterGrid.firstOne .card:first-child{grid-column:1 / -1}.counterGrid.firstTwo .card:nth-child(-n+2){grid-column:1 / -1}.counterGrid.firstTwoFourThree{grid-template-columns:repeat(12,1fr)}.counterGrid.firstTwoFourThree .card:nth-child(-n+2){grid-column:1 / -1}.counterGrid.firstTwoFourThree .card:nth-child(n+3):nth-child(-n+6){grid-column:span 3}.counterGrid.firstTwoFourThree .card:nth-child(n+7){grid-column:span 4}.counterGrid.firstTwoFourThreeFiveOne{grid-template-columns:repeat(12,1fr)}.counterGrid.firstTwoFourThreeFiveOne .card:nth-child(-n+2){grid-column:1 / -1}.counterGrid.firstTwoFourThreeFiveOne .card:nth-child(n+3):nth-child(-n+6){grid-column:span 3}.counterGrid.firstTwoFourThreeFiveOne .card:nth-child(n+7):nth-child(-n+9){grid-column:span 4}.counterGrid.firstTwoFourThreeFiveOne .card:nth-child(10){grid-column:1 / -1}.counterGrid.firstTwoFourThreeFiveOne .card:nth-child(n+11){grid-column:1 / -1}.counterGrid.firstTwoFourThreeFiveOne .card{min-height:145px;padding:13px}
+.counterGrid .bellSuikaSingle{grid-column:1 / -1;cursor:pointer;touch-action:manipulation}.counterGrid.firstOne .card:first-child{grid-column:1 / -1}.counterGrid.firstTwo .card:nth-child(-n+2){grid-column:1 / -1}.counterGrid.firstTwoFourThree{grid-template-columns:repeat(12,1fr)}.counterGrid.firstTwoFourThree .card:nth-child(-n+2){grid-column:1 / -1}.counterGrid.firstTwoFourThree .card:nth-child(n+3):nth-child(-n+6){grid-column:span 3}.counterGrid.firstTwoFourThree .card:nth-child(n+7){grid-column:span 4}.counterGrid.firstTwoFourThreeFiveOne{grid-template-columns:repeat(12,1fr)}.counterGrid.firstTwoFourThreeFiveOne .card:nth-child(-n+2){grid-column:1 / -1}.counterGrid.firstTwoFourThreeFiveOne .card:nth-child(n+3):nth-child(-n+6){grid-column:span 3}.counterGrid.firstTwoFourThreeFiveOne .card:nth-child(n+7):nth-child(-n+9){grid-column:span 4}.counterGrid.firstTwoFourThreeFiveOne .card:nth-child(10){grid-column:1 / -1}.counterGrid.firstTwoFourThreeFiveOne .card:nth-child(n+11){grid-column:1 / -1}.counterGrid.firstTwoFourThreeFiveOne .card{min-height:145px;padding:13px}
 .counterGrid .card{margin-bottom:0;min-height:112px;padding:10px}.counterGrid .card.compactBonusCard{min-height:56px;height:56px;padding:4px 6px}.counterGrid .card.compactBonusCard .name{font-size:12px;line-height:1.05;margin:0}.counterGrid .card.compactBonusCard .countLine{font-size:18px;line-height:1;margin-top:1px}.counterGrid .card.compactBonusCard .rate{font-size:11px;line-height:1;margin-top:1px}.counterGrid.firstTwoFourThree .card.compactBonusCard,.counterGrid.firstTwoFourThreeFiveOne .card.compactBonusCard{grid-column:span 3!important}.counterGrid .card.compactBonusCard{width:100%;box-sizing:border-box}.layoutFiveRow{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;box-sizing:border-box}.layoutNumberBox{width:100%;height:76px;border:1px solid #303a48;border-radius:14px;background:#10151c;color:#fff;padding:10px 14px;font:inherit;font-size:24px;font-weight:800;text-align:center;box-sizing:border-box;outline:none}.layoutNumberBox:focus{outline:2px solid #2563eb}.layoutHistoryBtn{width:100%;height:76px;border:1px solid #303a48;border-radius:14px;background:#26303b;color:#fff;font:inherit;font-size:18px;font-weight:800;box-sizing:border-box}.layoutHistoryBtn:active{transform:scale(.99)}.layoutHistoryMain{font-size:18px;font-weight:900;letter-spacing:.3px;color:#fff}.layoutHistoryMain .historyPrize.big{color:#ef4444}.layoutHistoryMain .historyPrize.reg{color:#3b82f6}.memoBox{grid-column:1 / -1;width:100%;min-height:280px;border:1px solid #303a48;border-radius:14px;background:#10151c;color:#fff;padding:14px;font:inherit;font-size:16px;line-height:1.6;resize:vertical;outline:none;box-sizing:border-box}.memoBox:focus{outline:2px solid #2563eb}
 select{width:100%;height:30px;border-radius:10px;border:1px solid #303a48;background:#0d1218;color:#fff;padding:0 12px;font:inherit;font-weight:700}
 .gbox{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:stretch;padding:10px}
@@ -110,7 +107,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.315</span></footer>
+<footer><span>Ver. 1.1.316</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -237,19 +234,39 @@ const target=currentData().counters.find(x=>x.name===c.name);if(target){const wa
     }
     root.appendChild(card);
   });
-  // マイジャグラーのベル・スイカは一つの外枠にまとめ、個別カウントは維持する
-  if(state.selected.includes('マイジャグラー') && !rateSettingActive){
+  // ベル＋スイカを一つのカウンターとして操作（既存カウントは合算して表示）
+  if(state.selected.includes('マイジャグラー') && !rateSettingActive && !combined){
     const names=countersToRender.map(item=>String(item.name||'').trim());
-    const bellIndex=names.findIndex(name=>name==='ベル');
-    const suikaIndex=names.findIndex(name=>name==='スイカ');
-    if(bellIndex>=0 && suikaIndex>=0 && Math.abs(bellIndex-suikaIndex)===1){
+    const bellIndex=names.indexOf('ベル'),suikaIndex=names.indexOf('スイカ');
+    if(bellIndex>=0 && suikaIndex>=0){
       const cards=Array.from(root.children);
+      const bell=countersToRender[bellIndex],suika=countersToRender[suikaIndex];
+      const total=()=>Number(bell.count||0)+Number(suika.count||0);
+      const unified=document.createElement('section');
+      unified.className='card counter bellSuikaSingle';
+      unified.style.position='relative';
+      unified.innerHTML='<div class="name">ベル＋スイカ</div><div class="countLine"></div><div class="rate"></div>';
+      const update=()=>{unified.querySelector('.countLine').textContent=String(total());unified.querySelector('.rate').textContent=rate(total(),d,bell)};
+      update();
+      unified.addEventListener('pointerup',()=>{
+        if(inputMode){
+          const value=prompt('ベル＋スイカのカウントを入力',String(total()));
+          if(value===null)return;
+          const number=parseInt(value,10);
+          if(!Number.isFinite(number)||number<0)return;
+          bell.count=Math.max(0,number-Number(suika.count||0));
+          if(number<Number(suika.count||0)){suika.count=number;bell.count=0}
+        }else if(minusMode){
+          if(Number(bell.count||0)>0)bell.count--;
+          else if(Number(suika.count||0)>0)suika.count--;
+        }else bell.count=Number(bell.count||0)+1;
+        lastCountFeedback={name:'ベル＋スイカ',delta:minusMode?-1:1};
+        save();
+      });
       const first=Math.min(bellIndex,suikaIndex);
-      const group=document.createElement('div');
-      group.className='bellSuikaUnified';
-      root.insertBefore(group,cards[first]);
-      group.appendChild(cards[first]);
-      group.appendChild(cards[first+1]);
+      root.insertBefore(unified,cards[first]);
+      cards[bellIndex].remove();
+      cards[suikaIndex].remove();
     }
   }
   lastCountFeedback=null;
