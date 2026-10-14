@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.360</title>
+<title>小役カウンター v1.1.361</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -144,7 +144,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.360</span></footer>
+<footer><span>Ver. 1.1.361</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -267,6 +267,8 @@ function kabaneriPointAction(name){
   const data=currentData();
   if(name==='当選ポイント確認'){showKabaneriPointHistory();return true}
   if(name!=='無名当選'&&name!=='生駒当選')return false;
+  const character=name==='無名当選'?'無名':'生駒';
+  if(!window.confirm('ここまでのポイントをリセットし、カバネリチャンス'+character+'当選に加えてもよろしいですか？'))return true;
   const pair=name==='無名当選'?[0,1]:[2,3];
   const counts=pair.map(i=>Math.max(0,Number(data.counters[i]?.count)||0));
   if(!Array.isArray(data.pointHistory))data.pointHistory=[];
