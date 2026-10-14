@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.384</title>
+<title>小役カウンター v1.1.385</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -137,7 +137,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 .topGrid .gameLabel{font-size:10px;line-height:12px;margin:0}
 .topGrid .ginput{height:25px;min-height:25px;font-size:16px;padding:0 3px}
 .topGrid .buttonOnly .rateBtn,.topGrid .buttonOnly .judgeBtn{height:30px;margin-top:0}
-</style></head>
+</style><style>.kabaneriVoiceRow>.card{grid-column:span 4!important}.kabaneriVoiceBottomRow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}.kabaneriVoiceBottomRow>.card{min-width:0}</style></head>
 <body>
 <main>
 <section class="topCard compactCard machineTop">
@@ -160,7 +160,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.384</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.385</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -313,6 +313,7 @@ if(!state.machines[KABANERI_MACHINE]){
       changed=true;
     }
     const labels=['キャラ紹介男','キャラ紹介女','美馬','ボイス男','ボイス女'];
+    if(omikuji.counters.length<8){omikuji.counters.push({name:'カウント8',count:0});changed=true}
     const colors=['#174b9a','#a82e42',null,null,null];
     (omikuji.counters||[]).slice(0,5).forEach((counter,i)=>{
       if(counter.name==='カウント'+(i+1)){
@@ -733,7 +734,10 @@ const target=currentData().counters.includes(c)?c:currentData().counters[counter
       const voice=document.createElement('div');
       voice.className='kabaneriVoiceRow';
       cards.slice(0,3).forEach(el=>intro.appendChild(el));
-      cards.slice(3,7).forEach(el=>voice.appendChild(el));
+      cards.slice(3,6).forEach(el=>voice.appendChild(el));
+      const voiceBottom=document.createElement('div');
+      voiceBottom.className='kabaneriVoiceBottomRow';
+      cards.slice(6,8).forEach(el=>voiceBottom.appendChild(el));
       const voiceHeading=document.createElement('div');
       voiceHeading.className='kabaneriSectionHeading';
       const voiceTitle=document.createElement('div');
@@ -763,7 +767,7 @@ const target=currentData().counters.includes(c)?c:currentData().counters[counter
         document.body.appendChild(overlay);
       };
             voiceHeading.appendChild(voiceHelp);
-      root.prepend(heading,intro,voiceHeading,voice);
+      root.prepend(heading,intro,voiceHeading,voice,voiceBottom);
     }
   }
   lastCountFeedback=null;
