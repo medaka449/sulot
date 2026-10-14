@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.373</title>
+<title>小役カウンター v1.1.374</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -144,7 +144,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.373</span></footer>
+<footer><span>Ver. 1.1.374</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -458,6 +458,10 @@ function render(){
       const normalLabels=['15pt以上','1pt・不明','15pt以上','1pt・不明','発光','非発光'];
       normal.counters.slice(0,6).forEach((item,i)=>{
         if(item && item.name!==normalLabels[i]){item.name=normalLabels[i];changed=true}
+      });
+      // 発光・非発光・当選ポイント確認は水色で統一
+      [normal.counters[4],normal.counters[5],normal.counters.find(item=>item.name==='当選ポイント確認')].forEach(item=>{
+        if(item && item.color!=='#38bdf8'){item.color='#38bdf8';changed=true}
       });
       (normal.counters||[]).slice(0,4).forEach((counter,i)=>{
         const color=i<2?'#a82e42':'#258449';
