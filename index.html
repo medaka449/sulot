@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.334</title>
+<title>小役カウンター v1.1.335</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -87,6 +87,16 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
   body{width:375px;height:667px;min-height:667px;max-height:667px;overflow-y:auto;overflow-x:hidden;margin:0 auto;box-shadow:0 0 0 1px #27303c,0 12px 40px rgba(0,0,0,.35);}
 }
 </style>
+<style>
+.kabaneriGuideOverlay{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:12px}
+.kabaneriGuidePanel{display:flex;flex-direction:column;width:min(100%,720px);height:min(94dvh,950px);background:#141b25;color:#fff;border:1px solid #46556c;border-radius:14px;overflow:hidden}
+.kabaneriGuideHeader{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;font-size:15px}
+.kabaneriGuideClose{font-size:27px;color:#fff;background:#29384b;border:0;border-radius:8px;width:40px;height:40px;cursor:pointer}
+.kabaneriGuideScroll{min-height:0;flex:1;overflow-y:auto;overscroll-behavior:contain;background:white;color:#1f2937}
+.kabaneriGuideNote{margin:0;padding:8px 12px;font-size:12px;background:#fff6da;color:#473e22}
+.kabaneriGuideFrame{display:block;width:100%;height:100%;min-height:650px;border:0;background:#fff}
+.kabaneriGuideExternal{display:block;padding:12px;text-align:center;color:#c8e4ff;background:#24364c;text-decoration:underline}
+</style>
 </head>
 <body>
 <main>
@@ -107,7 +117,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.334</span></footer>
+<footer><span>Ver. 1.1.335</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -1261,8 +1271,20 @@ function syncEntryMode(){
  if(help){help.style.setProperty('display',!income && state.selected===KABANERI_MACHINE && displayMode!=='おみくじ・ボイス'?'flex':'none','important');}
 }
 document.getElementById('kabaneriHelp').onclick=()=>{
- const url='https://p-town.dmm.com/machines/4930#:~:text='+encodeURIComponent('カバネリボーナス中のキャラ紹介');
- window.open(url,'_blank','noopener,noreferrer');
+ const url='https://p-town.dmm.com/machines/4930#anc-point';
+ let overlay=document.getElementById('kabaneriGuideOverlay');
+ if(!overlay){
+   overlay=document.createElement('div');
+   overlay.id='kabaneriGuideOverlay';
+   overlay.className='kabaneriGuideOverlay';
+   overlay.innerHTML='<div class="kabaneriGuidePanel" role="dialog" aria-modal="true" aria-label="カバネリ キャラ紹介の説明"><div class="kabaneriGuideHeader"><strong>カバネリボーナス中のキャラ紹介</strong><button type="button" class="kabaneriGuideClose" aria-label="閉じる">×</button></div><div class="kabaneriGuideScroll"><p class="kabaneriGuideNote">DMMぱちタウンの解説ページを表示します。表示できない場合は下のリンクから開いてください。</p><iframe class="kabaneriGuideFrame" title="DMMぱちタウン カバネリボーナス中のキャラ紹介" loading="lazy" referrerpolicy="no-referrer"></iframe></div><a class="kabaneriGuideExternal" target="_blank" rel="noopener noreferrer">元の説明ページを開く ↗</a></div>';
+   document.body.appendChild(overlay);
+   overlay.querySelector('.kabaneriGuideClose').onclick=()=>{overlay.style.display='none';overlay.querySelector('iframe').src='about:blank'};
+   overlay.addEventListener('click',event=>{if(event.target===overlay)overlay.querySelector('.kabaneriGuideClose').click()});
+ }
+ overlay.querySelector('iframe').src=url;
+ overlay.querySelector('.kabaneriGuideExternal').href=url;
+ overlay.style.display='flex';
 };
 function incomeDraft(){const m=current();if(!m.incomeDraft)m.incomeDraft={date:new Date().toLocaleDateString('sv-SE'),investment:'',returned:'',note:''};return m.incomeDraft;}
 function renderIncome(){
