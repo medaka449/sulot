@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.318</title>
+<title>小役カウンター v1.1.319</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -107,7 +107,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.318</span></footer>
+<footer><span>Ver. 1.1.319</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -255,6 +255,14 @@ const target=currentData().counters.find(x=>x.name===c.name);if(target){const wa
       unified.innerHTML='<div class="name">ベル＋スイカ</div><div class="countLine"></div><div class="rate"></div>';
       const update=()=>{unified.querySelector('.countLine').textContent=String(total());unified.querySelector('.rate').textContent=rate(total(),d,bell)};
       update();
+      if(lastCountFeedback && lastCountFeedback.name==='ベル＋スイカ'){
+        unified.classList.add('countFeedback');
+        const badge=document.createElement('div');
+        badge.className='countFeedbackBadge';
+        badge.textContent=lastCountFeedback.delta===0?'入力':(lastCountFeedback.delta>0?'＋1':'−1');
+        unified.appendChild(badge);
+        setTimeout(()=>{if(badge.isConnected)badge.remove()},520);
+      }
       unified.addEventListener('pointerup',()=>{
         if(inputMode){
           const value=prompt('ベル＋スイカのカウントを入力',String(total()));
