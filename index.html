@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.335</title>
+<title>小役カウンター v1.1.336</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -97,7 +97,17 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 .kabaneriGuideFrame{display:block;width:100%;height:100%;min-height:650px;border:0;background:#fff}
 .kabaneriGuideExternal{display:block;padding:12px;text-align:center;color:#c8e4ff;background:#24364c;text-decoration:underline}
 </style>
-</head>
+<style>
+.kabaneriGuideLocal{padding:16px;overflow-y:auto;font-size:15px;line-height:1.7}
+.kabaneriGuideLocal h3{background:#101010;color:white;text-align:center;padding:11px 8px;margin:14px 0 0;font-size:17px}
+.kabaneriGuideLocal table{width:100%;border-collapse:collapse;text-align:center;font-weight:700;margin:0 0 28px;color:#111}
+.kabaneriGuideLocal th,.kabaneriGuideLocal td{border:1px solid #555;padding:8px 5px}
+.kabaneriGuideLocal th{background:#2221ee;color:white}
+.kabaneriGuideLocal th:first-child{background:#4b4b4b}
+.kabaneriGuideLocal tbody tr td:first-child:not(:only-child){background:#666;color:white}
+.kabaneriGuideLocal p{margin:14px 0}
+.kabaneriGuideLocal p strong{color:#e22}
+</style></head>
 <body>
 <main>
 <section class="topCard compactCard machineTop">
@@ -117,7 +127,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.335</span></footer>
+<footer><span>Ver. 1.1.336</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -1271,19 +1281,31 @@ function syncEntryMode(){
  if(help){help.style.setProperty('display',!income && state.selected===KABANERI_MACHINE && displayMode!=='おみくじ・ボイス'?'flex':'none','important');}
 }
 document.getElementById('kabaneriHelp').onclick=()=>{
- const url='https://p-town.dmm.com/machines/4930#anc-point';
  let overlay=document.getElementById('kabaneriGuideOverlay');
  if(!overlay){
    overlay=document.createElement('div');
    overlay.id='kabaneriGuideOverlay';
    overlay.className='kabaneriGuideOverlay';
-   overlay.innerHTML='<div class="kabaneriGuidePanel" role="dialog" aria-modal="true" aria-label="カバネリ キャラ紹介の説明"><div class="kabaneriGuideHeader"><strong>カバネリボーナス中のキャラ紹介</strong><button type="button" class="kabaneriGuideClose" aria-label="閉じる">×</button></div><div class="kabaneriGuideScroll"><p class="kabaneriGuideNote">DMMぱちタウンの解説ページを表示します。表示できない場合は下のリンクから開いてください。</p><iframe class="kabaneriGuideFrame" title="DMMぱちタウン カバネリボーナス中のキャラ紹介" loading="lazy" referrerpolicy="no-referrer"></iframe></div><a class="kabaneriGuideExternal" target="_blank" rel="noopener noreferrer">元の説明ページを開く ↗</a></div>';
+   overlay.innerHTML=`<div class="kabaneriGuidePanel" role="dialog" aria-modal="true" aria-label="カバネリ キャラ紹介の説明">
+   <div class="kabaneriGuideHeader"><strong>カバネリボーナス中のキャラ紹介</strong><button type="button" class="kabaneriGuideClose" aria-label="閉じる">×</button></div>
+   <div class="kabaneriGuideScroll kabaneriGuideLocal">
+   <h3>キャラごとの示唆</h3>
+   <table><thead><tr><th>キャラ</th><th>示唆</th></tr></thead><tbody>
+   <tr><td>女性（無名・菖蒲・鰍＆侑那）</td><td>偶数設定示唆</td></tr>
+   <tr><td>男性（生駒・来栖・景之）</td><td>設定3・5示唆</td></tr>
+   <tr><td>美馬</td><td>設定4以上濃厚</td></tr>
+   </tbody></table>
+   <h3>消化ゲーム数ごとの美馬出現率</h3>
+   <table><tbody><tr><td>5001～7000G間は20倍にアップ</td></tr><tr><td>7001～8000G間は100倍にアップ</td></tr></tbody></table>
+   <p>基本的に前作のカバネリと法則性は同じで、女性キャラが偶数設定、男性キャラは奇数設定（設定3・5）を示唆。今回は<strong>美馬が出現すれば設定4以上濃厚</strong>になる。</p>
+   <p>ST終了画面と同じく、設定4以上濃厚の美馬は消化ゲーム数によって出現率が変化するところもポイントだ。</p>
+   </div>
+   <a class="kabaneriGuideExternal" href="https://p-town.dmm.com/machines/4930#anc-point" target="_blank" rel="noopener noreferrer">元の説明ページを開く ↗</a>
+   </div>`;
    document.body.appendChild(overlay);
-   overlay.querySelector('.kabaneriGuideClose').onclick=()=>{overlay.style.display='none';overlay.querySelector('iframe').src='about:blank'};
+   overlay.querySelector('.kabaneriGuideClose').onclick=()=>{overlay.style.display='none'};
    overlay.addEventListener('click',event=>{if(event.target===overlay)overlay.querySelector('.kabaneriGuideClose').click()});
  }
- overlay.querySelector('iframe').src=url;
- overlay.querySelector('.kabaneriGuideExternal').href=url;
  overlay.style.display='flex';
 };
 function incomeDraft(){const m=current();if(!m.incomeDraft)m.incomeDraft={date:new Date().toLocaleDateString('sv-SE'),investment:'',returned:'',note:''};return m.incomeDraft;}
