@@ -663,7 +663,7 @@
           "startGames": 0,
           "counters": [
             {
-              "name": "カウント1",
+              "name": "15pt以上",
               "count": 0,
               "color": "#a82e42",
               "countMethod": "プッシュ",
@@ -684,7 +684,7 @@
               "alias": ""
             },
             {
-              "name": "カウント2",
+              "name": "1pt・不明",
               "count": 0,
               "color": "#a82e42",
               "countMethod": "プッシュ",
@@ -705,7 +705,7 @@
               "alias": ""
             },
             {
-              "name": "カウント3",
+              "name": "15pt以上",
               "count": 0,
               "color": "#258449",
               "countMethod": "プッシュ",
@@ -726,7 +726,7 @@
               "alias": ""
             },
             {
-              "name": "カウント4",
+              "name": "1pt・不明",
               "count": 0,
               "color": "#258449",
               "countMethod": "プッシュ",
@@ -747,7 +747,7 @@
               "alias": ""
             },
             {
-              "name": "カウント7",
+              "name": "発光",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
@@ -768,7 +768,7 @@
               "alias": ""
             },
             {
-              "name": "カウント8",
+              "name": "非発光",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
@@ -916,6 +916,48 @@
             },
             {
               "name": "カウント12",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "カウント7",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "カウント8",
               "count": 0,
               "color": "",
               "countMethod": "プッシュ",
