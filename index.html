@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.340</title>
+<title>小役カウンター v1.1.341</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -107,7 +107,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 .kabaneriGuideLocal tbody tr td:first-child:not(:only-child){background:#666;color:white}
 .kabaneriGuideLocal p{margin:14px 0}
 .kabaneriGuideLocal p strong{color:#e22}
-</style><style>.kabaneriGuideLocal .kabaneriRateTable{font-size:13px;table-layout:fixed}.kabaneriGuideLocal .kabaneriRateTable th,.kabaneriGuideLocal .kabaneriRateTable td{padding:6px 2px}.kabaneriGuideLocal .kabaneriRateTable th:not(:first-child){background:#ff8700;color:#fff}.kabaneriGuideLocal .kabaneriRateTable .rateBand th{background:#ff424b;color:#fff;font-size:14px}.kabaneriGuideLocal .kabaneriRateTable td:first-child{background:#6a6a6a;color:#fff;width:16%}</style><style>.kabaneriImageScroll{overflow-y:auto;overflow-x:hidden;background:#fff;overscroll-behavior:contain}.kabaneriCharacterImage{display:block;width:100%;height:auto;max-width:748px;margin:0 auto}.kabaneriImageFallback{padding:24px;text-align:center;color:#333}</style></head>
+</style><style>.kabaneriGuideLocal .kabaneriRateTable{font-size:13px;table-layout:fixed}.kabaneriGuideLocal .kabaneriRateTable th,.kabaneriGuideLocal .kabaneriRateTable td{padding:6px 2px}.kabaneriGuideLocal .kabaneriRateTable th:not(:first-child){background:#ff8700;color:#fff}.kabaneriGuideLocal .kabaneriRateTable .rateBand th{background:#ff424b;color:#fff;font-size:14px}.kabaneriGuideLocal .kabaneriRateTable td:first-child{background:#6a6a6a;color:#fff;width:16%}</style><style>.kabaneriImageScroll{overflow-y:auto;overflow-x:hidden;background:#fff;overscroll-behavior:contain}.kabaneriCharacterImage{display:block;width:100%;height:auto;max-width:748px;margin:0 auto}.kabaneriImageFallback{padding:24px;text-align:center;color:#333}</style><style>.counterGrid.kabaneriFortuneGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.kabaneriFortuneGrid .counter{min-width:0}.kabaneriFortuneGrid .counter .name{overflow-wrap:anywhere}</style></head>
 <body>
 <main>
 <section class="topCard compactCard machineTop">
@@ -127,7 +127,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 
 
 <div class="machineTools"><button class="headerBtn" id="addMachine" style="display:none" aria-hidden="true">＋ 機種を追加</button></div>
-<footer><span>Ver. 1.1.340</span></footer>
+<footer><span>Ver. 1.1.341</span></footer>
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
 <section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div></section>
@@ -188,11 +188,17 @@ if(!state.machines[KABANERI_MACHINE]){
     changed=true;
   }
   if(!machine.modes['おみくじ']){
-    machine.modes['おみくじ']={...blankData(),counters:Array.from({length:6},(_,i)=>({name:'おみくじ'+(i+1),count:0})),layout:'2'};
+    machine.modes['おみくじ']={...blankData(),counters:Array.from({length:9},(_,i)=>({name:'おみくじ'+(i+1),count:0})),layout:'2'};
     changed=true;
   }
   machine.modeOrder=(machine.modeOrder||Object.keys(machine.modes)).filter(x=>machine.modes[x]);
   if(!machine.modeOrder.includes('おみくじ')){machine.modeOrder.push('おみくじ');changed=true}
+  const fortune=machine.modes?.['おみくじ'];
+  if(fortune){
+    fortune.counters=fortune.counters||[];
+    while(fortune.counters.length<9){fortune.counters.push({name:'おみくじ'+(fortune.counters.length+1),count:0});changed=true}
+    if(fortune.layout!=='2'){fortune.layout='2';changed=true}
+  }
   const omikuji=machine.modes?.['キャラ紹介・ボイス'];
   if(omikuji){
     const old=omikuji.counters||[];
@@ -308,7 +314,7 @@ function render(){
       if(JSON.stringify(unique)!==JSON.stringify(machine.modeOrder)){machine.modeOrder=unique;changed=true}
       if(displayMode==='合成'){displayMode='キャラ紹介・ボイス';changed=true}
       if(!machine.modes['おみくじ']){
-        machine.modes['おみくじ']={...blankData(),counters:Array.from({length:6},(_,i)=>({name:'おみくじ'+(i+1),count:0})),layout:'2'};
+        machine.modes['おみくじ']={...blankData(),counters:Array.from({length:9},(_,i)=>({name:'おみくじ'+(i+1),count:0})),layout:'2'};
         machine.modeOrder.push('おみくじ');
         changed=true;
       }
@@ -343,7 +349,7 @@ function render(){
   if(entryMode==='income'){renderIncome();return;}
   const d=displayData();
   document.getElementById("gamesInput").value=d.games;document.getElementById("startGamesInput").value=d.startGames||0;
-  const root=document.getElementById("counters");root.className='counterGrid '+(d.layout==='first2four3five1'?'firstTwoFourThreeFiveOne':d.layout==='first2four3'?'firstTwoFourThree':'');if(state.selected.includes('マイジャグラー'))root.classList.add('myJugglerTightRows');if(state.selected===KABANERI_MACHINE && displayMode==='キャラ紹介・ボイス' && !combined)root.classList.add('kabaneriOmikuji');root.innerHTML="";
+  const root=document.getElementById("counters");root.className='counterGrid '+(d.layout==='first2four3five1'?'firstTwoFourThreeFiveOne':d.layout==='first2four3'?'firstTwoFourThree':'');if(state.selected.includes('マイジャグラー'))root.classList.add('myJugglerTightRows');if(state.selected===KABANERI_MACHINE && displayMode==='キャラ紹介・ボイス' && !combined)root.classList.add('kabaneriOmikuji');if(state.selected===KABANERI_MACHINE && displayMode==='おみくじ' && !combined)root.classList.add('kabaneriFortuneGrid');root.innerHTML="";
   if(d.layout==='memo'){const memo=document.createElement('textarea');memo.className='memoBox';memo.placeholder='ここに自由にメモを書けます';memo.value=d.memo;memo.addEventListener('input',()=>{d.memo=memo.value;localStorage.setItem(KEY,JSON.stringify(state))});root.appendChild(memo);return}
   // マイジャグラー: チェリーの下にボーナス4種類を常設
   if(state.selected.includes('マイジャグラー') && !combined && d.layout!=='memo'){
