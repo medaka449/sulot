@@ -1880,11 +1880,358 @@
           "layoutNumber": "",
           "layoutNumberHistory": [],
           "bioFigureInitialized": true
+        },
+        "CZ": {
+          "games": 0,
+          "startGames": 0,
+          "counters": [
+            {
+              "name": "通常",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "AT",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "上位",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            }
+          ],
+          "layout": "2",
+          "memo": "",
+          "layoutNumber": "",
+          "layoutNumberHistory": [],
+          "bioCzTableInitialized": true,
+          "czEntries": [
+            {
+              "通常": "",
+              "AT": "",
+              "上位": ""
+            },
+            {
+              "通常": "",
+              "AT": "",
+              "上位": ""
+            },
+            {
+              "通常": "",
+              "AT": "",
+              "上位": ""
+            }
+          ]
         }
       },
       "modeOrder": [
         "通常",
-        "フィギュア"
+        "フィギュア",
+        "CZ"
+      ],
+      "settingLevels": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    "S新鬼武者2": {
+      "modes": {
+        "通常": {
+          "games": 0,
+          "startGames": 0,
+          "counters": [
+            {
+              "name": "ベル",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "スイカ",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "チェリー",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            }
+          ],
+          "layout": "2",
+          "memo": "",
+          "layoutNumber": "",
+          "layoutNumberHistory": []
+        },
+        "合成": {
+          "games": 0,
+          "startGames": 0,
+          "counters": [
+            {
+              "name": "ベル",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "スイカ",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "チェリー",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            }
+          ],
+          "layout": "2",
+          "memo": "",
+          "layoutNumber": "",
+          "layoutNumberHistory": []
+        },
+        "CZテーブル": {
+          "games": 0,
+          "startGames": 0,
+          "counters": [
+            {
+              "name": "ベル",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "スイカ",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "チェリー",
+              "count": 0,
+              "color": "",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            }
+          ],
+          "layout": "2",
+          "memo": "",
+          "layoutNumber": "",
+          "layoutNumberHistory": [],
+          "czTablePicks": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "oniCzRecords": [
+            {
+              "icon": "",
+              "bonus": false
+            }
+          ]
+        }
+      },
+      "modeOrder": [
+        "通常",
+        "合成",
+        "CZテーブル"
       ],
       "settingLevels": [
         1,
