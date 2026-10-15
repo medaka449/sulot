@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.401</title>
+<title>小役カウンター v1.1.402</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -156,7 +156,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 .oniCzRecord select{min-width:0;width:100%;height:38px;background:#151b23;color:#fff;border:1px solid #465367;border-radius:7px;font-size:13px}
 .oniCzRecord button{min-width:0;height:38px;padding:0 2px;border-radius:7px;background:#343d49;color:#fff;font-size:11px;font-weight:700;white-space:nowrap}
 .oniCzRecord .oniBonusActive{background:#19d8e8;color:#071114}
-</style></head>
+</style><style>.oniCzRecord{grid-template-columns:43px minmax(0,1fr) 43px 90px 43px}.oniCzRecord select{font-size:12px;letter-spacing:-.4px}</style></head>
 <body>
 <main>
 <section class="topCard compactCard machineTop">
@@ -179,7 +179,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.401</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.402</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -624,29 +624,8 @@ function render(){
   const root=document.getElementById("counters");root.className='counterGrid '+(d.layout==='first2four3five1'?'firstTwoFourThreeFiveOne':d.layout==='first2four3'?'firstTwoFourThree':'');if(state.selected.includes('マイジャグラー'))root.classList.add('myJugglerTightRows');if([KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected) && displayMode==='通常' && !combined)root.classList.add('kabaneriNormalExtra');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='通常' && !combined)root.classList.add('bioRe3Grid');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='CZ' && !combined)root.classList.add('bioRe3CzTable');if(state.selected===KABANERI_MACHINE && displayMode==='キャラ紹介・ボイス' && !combined)root.classList.add('kabaneriOmikuji');if(state.selected===KABANERI_MACHINE && displayMode==='おみくじ' && !combined)root.classList.add('kabaneriFortuneGrid');root.innerHTML="";
   if(state.selected===ONIMUSHA2_MACHINE && displayMode==='CZテーブル' && !combined){
     root.className='oniCzTableWrap';
-    const picks=Array.isArray(d.czTablePicks)?d.czTablePicks:(d.czTablePicks=Array(11).fill(''));
-    const labels=['期待','好機','熱','蒼剣','＋G','祝'];
-    const colors={'期待':'#ffd844','好機':'#ff4444','熱':'#e700e7','蒼剣':'#ffcf00','＋G':'#ffe100','祝':'#9233b9'};
-    const title=document.createElement('div');title.className='oniCzTitle';title.textContent='CZテーブル（アイコン選択）';root.appendChild(title);
-    const scroll=document.createElement('div');scroll.className='oniCzScroll';
-    const table=document.createElement('table');table.className='oniCzTable';
-    const thead=document.createElement('thead');const hr=document.createElement('tr');
-    ['テーブル',...Array.from({length:10},(_,i)=>String(i+1))].forEach(v=>{const th=document.createElement('th');th.textContent=v;hr.appendChild(th)});
-    thead.appendChild(hr);table.appendChild(thead);
-    const tbody=document.createElement('tbody');
-    const pattern=[["🟦","🟦","🟦","🟨","🟨","🟩","🟩","🟥","🟥","🟪"],["🟦","🟦","🟨","🟨","🟩","🟩","🟩","🟥","🟥","🟪"],["🟦","🟨","🟨","🟩","🟩","🟩","🟥","🟥","🟪","🟪"],["🟨","🟨","🟩","🟩","🟩","🟥","🟥","🟥","🟪","🟪"],["🟨","🟩","🟩","🟩","🟥","🟥","🟥","🟪","🟪","🟪"],["🟩","🟩","🟩","🟥","🟥","🟥","🟪","🟪","🟪","🟨"],["🟩","🟩","🟥","🟥","🟥","🟪","🟪","🟪","🟨","🟨"],["🟥","🟥","🟥","🟪","🟪","🟪","🟨","🟨","🟨","🟨"],["🟪","🟪","🟪","🟨","🟨","🟨","🟨","🟨","🟨","🟨"],["🟨","🟨","🟨","🟨","🟨","🟨","🟨","🟨","🟨","🟨"]];
-    pattern.forEach((row,i)=>{
-      const tr=document.createElement('tr');
-      const th=document.createElement('th');th.textContent=String(i+1);tr.appendChild(th);
-      row.forEach(value=>{
-        const td=document.createElement('td');td.textContent=value;
-        td.style.background='#161c23';td.style.fontSize='17px';td.style.padding='5px 0';
-        tr.appendChild(td);
-      });
-      tbody.appendChild(tr);
-    });
-    table.appendChild(tbody);scroll.appendChild(table);root.appendChild(scroll);
-    const hint=document.createElement('div');hint.className='oniCzHint';hint.textContent='CZアイコンを選んで「追加」で次の回数を記録';root.appendChild(hint);
+    const patterns=["🟦🟦🟦🟨🟨🟩🟩🟥🟥🟪","🟦🟦🟨🟨🟩🟩🟩🟥🟥🟪","🟦🟨🟨🟩🟩🟩🟥🟥🟪🟪","🟨🟨🟩🟩🟩🟥🟥🟥🟪🟪","🟨🟩🟩🟩🟥🟥🟥🟪🟪🟪","🟩🟩🟩🟥🟥🟥🟪🟪🟪🟨","🟩🟩🟥🟥🟥🟪🟪🟪🟨🟨","🟥🟥🟥🟪🟪🟪🟨🟨🟨🟨","🟪🟪🟪🟨🟨🟨🟨🟨🟨🟨","🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨"];
+    const hint=document.createElement('div');hint.className='oniCzHint';hint.textContent='プルダウンからCZテーブル（1～10）を選択';root.appendChild(hint);
     if(!Array.isArray(d.oniCzRecords)){
       const previous=Array.isArray(d.czTablePicks)?d.czTablePicks:[];
       const last=previous.reduce((n,v,i)=>v?i+1:n,0);
@@ -659,8 +638,9 @@ function render(){
       const row=document.createElement('div');row.className='oniCzRecord';
       const caption=document.createElement('span');caption.className='oniCzRecordLabel';caption.textContent=(i+1)+'回目';row.appendChild(caption);
       const select=document.createElement('select');select.setAttribute('aria-label',(i+1)+'回目のアイコン');
-      ['',...labels].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v||'未選択';select.appendChild(o)});
-      select.value=labels.includes(entry.icon)?entry.icon:'';
+      const empty=document.createElement('option');empty.value='';empty.textContent='未選択';select.appendChild(empty);
+      patterns.forEach((pattern,index)=>{const option=document.createElement('option');option.value=String(index+1);option.textContent=(index+1)+' '+pattern;select.appendChild(option)});
+      select.value=patterns[Number(entry.icon)-1]?String(entry.icon):'';
       select.onchange=()=>{entry.icon=select.value;localStorage.setItem(KEY,JSON.stringify(state))};
       row.appendChild(select);
       const add=document.createElement('button');add.type='button';add.textContent='追加';
