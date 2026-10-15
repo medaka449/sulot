@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.394</title>
+<title>小役カウンター v1.1.395</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -147,6 +147,10 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 .bioCzEntryTable select{width:100%;min-width:0;height:40px;padding:0 3px;border:1px solid #374151;border-radius:9px;background:#151b23;color:#fff;font-size:15px;text-align:center}
 .bioCzTableTools{display:flex;gap:8px;margin:8px 4px}
 .bioCzTableTools button{flex:1;min-height:38px;border-radius:9px;background:#343d49;color:#fff;font-weight:700}
+</style><style>
+.modeSwitch>.modeBtn{min-width:0;min-height:32px;height:auto;padding:6px 2px;line-height:1.2;white-space:normal;overflow-wrap:anywhere;cursor:pointer;touch-action:manipulation}
+.modeSwitch>.modeBtn.active{background:#19d8e8!important;color:#071114!important}
+.modeSwitch>.modeIndicator{display:none!important}
 </style></head>
 <body>
 <main>
@@ -170,7 +174,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.394</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.395</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -474,7 +478,33 @@ function rate(n,data,counter){
   const ratio=denominator/count;
   return counter?.displayFormat==='percent'?`${(100/ratio).toFixed(2)}%`:`1/${ratio >= 100 ? ratio.toFixed(1) : ratio.toFixed(2)}`;
 }
-function renderModeSwitch(){cleanBioRe3Modes();const sw=document.querySelector('.modeSwitch');const prevIndex=Number.isFinite(Number(sw.dataset.activeIndex))?Number(sw.dataset.activeIndex):-1;sw.innerHTML='';const machine=current();const modes=(machine.modeOrder||Object.keys(machine.modes||{})).filter(x=>machine.modes[x]);const n=Math.max(1,modes.length);const activeIndex=Math.max(0,modes.indexOf(displayMode));sw.style.gridTemplateColumns=`repeat(${n},1fr)`;const indicator=document.createElement('span');indicator.className='modeIndicator';indicator.style.width=`calc((100% - 2px) / ${n})`;const startIndex=prevIndex<0?activeIndex:Math.min(prevIndex,n-1);indicator.style.transform=`translateX(${startIndex*100}%)`;sw.appendChild(indicator);modes.forEach(mode=>{const b=document.createElement('button');b.className='modeBtn'+(displayMode===mode?' active':'');b.textContent=mode;b.onclick=()=>setDisplayMode(mode);sw.appendChild(b)});sw.dataset.activeIndex=String(activeIndex);requestAnimationFrame(()=>{indicator.style.transform=`translateX(${activeIndex*100}%)`;});}
+function renderModeSwitch(){
+  cleanBioRe3Modes();
+  const sw=document.querySelector('.modeSwitch');
+  if(!sw)return;
+  const machine=current();
+  if(!machine?.modes)return;
+  const modes=(machine.modeOrder||Object.keys(machine.modes)).filter(name=>machine.modes[name] && !(state.selected===BIOHAZARD_RE3_MACHINE && name==='AT中のCZ'));
+  if(!modes.includes(displayMode))displayMode=modes[0]||'通常';
+  sw.replaceChildren();
+  sw.style.gridTemplateColumns='repeat('+Math.max(1,modes.length)+',minmax(0,1fr))';
+  // 背景インジケーターを使わず、選択したボタン自体を強調する。
+  modes.forEach(mode=>{
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='modeBtn'+(displayMode===mode?' active':'');
+    button.textContent=mode;
+    button.dataset.mode=mode;
+    button.addEventListener('click',event=>{
+      event.preventDefault();
+      if(!current()?.modes?.[mode])return;
+      displayMode=mode;
+      combined=false;
+      render();
+    });
+    sw.appendChild(button);
+  });
+}
 function renderMachineSelect(){const s=document.getElementById("machine");s.innerHTML="";Object.keys(state.machines).forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent=n;o.selected=n===state.selected;s.appendChild(o)});s.disabled=true;s.setAttribute("aria-disabled","true")}
 let lastCountFeedback=null;
 function render(){
