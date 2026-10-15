@@ -2068,7 +2068,13 @@
               "color": "🟨"
             },
             {
-              "icon": "2",
+              "icon": "6",
+              "bonus": false,
+              "color": "🟧"
+            },
+            {
+              "icon": "",
+              "color": "",
               "bonus": false
             }
           ]
