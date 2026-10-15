@@ -242,9 +242,22 @@ if(!state.machines[ONIMUSHA2_MACHINE]){
 }
 {
  const m=state.machines[ONIMUSHA2_MACHINE];
- if(!m.modes['CZテーブル']){m.modes['CZテーブル']={...blankData(),czTablePicks:Array(11).fill('')};m.modeOrder.push('CZテーブル');localStorage.setItem(KEY,JSON.stringify(state))}
- if(!Array.isArray(m.modes['CZテーブル'].czTablePicks))m.modes['CZテーブル'].czTablePicks=Array(11).fill('');
+ // 旧AT1回目（CZテーブル）の記録を通常モードに引き継ぐ。
+ if(m.modes['CZテーブル']){
+   const old=m.modes['CZテーブル'];
+   const normal=m.modes['通常']||(m.modes['通常']=blankData());
+   if(Array.isArray(old.oniCzRecords) && (!Array.isArray(normal.oniCzRecords)||!normal.oniCzRecords.length)){
+     normal.oniCzRecords=old.oniCzRecords;
+   }
+   if(Array.isArray(old.czTablePicks) && !Array.isArray(normal.czTablePicks)){
+     normal.czTablePicks=old.czTablePicks;
+   }
+   delete m.modes['CZテーブル'];
+   m.modeOrder=(m.modeOrder||[]).filter(mode=>mode!=='CZテーブル');
+   localStorage.setItem(KEY,JSON.stringify(state));
+ }
 }
+
 const BIOHAZARD_RE3_MACHINE='スマスロ バイオハザードRE:3';
 if(!state.machines[BIOHAZARD_RE3_MACHINE])state.machines[BIOHAZARD_RE3_MACHINE]=blankMachine();
 {
@@ -510,7 +523,7 @@ function rate(n,data,counter){
   const ratio=denominator/count;
   return counter?.displayFormat==='percent'?`${(100/ratio).toFixed(2)}%`:`1/${ratio >= 100 ? ratio.toFixed(1) : ratio.toFixed(2)}`;
 }
-function renderModeSwitch(){const sw=document.querySelector('.modeSwitch');const prevIndex=Number.isFinite(Number(sw.dataset.activeIndex))?Number(sw.dataset.activeIndex):-1;sw.innerHTML='';const machine=current();const modes=(machine.modeOrder||Object.keys(machine.modes||{})).filter(x=>machine.modes[x]);const n=Math.max(1,modes.length);const activeIndex=Math.max(0,modes.indexOf(displayMode));sw.style.gridTemplateColumns=`repeat(${n},1fr)`;const indicator=document.createElement('span');indicator.className='modeIndicator';indicator.style.width=`calc((100% - 2px) / ${n})`;const startIndex=prevIndex<0?activeIndex:Math.min(prevIndex,n-1);indicator.style.transform=`translateX(${startIndex*100}%)`;sw.appendChild(indicator);modes.forEach(mode=>{const b=document.createElement('button');b.className='modeBtn'+(displayMode===mode?' active':'');b.textContent=(state.selected===ONIMUSHA2_MACHINE && mode==='CZテーブル')?'AT1回目':mode;b.onclick=()=>setDisplayMode(mode);sw.appendChild(b)});sw.dataset.activeIndex=String(activeIndex);requestAnimationFrame(()=>{indicator.style.transform=`translateX(${activeIndex*100}%)`;});}
+function renderModeSwitch(){const sw=document.querySelector('.modeSwitch');const prevIndex=Number.isFinite(Number(sw.dataset.activeIndex))?Number(sw.dataset.activeIndex):-1;sw.innerHTML='';const machine=current();const modes=(machine.modeOrder||Object.keys(machine.modes||{})).filter(x=>machine.modes[x]);const n=Math.max(1,modes.length);const activeIndex=Math.max(0,modes.indexOf(displayMode));sw.style.gridTemplateColumns=`repeat(${n},1fr)`;const indicator=document.createElement('span');indicator.className='modeIndicator';indicator.style.width=`calc((100% - 2px) / ${n})`;const startIndex=prevIndex<0?activeIndex:Math.min(prevIndex,n-1);indicator.style.transform=`translateX(${startIndex*100}%)`;sw.appendChild(indicator);modes.forEach(mode=>{const b=document.createElement('button');b.className='modeBtn'+(displayMode===mode?' active':'');b.textContent=mode;b.onclick=()=>setDisplayMode(mode);sw.appendChild(b)});sw.dataset.activeIndex=String(activeIndex);requestAnimationFrame(()=>{indicator.style.transform=`translateX(${activeIndex*100}%)`;});}
 function renderMachineSelect(){const s=document.getElementById("machine");s.innerHTML="";Object.keys(state.machines).forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent=n;o.selected=n===state.selected;s.appendChild(o)});s.disabled=true;s.setAttribute("aria-disabled","true")}
 let lastCountFeedback=null;
 function render(){
@@ -631,7 +644,7 @@ function render(){
   const d=displayData();
   document.getElementById("gamesInput").value=d.games;document.getElementById("startGamesInput").value=d.startGames||0;
   const root=document.getElementById("counters");root.className='counterGrid '+(d.layout==='first2four3five1'?'firstTwoFourThreeFiveOne':d.layout==='first2four3'?'firstTwoFourThree':'');if(state.selected.includes('マイジャグラー'))root.classList.add('myJugglerTightRows');if([KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected) && displayMode==='通常' && !combined)root.classList.add('kabaneriNormalExtra');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='通常' && !combined)root.classList.add('bioRe3Grid');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='CZ' && !combined)root.classList.add('bioRe3CzTable');if(state.selected===KABANERI_MACHINE && displayMode==='キャラ紹介・ボイス' && !combined)root.classList.add('kabaneriOmikuji');if(state.selected===KABANERI_MACHINE && displayMode==='おみくじ' && !combined)root.classList.add('kabaneriFortuneGrid');root.innerHTML="";
-  if(state.selected===ONIMUSHA2_MACHINE && displayMode==='CZテーブル' && !combined){
+  if(state.selected===ONIMUSHA2_MACHINE && displayMode==='通常' && !combined){
     root.className='oniCzTableWrap';
     const patterns=["🟦🟦🟦🟨🟨🟩🟩🟥🟥🟪","🟦🟦🟨🟨🟩🟩🟩🟥🟥🟪","🟦🟨🟨🟩🟩🟩🟥🟥🟪🟪","🟨🟨🟩🟩🟩🟥🟥🟥🟪🟪","🟨🟩🟩🟩🟥🟥🟥🟪🟪🟪","🟩🟩🟩🟥🟥🟥🟪🟪🟪🟧","🟩🟩🟥🟥🟥🟪🟪🟪🟧🟧","🟥🟥🟥🟪🟪🟪🟧🟧🟧🟧","🟪🟪🟪🟧🟧🟧🟧🟧🟧🟧","🟧🟧🟧🟧🟧🟧🟧🟧🟧🟧"];
     const hint=document.createElement('div');hint.className='oniCzHint';hint.textContent='AT1回目';root.appendChild(hint);
