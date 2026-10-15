@@ -161,6 +161,8 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 .oniCzRecord .oniCzPickerTrigger{width:100%;text-align:left;overflow:hidden;white-space:nowrap;font-size:10px;letter-spacing:-.65px;padding:0 3px;background:#151b23;border:1px solid #465367}
 .oniCzPickerMenu{position:absolute;z-index:200;top:100%;left:0;width:max-content;max-width:calc(100vw - 35px);max-height:300px;overflow-y:auto;background:#151b23;border:1px solid #465367;border-radius:8px;box-shadow:0 6px 20px #000a}
 .oniCzPickerMenu[hidden]{display:none}
+.oniCzPickerMenu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;width:min(310px,calc(100vw - 35px));max-height:none;overflow:visible;padding:4px}
+.oniCzRecord .oniCzPickerOption{display:flex;align-items:center;justify-content:center;width:100%;height:32px;padding:2px 3px;font-size:10px;letter-spacing:-.6px;border:1px solid #ffffff1a;border-radius:5px;white-space:nowrap}
 .oniCzRecord .oniCzPickerOption{display:block;width:100%;height:31px;text-align:left;padding:3px 8px;font-size:10px;letter-spacing:-.5px;border-radius:0;background:transparent;border-bottom:1px solid #ffffff1a}
 </style><style>
 .oniCzRecord{grid-template-columns:43px minmax(0,1fr) 39px 43px 90px 43px!important}
@@ -675,7 +677,7 @@ function render(){
         menu.hidden=!menu.hidden;
         trigger.setAttribute('aria-expanded',String(!menu.hidden));
       };
-      ['',...patterns.map((_,index)=>String(index+1))].forEach(value=>{
+      patterns.map((_,index)=>String(index+1)).forEach(value=>{
         const option=document.createElement('button');option.type='button';option.className='oniCzPickerOption';
         option.textContent=value?(value+' '+Array.from(patterns[Number(value)-1]).slice(0,4).join('')):'未選択';
         option.onclick=()=>{entry.icon=value;localStorage.setItem(KEY,JSON.stringify(state));trigger.textContent=option.textContent+' ▼';close()};
