@@ -644,6 +644,7 @@ function render(){
     if(!d.oniCzRecords.length)d.oniCzRecords.push({icon:'',bonus:false});
     const picksGrid=document.createElement('div');picksGrid.className='oniCzPicks';
     let round=0;
+    let atRound=1;
     d.oniCzRecords.forEach((entry,i)=>{
       round++;
       const row=document.createElement('div');row.className='oniCzRecord';
@@ -706,6 +707,13 @@ function render(){
         separator.className='oniCzBonusSeparator';
         separator.textContent='--ボーナス当選--';
         picksGrid.appendChild(separator);
+        if(i<d.oniCzRecords.length-1){
+          atRound++;
+          const atHeading=document.createElement('div');
+          atHeading.className='oniCzHint';
+          atHeading.textContent='AT'+atRound+'回目';
+          picksGrid.appendChild(atHeading);
+        }
         round=0;
       }
     });
