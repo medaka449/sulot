@@ -2235,6 +2235,10 @@
               "icon": "",
               "color": "",
               "bonus": false
+            },
+            {
+              "icon": "",
+              "bonus": false
             }
           ]
         }
