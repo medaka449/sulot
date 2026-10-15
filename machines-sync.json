@@ -2235,20 +2235,6 @@
               "icon": "1",
               "color": "🟨",
               "bonus": false
-            },
-            {
-              "icon": "3",
-              "bonus": true,
-              "color": "🟥"
-            },
-            {
-              "icon": "1",
-              "color": "🟩",
-              "bonus": false
-            },
-            {
-              "icon": "",
-              "bonus": false
             }
           ]
         }
