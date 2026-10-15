@@ -2228,8 +2228,13 @@
             },
             {
               "icon": "5",
-              "bonus": false,
+              "bonus": true,
               "color": "🟥"
+            },
+            {
+              "icon": "",
+              "color": "",
+              "bonus": false
             }
           ]
         }
