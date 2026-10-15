@@ -2060,7 +2060,13 @@
           "layout": "2",
           "memo": "",
           "layoutNumber": "",
-          "layoutNumberHistory": []
+          "layoutNumberHistory": [],
+          "oniCzRecords": [
+            {
+              "icon": "",
+              "bonus": false
+            }
+          ]
         },
         "合成": {
           "games": 0,
