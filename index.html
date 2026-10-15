@@ -657,6 +657,18 @@ function render(){
       localStorage.setItem(KEY,JSON.stringify(state));
     }
     if(!d.oniCzRecords.length)d.oniCzRecords.push({icon:'',bonus:false});
+    // リストの外側をタップ・クリックしたら選択をキャンセルして閉じる。
+    if(!document._oniCzOutsideClose){
+      document._oniCzOutsideClose=true;
+      document.addEventListener('pointerdown',event=>{
+        if(event.target.closest('.oniCzCustomPicker'))return;
+        document.querySelectorAll('.oniCzPickerMenu:not([hidden])').forEach(openMenu=>{
+          openMenu.hidden=true;
+          const btn=openMenu.parentElement.querySelector('.oniCzPickerTrigger');
+          if(btn)btn.setAttribute('aria-expanded','false');
+        });
+      });
+    }
     const picksGrid=document.createElement('div');picksGrid.className='oniCzPicks';
     let round=0;
     let atRound=1;
@@ -670,6 +682,8 @@ function render(){
       trigger.textContent=patterns[chosen-1]?(chosen+' '+Array.from(patterns[chosen-1]).slice(0,4).join('')):'未選択 ▼';
       trigger.setAttribute('aria-label',(i+1)+'回目のCZテーブル');
       trigger.setAttribute('aria-expanded','false');
+      // 過去の行は記録表示のみ。最新の行だけ選択可能。
+      trigger.disabled=i!==d.oniCzRecords.length-1;
       const menu=document.createElement('div');menu.className='oniCzPickerMenu';menu.hidden=true;
       const close=()=>{menu.hidden=true;trigger.setAttribute('aria-expanded','false')};
       trigger.onclick=()=>{
