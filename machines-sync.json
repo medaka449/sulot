@@ -1303,9 +1303,9 @@
           "startGames": 0,
           "counters": [
             {
-              "name": "ベル",
+              "name": "15pt以上",
               "count": 0,
-              "color": "",
+              "color": "#a82e42",
               "countMethod": "プッシュ",
               "countFormula": "",
               "gameFormula": "",
@@ -1324,9 +1324,9 @@
               "alias": ""
             },
             {
-              "name": "スイカ",
+              "name": "1pt・不明",
               "count": 0,
-              "color": "",
+              "color": "#a82e42",
               "countMethod": "プッシュ",
               "countFormula": "",
               "gameFormula": "",
@@ -1345,9 +1345,156 @@
               "alias": ""
             },
             {
-              "name": "チェリー",
+              "name": "15pt以上",
               "count": 0,
-              "color": "",
+              "color": "#258449",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "1pt・不明",
+              "count": 0,
+              "color": "#258449",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "1/121.1",
+                "1/114.4",
+                "1/112.8",
+                "1/106.2",
+                "1/104.2",
+                "1/99.1"
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "発光",
+              "count": 0,
+              "color": "#38bdf8",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "非発光",
+              "count": 0,
+              "color": "#38bdf8",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "下段ベル",
+              "count": 0,
+              "color": "#eab308",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "1/121.1",
+                "1/114.4",
+                "1/112.8",
+                "1/106.2",
+                "1/104.2",
+                "1/99.1"
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "無名当選",
+              "count": 0,
+              "color": "#a82e42",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "生駒当選",
+              "count": 0,
+              "color": "#258449",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "当選ポイント確認",
+              "count": 0,
+              "color": "#38bdf8",
               "countMethod": "プッシュ",
               "countFormula": "",
               "gameFormula": "",
