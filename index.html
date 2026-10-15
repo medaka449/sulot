@@ -698,7 +698,7 @@ function render(){
       };
       if(i===d.oniCzRecords.length-1)row.appendChild(bonus);
       const remove=document.createElement('button');remove.type='button';remove.textContent='削除';
-      remove.onclick=()=>{if(d.oniCzRecords.length===1){d.oniCzRecords[0]={icon:'',bonus:false}}else{d.oniCzRecords.splice(i,1)}save()};
+      remove.onclick=()=>{if(d.oniCzRecords.length===1){d.oniCzRecords[0]={icon:'',color:'',bonus:false}}else{d.oniCzRecords.splice(i,1);if(i>0 && i===d.oniCzRecords.length && d.oniCzRecords[i-1].bonus){d.oniCzRecords[i-1].bonus=false}}save()};
       if(i===d.oniCzRecords.length-1)row.appendChild(remove);
       picksGrid.appendChild(row);
       if(entry.bonus){
