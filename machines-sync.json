@@ -2069,16 +2069,6 @@
             },
             {
               "icon": "2",
-              "bonus": true
-            },
-            {
-              "icon": "1",
-              "color": "🟦",
-              "bonus": true
-            },
-            {
-              "icon": "",
-              "color": "",
               "bonus": false
             }
           ]
