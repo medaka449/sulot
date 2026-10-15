@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.399</title>
+<title>小役カウンター v1.1.400</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -149,6 +149,13 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 .bioCzTableTools button{flex:1;min-height:38px;border-radius:9px;background:#343d49;color:#fff;font-weight:700}
 </style><style>
 .oniCzTableWrap{width:100%;display:block}.oniCzTitle{text-align:center;font-weight:800;padding:9px;background:#111}.oniCzScroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.oniCzTable{border-collapse:collapse;min-width:660px;width:100%;font-size:12px;text-align:center}.oniCzTable th,.oniCzTable td{border:1px solid #343434;padding:8px 3px;white-space:nowrap}.oniCzTable th{background:#777;color:white}.oniCzHint{font-size:12px;margin:12px 0 8px;color:#dce5ef}.oniCzPicks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.oniCzPick{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700}.oniCzPick select{width:100%;min-width:0;background:#151b23;color:white;border:1px solid #465367;border-radius:8px;height:38px;font-size:14px}
+</style><style>
+.oniCzPicks{display:flex;flex-direction:column;gap:7px}
+.oniCzRecord{display:grid;grid-template-columns:43px minmax(0,1fr) 43px 90px 43px;gap:4px;align-items:center;width:100%}
+.oniCzRecordLabel{font-size:12px;font-weight:700;white-space:nowrap}
+.oniCzRecord select{min-width:0;width:100%;height:38px;background:#151b23;color:#fff;border:1px solid #465367;border-radius:7px;font-size:13px}
+.oniCzRecord button{min-width:0;height:38px;padding:0 2px;border-radius:7px;background:#343d49;color:#fff;font-size:11px;font-weight:700;white-space:nowrap}
+.oniCzRecord .oniBonusActive{background:#19d8e8;color:#071114}
 </style></head>
 <body>
 <main>
@@ -172,7 +179,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.399</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.400</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -645,16 +652,34 @@ function render(){
       tbody.appendChild(tr);
     });
     table.appendChild(tbody);scroll.appendChild(table);root.appendChild(scroll);
-    const hint=document.createElement('div');hint.className='oniCzHint';hint.textContent='確認したアイコンを1～11回目までプルダウンから選択';root.appendChild(hint);
+    const hint=document.createElement('div');hint.className='oniCzHint';hint.textContent='CZアイコンを選んで「追加」で次の回数を記録';root.appendChild(hint);
+    if(!Array.isArray(d.oniCzRecords)){
+      const previous=Array.isArray(d.czTablePicks)?d.czTablePicks:[];
+      const last=previous.reduce((n,v,i)=>v?i+1:n,0);
+      d.oniCzRecords=last?previous.slice(0,last).map(icon=>({icon:icon||'',bonus:false})):[{icon:'',bonus:false}];
+      localStorage.setItem(KEY,JSON.stringify(state));
+    }
+    if(!d.oniCzRecords.length)d.oniCzRecords.push({icon:'',bonus:false});
     const picksGrid=document.createElement('div');picksGrid.className='oniCzPicks';
-    Array.from({length:11},(_,i)=>{
-      const wrap=document.createElement('label');wrap.className='oniCzPick';
-      const caption=document.createElement('span');caption.textContent=(i+1)+'回目';wrap.appendChild(caption);
+    d.oniCzRecords.forEach((entry,i)=>{
+      const row=document.createElement('div');row.className='oniCzRecord';
+      const caption=document.createElement('span');caption.className='oniCzRecordLabel';caption.textContent=(i+1)+'回目';row.appendChild(caption);
       const select=document.createElement('select');select.setAttribute('aria-label',(i+1)+'回目のアイコン');
-      ['' ,...labels].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v||'未選択';select.appendChild(o)});
-      select.value=labels.includes(picks[i])?picks[i]:'';
-      select.onchange=()=>{picks[i]=select.value;localStorage.setItem(KEY,JSON.stringify(state))};
-      wrap.appendChild(select);picksGrid.appendChild(wrap);
+      ['',...labels].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v||'未選択';select.appendChild(o)});
+      select.value=labels.includes(entry.icon)?entry.icon:'';
+      select.onchange=()=>{entry.icon=select.value;localStorage.setItem(KEY,JSON.stringify(state))};
+      row.appendChild(select);
+      const add=document.createElement('button');add.type='button';add.textContent='追加';
+      add.onclick=()=>{d.oniCzRecords.splice(i+1,0,{icon:'',bonus:false});save()};
+      row.appendChild(add);
+      const bonus=document.createElement('button');bonus.type='button';bonus.textContent='ボーナス当選';bonus.className=entry.bonus?'oniBonusActive':'';
+      bonus.setAttribute('aria-pressed',entry.bonus?'true':'false');
+      bonus.onclick=()=>{entry.bonus=!entry.bonus;save()};
+      row.appendChild(bonus);
+      const remove=document.createElement('button');remove.type='button';remove.textContent='削除';
+      remove.onclick=()=>{if(d.oniCzRecords.length===1){d.oniCzRecords[0]={icon:'',bonus:false}}else{d.oniCzRecords.splice(i,1)}save()};
+      row.appendChild(remove);
+      picksGrid.appendChild(row);
     });
     root.appendChild(picksGrid);
     return;
