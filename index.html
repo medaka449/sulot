@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.398</title>
+<title>小役カウンター v1.1.399</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -147,6 +147,8 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 .bioCzEntryTable select{width:100%;min-width:0;height:40px;padding:0 3px;border:1px solid #374151;border-radius:9px;background:#151b23;color:#fff;font-size:15px;text-align:center}
 .bioCzTableTools{display:flex;gap:8px;margin:8px 4px}
 .bioCzTableTools button{flex:1;min-height:38px;border-radius:9px;background:#343d49;color:#fff;font-weight:700}
+</style><style>
+.oniCzTableWrap{width:100%;display:block}.oniCzTitle{text-align:center;font-weight:800;padding:9px;background:#111}.oniCzScroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.oniCzTable{border-collapse:collapse;min-width:660px;width:100%;font-size:12px;text-align:center}.oniCzTable th,.oniCzTable td{border:1px solid #343434;padding:8px 3px;white-space:nowrap}.oniCzTable th{background:#777;color:white}.oniCzHint{font-size:12px;margin:12px 0 8px;color:#dce5ef}.oniCzPicks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.oniCzPick{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700}.oniCzPick select{width:100%;min-width:0;background:#151b23;color:white;border:1px solid #465367;border-radius:8px;height:38px;font-size:14px}
 </style></head>
 <body>
 <main>
@@ -170,7 +172,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.398</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.399</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -221,6 +223,11 @@ const ONIMUSHA2_MACHINE='S新鬼武者2';
 if(!state.machines[ONIMUSHA2_MACHINE]){
   state.machines[ONIMUSHA2_MACHINE]=blankMachine();
   localStorage.setItem(KEY,JSON.stringify(state));
+}
+{
+ const m=state.machines[ONIMUSHA2_MACHINE];
+ if(!m.modes['CZテーブル']){m.modes['CZテーブル']={...blankData(),czTablePicks:Array(11).fill('')};m.modeOrder.push('CZテーブル');localStorage.setItem(KEY,JSON.stringify(state))}
+ if(!Array.isArray(m.modes['CZテーブル'].czTablePicks))m.modes['CZテーブル'].czTablePicks=Array(11).fill('');
 }
 const BIOHAZARD_RE3_MACHINE='スマスロ バイオハザードRE:3';
 if(!state.machines[BIOHAZARD_RE3_MACHINE])state.machines[BIOHAZARD_RE3_MACHINE]=blankMachine();
@@ -608,6 +615,50 @@ function render(){
   const d=displayData();
   document.getElementById("gamesInput").value=d.games;document.getElementById("startGamesInput").value=d.startGames||0;
   const root=document.getElementById("counters");root.className='counterGrid '+(d.layout==='first2four3five1'?'firstTwoFourThreeFiveOne':d.layout==='first2four3'?'firstTwoFourThree':'');if(state.selected.includes('マイジャグラー'))root.classList.add('myJugglerTightRows');if([KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected) && displayMode==='通常' && !combined)root.classList.add('kabaneriNormalExtra');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='通常' && !combined)root.classList.add('bioRe3Grid');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='CZ' && !combined)root.classList.add('bioRe3CzTable');if(state.selected===KABANERI_MACHINE && displayMode==='キャラ紹介・ボイス' && !combined)root.classList.add('kabaneriOmikuji');if(state.selected===KABANERI_MACHINE && displayMode==='おみくじ' && !combined)root.classList.add('kabaneriFortuneGrid');root.innerHTML="";
+  if(state.selected===ONIMUSHA2_MACHINE && displayMode==='CZテーブル' && !combined){
+    root.className='oniCzTableWrap';
+    const picks=Array.isArray(d.czTablePicks)?d.czTablePicks:(d.czTablePicks=Array(11).fill(''));
+    const labels=['期待','好機','熱','蒼剣','＋G','祝'];
+    const colors={'期待':'#ffd844','好機':'#ff4444','熱':'#e700e7','蒼剣':'#ffcf00','＋G':'#ffe100','祝':'#9233b9'};
+    const title=document.createElement('div');title.className='oniCzTitle';title.textContent='CZテーブル（アイコン選択）';root.appendChild(title);
+    const scroll=document.createElement('div');scroll.className='oniCzScroll';
+    const table=document.createElement('table');table.className='oniCzTable';
+    const thead=document.createElement('thead');const hr=document.createElement('tr');
+    ['テーブル',...Array.from({length:11},(_,i)=>String(i+1))].forEach(v=>{const th=document.createElement('th');th.textContent=v;hr.appendChild(th)});
+    thead.appendChild(hr);table.appendChild(thead);
+    const tbody=document.createElement('tbody');
+    const pattern=[
+      ['期待','期待','期待','期待','期待','好機','好機','好機','好機','熱','祝'],
+      ['期待','期待','期待','期待','好機','好機','好機','好機','好機','熱','祝'],
+      ['期待','期待','期待','好機','好機','好機','好機','好機','熱','熱','祝'],
+      ['期待','期待','好機','好機','好機','好機','好機','好機','熱','熱','祝'],
+      ['期待','好機','好機','好機','好機','好機','好機','熱','熱','熱','祝'],
+      ['好機','好機','好機','好機','好機','好機','熱','熱','熱','蒼剣','祝'],
+      ['好機','好機','好機','好機','好機','熱','熱','熱','蒼剣','＋G','祝'],
+      ['好機','好機','好機','熱','熱','熱','蒼剣','＋G','＋G','＋G','祝'],
+      ['熱','熱','熱','蒼剣','＋G','＋G','＋G','＋G','＋G','＋G','祝'],
+      ['蒼剣','＋G','＋G','＋G','＋G','＋G','＋G','＋G','＋G','＋G','祝']
+    ];
+    pattern.forEach((row,i)=>{
+      const tr=document.createElement('tr');const th=document.createElement('th');th.textContent=String(i+1);tr.appendChild(th);
+      row.forEach(value=>{const td=document.createElement('td');td.textContent=value;td.style.background=colors[value];td.style.color=value==='祝'?'white':'#080808';tr.appendChild(td)});
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);scroll.appendChild(table);root.appendChild(scroll);
+    const hint=document.createElement('div');hint.className='oniCzHint';hint.textContent='確認したアイコンを1～11回目までプルダウンから選択';root.appendChild(hint);
+    const picksGrid=document.createElement('div');picksGrid.className='oniCzPicks';
+    Array.from({length:11},(_,i)=>{
+      const wrap=document.createElement('label');wrap.className='oniCzPick';
+      const caption=document.createElement('span');caption.textContent=(i+1)+'回目';wrap.appendChild(caption);
+      const select=document.createElement('select');select.setAttribute('aria-label',(i+1)+'回目のアイコン');
+      ['' ,...labels].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v||'未選択';select.appendChild(o)});
+      select.value=labels.includes(picks[i])?picks[i]:'';
+      select.onchange=()=>{picks[i]=select.value;localStorage.setItem(KEY,JSON.stringify(state))};
+      wrap.appendChild(select);picksGrid.appendChild(wrap);
+    });
+    root.appendChild(picksGrid);
+    return;
+  }
   if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='CZ' && !combined){
     root.className='bioCzTableWrap';
     if(!Array.isArray(d.czEntries))d.czEntries=Array.from({length:3},()=>({通常:'',AT:'',上位:''}));
