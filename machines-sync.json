@@ -2230,6 +2230,10 @@
               "icon": "5",
               "bonus": true,
               "color": "🟥"
+            },
+            {
+              "icon": "",
+              "bonus": false
             }
           ]
         }
