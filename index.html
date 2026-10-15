@@ -677,7 +677,7 @@ function render(){
         menu.hidden=!menu.hidden;
         trigger.setAttribute('aria-expanded',String(!menu.hidden));
       };
-      patterns.map((_,index)=>String(index+1)).forEach(value=>{
+      [1,6,2,7,3,8,4,9,5,10].map(String).forEach(value=>{
         const option=document.createElement('button');option.type='button';option.className='oniCzPickerOption';
         option.textContent=value?(value+' '+Array.from(patterns[Number(value)-1]).slice(0,4).join('')):'未選択';
         option.onclick=()=>{entry.icon=value;localStorage.setItem(KEY,JSON.stringify(state));trigger.textContent=option.textContent+' ▼';close()};
