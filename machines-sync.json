@@ -2069,10 +2069,11 @@
             },
             {
               "icon": "2",
-              "bonus": false
+              "bonus": true
             },
             {
               "icon": "",
+              "color": "",
               "bonus": false
             },
             {
