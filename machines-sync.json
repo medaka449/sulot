@@ -2073,6 +2073,11 @@
               "color": "🟧"
             },
             {
+              "icon": "2",
+              "color": "🟦",
+              "bonus": false
+            },
+            {
               "icon": "",
               "color": "",
               "bonus": false
