@@ -2083,6 +2083,11 @@
               "bonus": true
             },
             {
+              "icon": "7",
+              "color": "🟪",
+              "bonus": true
+            },
+            {
               "icon": "",
               "color": "",
               "bonus": false
