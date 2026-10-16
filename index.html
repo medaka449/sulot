@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.441</title>
+<title>小役カウンター v1.1.442</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -190,7 +190,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.441</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.442</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -427,7 +427,7 @@ if(!state.machines[KABANERI_MACHINE]){
   }
   if(changed)localStorage.setItem(KEY,JSON.stringify(state));
 }
-let displayMode="通常";
+let displayMode=state.selected===ONIMUSHA2_MACHINE?'CZ':'通常';
 let combined=false;
 function current(){return state.machines[state.selected]}
 function currentData(){const m=current();if(!m.modes[displayMode]){displayMode=m.modeOrder[0]||Object.keys(m.modes)[0]||"通常";if(!m.modes[displayMode])m.modes.通常=blankData()}return normalizeData(m.modes[displayMode])}
@@ -558,15 +558,15 @@ function ensureOnimushaModes(){
   for(const name of ['通常','CZ','鬼ボーナス','AT終了画面']){
     if(!m.modes[name]){m.modes[name]=blankData();changed=true}
   }
-  const order=['通常','CZ','鬼ボーナス','AT終了画面'];
+  const order=['CZ','鬼ボーナス','AT終了画面'];
   if(JSON.stringify(m.modeOrder)!==JSON.stringify(order)){m.modeOrder=order;changed=true}
   if(state.selected===ONIMUSHA2_MACHINE){
-    if(displayMode==='合成')displayMode='CZ';
+    if(displayMode==='合成'||displayMode==='通常')displayMode='CZ';
     if(displayMode==='CZテーブル'||displayMode==='鬼ボーナス・AT終了画面')displayMode='鬼ボーナス';
   }
   if(changed)localStorage.setItem(KEY,JSON.stringify(state));
 }
-function renderModeSwitch(){if(state.selected===ONIMUSHA2_MACHINE)ensureOnimushaModes();const sw=document.querySelector('.modeSwitch');const prevIndex=Number.isFinite(Number(sw.dataset.activeIndex))?Number(sw.dataset.activeIndex):-1;sw.innerHTML='';const machine=current();const modes=(machine.modeOrder||Object.keys(machine.modes||{})).filter(x=>machine.modes[x]);const n=Math.max(1,modes.length);const activeIndex=Math.max(0,modes.indexOf(displayMode));sw.style.gridTemplateColumns=`repeat(${n},1fr)`;sw.style.minHeight='';sw.style.overflow='hidden';const indicator=document.createElement('span');indicator.className='modeIndicator';indicator.style.height='';indicator.style.width=`calc((100% - 2px) / ${n})`;const startIndex=prevIndex<0?activeIndex:Math.min(prevIndex,n-1);indicator.style.transform=`translateX(${startIndex*100}%)`;sw.appendChild(indicator);modes.forEach(mode=>{const b=document.createElement('button');b.className='modeBtn'+(displayMode===mode?' active':'');b.textContent=mode;b.onclick=()=>setDisplayMode(mode);sw.appendChild(b)});sw.dataset.activeIndex=String(activeIndex);requestAnimationFrame(()=>{indicator.style.transform=`translateX(${activeIndex*100}%)`;});}
+function renderModeSwitch(){if(state.selected===ONIMUSHA2_MACHINE)ensureOnimushaModes();const sw=document.querySelector('.modeSwitch');const prevIndex=Number.isFinite(Number(sw.dataset.activeIndex))?Number(sw.dataset.activeIndex):-1;sw.innerHTML='';const machine=current();const modes=(machine.modeOrder||Object.keys(machine.modes||{})).filter(x=>machine.modes[x]&&(state.selected!==ONIMUSHA2_MACHINE||x!=='通常'));const n=Math.max(1,modes.length);const activeIndex=Math.max(0,modes.indexOf(displayMode));sw.style.gridTemplateColumns=`repeat(${n},1fr)`;sw.style.minHeight='';sw.style.overflow='hidden';const indicator=document.createElement('span');indicator.className='modeIndicator';indicator.style.height='';indicator.style.width=`calc((100% - 2px) / ${n})`;const startIndex=prevIndex<0?activeIndex:Math.min(prevIndex,n-1);indicator.style.transform=`translateX(${startIndex*100}%)`;sw.appendChild(indicator);modes.forEach(mode=>{const b=document.createElement('button');b.className='modeBtn'+(displayMode===mode?' active':'');b.textContent=mode;b.onclick=()=>setDisplayMode(mode);sw.appendChild(b)});sw.dataset.activeIndex=String(activeIndex);requestAnimationFrame(()=>{indicator.style.transform=`translateX(${activeIndex*100}%)`;});}
 function renderMachineSelect(){const s=document.getElementById("machine");s.innerHTML="";Object.keys(state.machines).forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent=n;o.selected=n===state.selected;s.appendChild(o)});s.disabled=true;s.setAttribute("aria-disabled","true")}
 let lastCountFeedback=null;
 function render(){
