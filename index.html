@@ -245,6 +245,7 @@ if(!state.machines[ONIMUSHA2_MACHINE]){
 {
  const m=state.machines[ONIMUSHA2_MACHINE];
  if(!m.modes['合成']){m.modes['合成']=blankData();m.modeOrder.push('合成');localStorage.setItem(KEY,JSON.stringify(state))}
+ if(!m.modes['合成']){m.modes['合成']=blankData();m.modeOrder.push('合成');localStorage.setItem(KEY,JSON.stringify(state))}
  // 旧AT1回目（CZテーブル）の記録を通常モードに引き継ぐ。
  if(m.modes['CZテーブル']){
    const old=m.modes['CZテーブル'];
