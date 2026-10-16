@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.434</title>
+<title>小役カウンター v1.1.435</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -190,7 +190,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.434</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.435</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -244,22 +244,33 @@ if(!state.machines[ONIMUSHA2_MACHINE]){
 }
 {
  const m=state.machines[ONIMUSHA2_MACHINE];
- if(!m.modes['合成']){m.modes['合成']=blankData();m.modeOrder.push('合成');localStorage.setItem(KEY,JSON.stringify(state))}
- if(!m.modes['合成']){m.modes['合成']=blankData();m.modeOrder.push('合成');localStorage.setItem(KEY,JSON.stringify(state))}
- // 旧AT1回目（CZテーブル）の記録を通常モードに引き継ぐ。
+ let changed=false;
+ // 既存の入力記録を保ったままモード名を変更する。
+ if(m.modes['合成']){
+   if(!m.modes['CZ'])m.modes['CZ']=m.modes['合成'];
+   delete m.modes['合成'];changed=true;
+ }
  if(m.modes['CZテーブル']){
    const old=m.modes['CZテーブル'];
-   const normal=m.modes['通常']||(m.modes['通常']=blankData());
-   if(Array.isArray(old.oniCzRecords) && (!Array.isArray(normal.oniCzRecords)||!normal.oniCzRecords.length)){
-     normal.oniCzRecords=old.oniCzRecords;
-   }
-   if(Array.isArray(old.czTablePicks) && !Array.isArray(normal.czTablePicks)){
-     normal.czTablePicks=old.czTablePicks;
-   }
-   delete m.modes['CZテーブル'];
-   m.modeOrder=(m.modeOrder||[]).filter(mode=>mode!=='CZテーブル');
-   localStorage.setItem(KEY,JSON.stringify(state));
+   const dest=m.modes['鬼ボーナス・AT終了画面']||m.modes['通常']||(m.modes['通常']=blankData());
+   if(Array.isArray(old.oniCzRecords)&&(!Array.isArray(dest.oniCzRecords)||!dest.oniCzRecords.length))dest.oniCzRecords=old.oniCzRecords;
+   if(Array.isArray(old.czTablePicks)&&!Array.isArray(dest.czTablePicks))dest.czTablePicks=old.czTablePicks;
+   delete m.modes['CZテーブル'];changed=true;
  }
+ if(m.modes['通常']){
+   if(!m.modes['鬼ボーナス・AT終了画面'])m.modes['鬼ボーナス・AT終了画面']=m.modes['通常'];
+   delete m.modes['通常'];changed=true;
+ }
+ if(!m.modes['鬼ボーナス・AT終了画面']){m.modes['鬼ボーナス・AT終了画面']=blankData();changed=true}
+ if(!m.modes['CZ']){m.modes['CZ']=blankData();changed=true}
+ const order=[...new Set((m.modeOrder||[]).map(n=>n==='合成'?'CZ':(['通常','CZテーブル'].includes(n)?'鬼ボーナス・AT終了画面':n)).filter(n=>m.modes[n]))];
+ ['鬼ボーナス・AT終了画面','CZ'].forEach(n=>{if(!order.includes(n))order.push(n)});
+ if(JSON.stringify(order)!==JSON.stringify(m.modeOrder)){m.modeOrder=order;changed=true}
+ if(state.selected===ONIMUSHA2_MACHINE){
+   if(displayMode==='合成')displayMode='CZ';
+   if(displayMode==='通常'||displayMode==='CZテーブル')displayMode='鬼ボーナス・AT終了画面';
+ }
+ if(changed)localStorage.setItem(KEY,JSON.stringify(state));
 }
 
 const BIOHAZARD_RE3_MACHINE='スマスロ バイオハザードRE:3';
@@ -643,14 +654,14 @@ function render(){
   syncEntryMode();
   if(entryMode==='income'){renderIncome();return;}
   // キャラ紹介・ボイスとおみくじではゲーム数入力行を表示しない
-  const hideGamesRow=(state.selected===KABANERI_MACHINE && (displayMode==='キャラ紹介・ボイス'||displayMode==='おみくじ') || state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='CZ' || state.selected===ONIMUSHA2_MACHINE && displayMode==='合成') && !combined;
+  const hideGamesRow=(state.selected===KABANERI_MACHINE && (displayMode==='キャラ紹介・ボイス'||displayMode==='おみくじ') || state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='CZ' || state.selected===ONIMUSHA2_MACHINE && displayMode==='CZ') && !combined;
   document.querySelector('.topGrid').style.display=hideGamesRow?'none':'';
   const d=displayData();
   document.getElementById("gamesInput").value=d.games;document.getElementById("startGamesInput").value=d.startGames||0;
   const root=document.getElementById("counters");root.className='counterGrid '+(d.layout==='first2four3five1'?'firstTwoFourThreeFiveOne':d.layout==='first2four3'?'firstTwoFourThree':'');if(state.selected.includes('マイジャグラー'))root.classList.add('myJugglerTightRows');if([KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected) && displayMode==='通常' && !combined)root.classList.add('kabaneriNormalExtra');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='通常' && !combined)root.classList.add('bioRe3Grid');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='CZ' && !combined)root.classList.add('bioRe3CzTable');if(state.selected===KABANERI_MACHINE && displayMode==='キャラ紹介・ボイス' && !combined)root.classList.add('kabaneriOmikuji');if(state.selected===KABANERI_MACHINE && displayMode==='おみくじ' && !combined)root.classList.add('kabaneriFortuneGrid');root.innerHTML="";
-  if(state.selected===ONIMUSHA2_MACHINE && displayMode==='合成' && !combined){
+  if(state.selected===ONIMUSHA2_MACHINE && displayMode==='CZ' && !combined){
     root.className='oniCzTableWrap';
-    const normal=current().modes['通常'];
+    const normal=current().modes['鬼ボーナス・AT終了画面'];
     if(!Array.isArray(normal.oniCzRecords)||!normal.oniCzRecords.length)normal.oniCzRecords=[{icon:'',color:'',bonus:false}];
     const records=normal.oniCzRecords;
     const patterns=["🟦🟦🟦🟨🟨🟩🟩🟥🟥🟪","🟦🟦🟨🟨🟩🟩🟩🟥🟥🟪","🟦🟨🟨🟩🟩🟩🟥🟥🟪🟪","🟨🟨🟩🟩🟩🟥🟥🟥🟪🟪","🟨🟩🟩🟩🟥🟥🟥🟪🟪🟪","🟩🟩🟩🟥🟥🟥🟪🟪🟪🟧","🟩🟩🟥🟥🟥🟪🟪🟪🟧🟧","🟥🟥🟥🟪🟪🟪🟧🟧🟧🟧","🟪🟪🟪🟧🟧🟧🟧🟧🟧🟧","🟧🟧🟧🟧🟧🟧🟧🟧🟧🟧"];
@@ -696,7 +707,7 @@ function render(){
     form.appendChild(buttons);root.appendChild(form);
     return;
   }
-  if(state.selected===ONIMUSHA2_MACHINE && displayMode==='通常' && !combined){
+  if(state.selected===ONIMUSHA2_MACHINE && displayMode==='鬼ボーナス・AT終了画面' && !combined){
     root.className='oniCzTableWrap';
     const patterns=["🟦🟦🟦🟨🟨🟩🟩🟥🟥🟪","🟦🟦🟨🟨🟩🟩🟩🟥🟥🟪","🟦🟨🟨🟩🟩🟩🟥🟥🟪🟪","🟨🟨🟩🟩🟩🟥🟥🟥🟪🟪","🟨🟩🟩🟩🟥🟥🟥🟪🟪🟪","🟩🟩🟩🟥🟥🟥🟪🟪🟪🟧","🟩🟩🟥🟥🟥🟪🟪🟪🟧🟧","🟥🟥🟥🟪🟪🟪🟧🟧🟧🟧","🟪🟪🟪🟧🟧🟧🟧🟧🟧🟧","🟧🟧🟧🟧🟧🟧🟧🟧🟧🟧"];
     const hint=document.createElement('div');hint.className='oniCzHint';hint.textContent='AT1回目';root.appendChild(hint);
@@ -1766,7 +1777,7 @@ function judgeSetting(){
   // 鬼武者2：各ATのCZ初回を除き、テーブル4以上の出現率で判別する。
   let oniCzJudge=null;
   if(state.selected===ONIMUSHA2_MACHINE){
-    const records=current()?.modes?.['通常']?.oniCzRecords||[];
+    const records=current()?.modes?.['鬼ボーナス・AT終了画面']?.oniCzRecords||[];
     let round=0,total=0,hits=0;
     records.forEach(entry=>{
       round++;
