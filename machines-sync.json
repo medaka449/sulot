@@ -2063,31 +2063,6 @@
           "layoutNumberHistory": [],
           "oniCzRecords": [
             {
-              "icon": "2",
-              "bonus": false,
-              "color": "🟨"
-            },
-            {
-              "icon": "6",
-              "bonus": false,
-              "color": "🟧"
-            },
-            {
-              "icon": "2",
-              "color": "🟦",
-              "bonus": false
-            },
-            {
-              "icon": "3",
-              "color": "🟨",
-              "bonus": true
-            },
-            {
-              "icon": "7",
-              "color": "🟪",
-              "bonus": true
-            },
-            {
               "icon": "",
               "color": "",
               "bonus": false
