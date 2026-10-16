@@ -2063,6 +2063,11 @@
           "layoutNumberHistory": [],
           "oniCzRecords": [
             {
+              "icon": "1",
+              "color": "🟨",
+              "bonus": false
+            },
+            {
               "icon": "",
               "color": "",
               "bonus": false
