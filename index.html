@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.432</title>
+<title>小役カウンター v1.1.433</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -190,7 +190,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.432</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.433</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -1763,9 +1763,33 @@ function judgeSetting(){
     const expected=rates.map(x=>parseSettingRate(x,c));
     if(expected.some(x=>x>0))usable.push({c,count,exposure,observed,expected});
   });
+  // 鬼武者2：各ATのCZ初回を除き、テーブル4以上の出現率で判別する。
+  let oniCzJudge=null;
+  if(state.selected===ONIMUSHA2_MACHINE){
+    const records=current()?.modes?.['通常']?.oniCzRecords||[];
+    let round=0,total=0,hits=0;
+    records.forEach(entry=>{
+      round++;
+      if(round>=2 && Number(entry.icon)>=1 && Number(entry.icon)<=10){
+        total++;
+        if(Number(entry.icon)>=4)hits++;
+      }
+      if(entry.bonus)round=0;
+    });
+    oniCzJudge={total,hits,rates:[53.27,63.08,72.89,82.7,86,87.3]};
+  }
   const logs=Array(6).fill(-Infinity);
   const allowedJudge=Array.isArray(current()?.settingLevels)&&current().settingLevels.length?current().settingLevels:[1,2,3,4,5,6];
   usable.forEach(u=>u.expected.forEach((p,i)=>{if(allowedJudge.includes(i+1)&&p>0){const lambda=u.exposure*p;const k=u.count;logs[i]=(Number.isFinite(logs[i])?logs[i]:0)+k*Math.log(lambda)-lambda-(k>1?(k*Math.log(k)-k):0)}}));
+  if(oniCzJudge?.total){
+    const {total,hits,rates}=oniCzJudge;
+    rates.forEach((pct,i)=>{
+      if(!allowedJudge.includes(i+1))return;
+      const p=pct/100;
+      const ll=hits*Math.log(p)+(total-hits)*Math.log(1-p);
+      logs[i]=(Number.isFinite(logs[i])?logs[i]:0)+ll;
+    });
+  }
   const finiteLogs=logs.filter(Number.isFinite);
   const max=finiteLogs.length?Math.max(...finiteLogs):-Infinity;
   const weights=logs.map(x=>Number.isFinite(x)&&max>-Infinity?Math.exp(x-max):0);
@@ -1844,6 +1868,15 @@ function judgeSetting(){
 
   const detail=document.createElement('div');detail.className='judgeDetail';
   const detailTitle=document.createElement('div');detailTitle.className='judgeDetailTitle';detailTitle.textContent='設定判別要素';detail.appendChild(detailTitle);
+  if(oniCzJudge){
+    const info=document.createElement('div');info.className='judgeDetailRow';
+    info.style.cssText='display:block;padding:10px 6px;line-height:1.7';
+    info.textContent='CZ2回目以降・🟨🟨🟨🟩以上：'+oniCzJudge.hits+' / '+oniCzJudge.total+'回（'+(oniCzJudge.total?(oniCzJudge.hits/oniCzJudge.total*100).toFixed(2):'—')+'%）';
+    detail.appendChild(info);
+    const rates=document.createElement('div');rates.style.cssText='font-size:12px;color:#aeb9c7;padding:0 6px 10px';
+    rates.textContent=oniCzJudge.rates.map((v,i)=>'設定'+(i+1)+' '+v+'%').join(' ／ ');
+    detail.appendChild(rates);
+  }
   const machine=current();
   const modeEntries=[];
   (machine?.modeOrder||Object.keys(machine?.modes||{})).forEach(mode=>{
