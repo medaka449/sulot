@@ -1,0 +1,20 @@
+{
+  "name": "小役カウンター",
+  "short_name": "小役カウンター",
+  "description": "スロットの小役・当選履歴を記録するカウンター",
+  "lang": "ja",
+  "id": "/sulot/",
+  "start_url": "/sulot/",
+  "scope": "/sulot/",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
