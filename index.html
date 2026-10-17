@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.464</title>
+<title>小役カウンター v1.1.465</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -130,7 +130,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 .kabaneriNormalTripleRow .name{font-size:11px!important;overflow-wrap:anywhere}
 .kabaneriNormalTripleRow .countLine{font-size:20px!important}
 .kabaneriNormalTripleRow .rate{font-size:10px!important}
-.counterGrid.kabaneriNormalExtra>.kabaneriNormalSplitRow{min-height:76px!important;gap:5px!important}.kabaneriNormalSplitRow>.kabaneriNormalCount9{min-height:76px!important;padding:4px 5px!important}.kabaneriNormalSmallStack>.kabaneriNormalSmallCounter{min-height:36px!important;padding:2px 5px!important}.kabaneriNormalSmallStack{gap:3px!important}.kabaneriNormalTripleRow>.counter{padding:3px 2px!important}.kabaneriNormalTripleRow .countLine{font-size:18px!important}</style><style>
+.counterGrid.kabaneriNormalExtra>.kabaneriNormalSplitRow{min-height:66px!important;gap:5px!important}.kabaneriNormalSplitRow>.kabaneriNormalCount9{min-height:66px!important;padding:3px 5px!important}.kabaneriNormalSmallStack>.kabaneriNormalSmallCounter{min-height:31px!important;padding:2px 5px!important}.kabaneriNormalSmallStack{gap:3px!important}</style><style>
 .counterGrid.bioRe3Grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
 .counterGrid.bioRe3Grid>.counter:first-child{grid-column:1/-1}
 .counterGrid.bioRe3Grid>.counter:nth-child(n+10){grid-column:span 1}
@@ -196,7 +196,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.464</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.465</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
