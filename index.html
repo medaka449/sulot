@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.458</title>
+<title>小役カウンター v1.1.459</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -119,7 +119,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 </style><style>.counterGrid.kabaneriNormalExtra{grid-template-columns:repeat(2,minmax(0,1fr))!important}.counterGrid.kabaneriNormalExtra>.counter:last-child:nth-child(odd){grid-column:1/-1}</style><style>
 .counterGrid.kabaneriNormalExtra>.kabaneriNormalSplitRow{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:stretch}
 .kabaneriNormalSplitRow>.kabaneriNormalCount9{width:100%;height:100%;min-height:0!important;grid-column:auto!important}
-.kabaneriNormalSmallStack{display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:4px;min-height:0}
+.kabaneriNormalSmallStack{display:grid;grid-template-rows:repeat(2,minmax(0,1fr));gap:4px;min-height:0}
 .kabaneriNormalSmallStack>.kabaneriNormalSmallCounter{width:100%;min-height:0!important;height:100%;padding:2px 5px!important;display:flex;flex-direction:row!important;align-items:center;justify-content:space-between;gap:3px}
 .kabaneriNormalSmallCounter .name{font-size:11px!important;min-width:0;flex:1;line-height:1.1}
 .kabaneriNormalSmallCounter .countLine{font-size:18px!important;min-width:24px}
@@ -190,7 +190,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.458</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.459</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -1010,12 +1010,17 @@ const target=currentData().counters.includes(c)?c:currentData().counters[counter
     const cards=Array.from(root.children).filter(el=>el.classList.contains('counter'));
     const indices=names.map(name=>d.counters.findIndex(item=>item.name===name));
     if(indices.every(i=>i>=0 && cards[i])){
+      // 発光の右に下段ベルを配置。カウンターのデータ順は変更しない。
+      const light=cards[4];
+      const bell=cards[indices[0]];
+      if(light && bell)light.insertAdjacentElement('afterend',bell);
+      // 次の行は左に無名・生駒を縦並び、右に当選ポイント確認。
       const row=document.createElement('div');row.className='kabaneriNormalSplitRow';
-      root.insertBefore(row,cards[indices[0]]);
-      const left=cards[indices[0]];left.classList.add('kabaneriNormalCount9');row.appendChild(left);
+      bell.insertAdjacentElement('afterend',row);
       const stack=document.createElement('div');stack.className='kabaneriNormalSmallStack';
-      indices.slice(1).forEach(i=>{cards[i].classList.add('kabaneriNormalSmallCounter');stack.appendChild(cards[i])});
+      indices.slice(1,3).forEach(i=>{cards[i].classList.add('kabaneriNormalSmallCounter');stack.appendChild(cards[i])});
       row.appendChild(stack);
+      const confirm=cards[indices[3]];confirm.classList.add('kabaneriNormalCount9');row.appendChild(confirm);
     }
   }
   // ベル＋スイカを一つのカウンターとして操作（既存カウントは合算して表示）
