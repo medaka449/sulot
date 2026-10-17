@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.474</title>
+<title>小役カウンター v1.1.475</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -200,7 +200,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.474</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.475</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -505,9 +505,9 @@ function showKabaneriPointHistory(){
   panel.append(close,title);
   const table=document.createElement('table');table.style.cssText='width:100%;border-collapse:collapse;text-align:center;font-size:13px';
   const head=document.createElement('tr');
-  ['回','当選','15pt以上','1pt・不明','記録日時'].forEach(label=>{const th=document.createElement('th');th.textContent=label;th.style.cssText='padding:7px 3px;border-bottom:1px solid #64748b';head.appendChild(th)});
+  ['回','当選','15pt以上','1pt・不明'].forEach(label=>{const th=document.createElement('th');th.textContent=label;th.style.cssText='padding:7px 3px;border-bottom:1px solid #64748b';head.appendChild(th)});
   table.appendChild(head);
-  (data.pointHistory||[]).forEach((entry,i)=>{const tr=document.createElement('tr');[i+1,entry.type,entry.high,entry.other,entry.time].forEach(v=>{const td=document.createElement('td');td.textContent=String(v??'');td.style.cssText='padding:8px 3px;border-bottom:1px solid #334155';tr.appendChild(td)});table.appendChild(tr)});
+  (data.pointHistory||[]).forEach((entry,i)=>{const tr=document.createElement('tr');[i+1,entry.type,entry.high,entry.other].forEach((v,j)=>{const td=document.createElement('td');td.textContent=String(v??'');td.style.cssText='padding:8px 3px;border-bottom:1px solid #334155'+(j===1?';font-weight:700;color:'+(entry.type==='無名当選'?'#f87171':entry.type==='生駒当選'?'#4ade80':'#fff'):'');tr.appendChild(td)});table.appendChild(tr)});
   if(!(data.pointHistory||[]).length){const msg=document.createElement('p');msg.textContent='まだ記録がありません';panel.appendChild(msg)}
   panel.appendChild(table);overlay.appendChild(panel);overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove()});document.body.appendChild(overlay);
 }
