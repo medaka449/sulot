@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.469</title>
+<title>小役カウンター v1.1.470</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -198,7 +198,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.469</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.470</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -974,7 +974,22 @@ if(c.countOnly){card.querySelector('.rate').textContent='';card.querySelector('.
   const ratio=numerator>0?combinedCount/numerator:0;
   rateEl.textContent=combinedCount>0?((numerator/combinedCount)*100).toFixed(1)+'%':'0.0%';
 }else{rateEl.textContent=rate(numerator,d,c)}
-let rateFs=15;const rateLen=String(rateEl.textContent||'').length;if(rateLen>9)rateFs=14;if(rateLen>11)rateFs=13;if(rateLen>14)rateFs=12;if(rateLen>17)rateFs=11;if(rateLen>20)rateFs=10;rateEl.style.fontSize=rateFs+'px';requestAnimationFrame(()=>{let guard=0;while(rateEl.scrollWidth>rateEl.clientWidth&&rateFs>8&&guard<20){rateFs=Math.max(8,rateFs-0.5);rateEl.style.fontSize=rateFs+'px';guard++}})}}if(!combined&&!isFormula){card.addEventListener('pointerdown',()=>{if(inputMode)return;});card.addEventListener('pointerup',()=>{if([KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected) && displayMode==='通常' && !combined && !inputMode && kabaneriPointAction(String(c.name||'')))return;if(inputMode){const target=currentData().counters.includes(c)?c:currentData().counters[countersToRender.indexOf(c)];if(target){const v=prompt(`${c.name} のカウントを入力`,String(target.count));if(v!==null){const n=parseInt(v,10);if(!Number.isNaN(n)&&n>=0){target.count=n;lastCountFeedback={name:String(c.name),index:countersToRender.indexOf(c),delta:0};save()}}}}else{
+let rateFs=15;const rateLen=String(rateEl.textContent||'').length;if(rateLen>9)rateFs=14;if(rateLen>11)rateFs=13;if(rateLen>14)rateFs=12;if(rateLen>17)rateFs=11;if(rateLen>20)rateFs=10;rateEl.style.fontSize=rateFs+'px';requestAnimationFrame(()=>{let guard=0;while(rateEl.scrollWidth>rateEl.clientWidth&&rateFs>8&&guard<20){rateFs=Math.max(8,rateFs-0.5);rateEl.style.fontSize=rateFs+'px';guard++}})}}if(!combined&&!isFormula){let counterTouchStart=null;
+    card.addEventListener('pointerdown',e=>{
+      counterTouchStart={id:e.pointerId,x:e.clientX,y:e.clientY,time:Date.now(),moved:false};
+    });
+    card.addEventListener('pointermove',e=>{
+      if(counterTouchStart&&counterTouchStart.id===e.pointerId&&Math.hypot(e.clientX-counterTouchStart.x,e.clientY-counterTouchStart.y)>12)counterTouchStart.moved=true;
+    });
+    card.addEventListener('pointercancel',()=>{counterTouchStart=null});
+    card.addEventListener('pointerup',e=>{
+      const touch=counterTouchStart;counterTouchStart=null;
+      if(!touch||touch.id!==e.pointerId||touch.moved||Math.hypot(e.clientX-touch.x,e.clientY-touch.y)>12)return;
+      const counterKey=state.selected+'|'+displayMode+'|'+countersToRender.indexOf(c);
+      const now=Date.now();
+      if(window._lastCounterTap?.key===counterKey&&now-window._lastCounterTap.time<230)return;
+      window._lastCounterTap={key:counterKey,time:now};
+if([KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected) && displayMode==='通常' && !combined && !inputMode && kabaneriPointAction(String(c.name||'')))return;if(inputMode){const target=currentData().counters.includes(c)?c:currentData().counters[countersToRender.indexOf(c)];if(target){const v=prompt(`${c.name} のカウントを入力`,String(target.count));if(v!==null){const n=parseInt(v,10);if(!Number.isNaN(n)&&n>=0){target.count=n;lastCountFeedback={name:String(c.name),index:countersToRender.indexOf(c),delta:0};save()}}}}else{
 const target=currentData().counters.includes(c)?c:currentData().counters[countersToRender.indexOf(c)];if(target){const wasMinus=minusMode;const previousCount=Number(target.count)||0;const nextCount=Math.max(0,previousCount+(wasMinus?-1:1));target.count=nextCount;lastCountFeedback={name:String(c.name),index:countersToRender.indexOf(c),delta:wasMinus?-1:1};if(d.layout==='first2four3five1' && countersToRender.indexOf(c)>=2 && countersToRender.indexOf(c)<=5){d.layoutNumberHistory=Array.isArray(d.layoutNumberHistory)?d.layoutNumberHistory:[];if(wasMinus){if(nextCount<previousCount){for(let hi=d.layoutNumberHistory.length-1;hi>=0;hi--){if(String(d.layoutNumberHistory[hi].counter||'')===String(c.name)){d.layoutNumberHistory.splice(hi,1);break}}}}else{const num=String(d.layoutNumber||'').trim();if(num!==''){d.layoutNumberHistory.push({time:new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}),value:num,counter:c.name});if(d.layoutNumberHistory.length>50)d.layoutNumberHistory.splice(0,d.layoutNumberHistory.length-50);d.layoutNumber='';}}}save()}}});}else{card.style.opacity='.92';card.style.cursor='default';card.style.pointerEvents='none'}
     if(lastCountFeedback && (Number.isInteger(lastCountFeedback.index)?lastCountFeedback.index===countersToRender.indexOf(c):lastCountFeedback.name===String(c.name))){
       card.classList.add('countFeedback');
