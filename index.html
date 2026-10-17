@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="小役カウンター">
 <link rel="manifest" href="manifest.webmanifest">
-<title>小役カウンター v1.1.449</title>
+<title>小役カウンター v1.1.451</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -190,7 +190,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.449</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.451</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -210,7 +210,7 @@ let modeEditActive=false;
 function blankData(){return {games:0,startGames:0,counters:DEFAULT_COUNTERS.map(name=>({name,count:0})),layout:'2',memo:'',layoutNumber:'',layoutNumberHistory:[]}}
 function normalizeData(d){
   d.games=Number(d.games)||0;d.startGames=Number(d.startGames)||0;
-  d.counters=(Array.isArray(d.counters)?d.counters:DEFAULT_COUNTERS.map(name=>({name,count:0}))).map(c=>({name:String(c.name||'小役'),count:Number(c.count)||0,color:String(c.color||''),countMethod:String(c.countMethod||'プッシュ'),countFormula:String(c.countFormula||''),gameFormula:String(c.gameFormula||''),displayFormat:['fraction','percent'].includes(c.displayFormat)?c.displayFormat:'fraction',settingRates:Array.from({length:6},(_,i)=>String(Array.isArray(c.settingRates)?(c.settingRates[i]??''):(c.settingRates&&typeof c.settingRates==='object'?c.settingRates[i+1]??'':''))),zeroCountGuess:c.zeroCountGuess!==false,countOnly:c.countOnly===true,includeTrend:c.includeTrend!==false,alias:String(c.alias||'')}));
+  d.counters=(Array.isArray(d.counters)?d.counters:DEFAULT_COUNTERS.map(name=>({name,count:0}))).map(c=>Object.assign(c,{name:String(c.name||'小役'),count:Number(c.count)||0,color:String(c.color||''),countMethod:String(c.countMethod||'プッシュ'),countFormula:String(c.countFormula||''),gameFormula:String(c.gameFormula||''),displayFormat:['fraction','percent'].includes(c.displayFormat)?c.displayFormat:'fraction',settingRates:Array.from({length:6},(_,i)=>String(Array.isArray(c.settingRates)?(c.settingRates[i]??''):(c.settingRates&&typeof c.settingRates==='object'?c.settingRates[i+1]??'':''))),zeroCountGuess:c.zeroCountGuess!==false,countOnly:c.countOnly===true,includeTrend:c.includeTrend!==false,alias:String(c.alias||'')}));
   if(!['2','1','first1','first2','first2four3','first2four3five1','memo'].includes(d.layout)) d.layout='first2four3';
   d.memo=String(d.memo||'');
   d.layoutNumber=String(d.layoutNumber??'');
