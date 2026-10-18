@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.484</title>
+<title>小役カウンター v1.1.485</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -177,7 +177,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 </style><style>
 .oniCzRecord{grid-template-columns:43px minmax(0,1fr) 39px 43px 90px 43px!important}
 .oniCzRecord .oniCzColorSelect{width:100%;min-width:0;height:38px;padding:0;border:1px solid #465367;border-radius:7px;background:#151b23;color:#fff;font-size:10px;text-align:center}
-</style><style>.oniCzColorSelect{text-align:center!important;text-align-last:center!important;padding:0!important}.oniCzColorSelect option{text-align:center}.oniCzPickerTrigger{text-align:left}</style></head>
+</style><style>.oniCzColorSelect{text-align:center!important;text-align-last:center!important;padding:0!important}.oniCzColorSelect option{text-align:center}.oniCzPickerTrigger{text-align:left}</style><style>.counterGrid.hokutoNormalGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.counterGrid.hokutoNormalGrid>.card:first-child{grid-column:1/-1}</style></head>
 <body>
 <main>
 <section class="topCard compactCard machineTop">
@@ -200,7 +200,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.484</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.485</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -248,10 +248,21 @@ const KABANERI_MACHINE='スマスロ 甲鉄城のカバネリ 海門決戦';
 const ORIGINAL_KABANERI_MACHINE='パチスロ甲鉄城のカバネリ';
 if(!state.machines[ORIGINAL_KABANERI_MACHINE])state.machines[ORIGINAL_KABANERI_MACHINE]=blankMachine();
 const HOKUTO_MACHINE='L北斗の拳';
+
 if(!state.machines[HOKUTO_MACHINE]){
   state.machines[HOKUTO_MACHINE]=blankMachine();
   localStorage.setItem(KEY,JSON.stringify(state));
 }
+{
+ const m=state.machines[HOKUTO_MACHINE];
+ if(m?.modes?.['通常']){
+  const d=m.modes['通常'];
+  if(!Array.isArray(d.counters))d.counters=[];
+  while(d.counters.length<3)d.counters.push({name:'小役'+(d.counters.length+1),count:0});
+  localStorage.setItem(KEY,JSON.stringify(state));
+ }
+}
+
 const MONSTER_HUNTER_RISE_MACHINE='Lモンスターハンターライズ';
 if(!state.machines[MONSTER_HUNTER_RISE_MACHINE]){
   state.machines[MONSTER_HUNTER_RISE_MACHINE]=blankMachine();
@@ -769,7 +780,7 @@ function render(){
   document.querySelector('.topGrid').style.display=hideGamesRow?'none':'';
   const d=displayData();
   document.getElementById("gamesInput").value=d.games;document.getElementById("startGamesInput").value=d.startGames||0;
-  const root=document.getElementById("counters");root.className='counterGrid '+(d.layout==='first2four3five1'?'firstTwoFourThreeFiveOne':d.layout==='first2four3'?'firstTwoFourThree':'');if(state.selected.includes('マイジャグラー'))root.classList.add('myJugglerTightRows');if([KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected) && displayMode==='通常' && !combined)root.classList.add('kabaneriNormalExtra');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='通常' && !combined)root.classList.add('bioRe3Grid');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='CZ' && !combined)root.classList.add('bioRe3CzTable');if(state.selected===ONIMUSHA2_MACHINE && displayMode==='AT終了画面' && !combined)root.classList.add('oniEndScreenGrid');if(state.selected===KABANERI_MACHINE && displayMode==='キャラ紹介・ボイス' && !combined)root.classList.add('kabaneriOmikuji');if(state.selected===KABANERI_MACHINE && displayMode==='おみくじ' && !combined)root.classList.add('kabaneriFortuneGrid');root.innerHTML="";
+  const root=document.getElementById("counters");root.className='counterGrid '+(d.layout==='first2four3five1'?'firstTwoFourThreeFiveOne':d.layout==='first2four3'?'firstTwoFourThree':'');if(state.selected===HOKUTO_MACHINE && displayMode==='通常' && !combined)root.classList.add('hokutoNormalGrid');if(state.selected.includes('マイジャグラー'))root.classList.add('myJugglerTightRows');if([KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected) && displayMode==='通常' && !combined)root.classList.add('kabaneriNormalExtra');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='通常' && !combined)root.classList.add('bioRe3Grid');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='CZ' && !combined)root.classList.add('bioRe3CzTable');if(state.selected===ONIMUSHA2_MACHINE && displayMode==='AT終了画面' && !combined)root.classList.add('oniEndScreenGrid');if(state.selected===KABANERI_MACHINE && displayMode==='キャラ紹介・ボイス' && !combined)root.classList.add('kabaneriOmikuji');if(state.selected===KABANERI_MACHINE && displayMode==='おみくじ' && !combined)root.classList.add('kabaneriFortuneGrid');root.innerHTML="";
   if(state.selected===MONSTER_HUNTER_RISE_MACHINE && displayMode==='通常' && !combined){
     root.className='monsterRiseForm';
     if(!Array.isArray(d.riseRecords))d.riseRecords=[];
