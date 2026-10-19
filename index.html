@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.489</title>
+<title>小役カウンター v1.1.490</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -200,7 +200,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.489</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.490</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -806,7 +806,7 @@ function render(){
     const heading=document.createElement('div');heading.textContent='入力履歴';heading.style.cssText='font-size:13px;font-weight:700;margin:4px 0 8px';history.appendChild(heading);
     d.macrossRecords.forEach((entry,i)=>{
       const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;background:#222c3a;border-radius:8px;font-size:14px';
-      const label=document.createElement('span');label.textContent=(i+1)+'回目　'+entry.value;row.appendChild(label);
+      const label=document.createElement('span');label.textContent=(i+1)+'回目　'+(entry.type?entry.type+'　':'')+(entry.value||'');row.appendChild(label);
       const del=document.createElement('button');del.type='button';del.textContent='削除';del.style.cssText='padding:6px 10px;border-radius:6px;background:#3b4556;color:#fff;font-size:12px';
       del.onclick=()=>{d.macrossRecords.splice(i,1);save()};row.appendChild(del);history.appendChild(row);
     });
@@ -814,9 +814,11 @@ function render(){
     const form=document.createElement('div');form.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:100;background:#151b23;border-top:1px solid #465367;padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px));box-shadow:0 -5px 20px #000b';
     const fields=document.createElement('div');fields.style.cssText='display:flex;align-items:center;gap:8px';
     const select=document.createElement('select');select.setAttribute('aria-label','数値');select.style.cssText='flex:1;min-width:0;height:44px;border-radius:8px;background:#253143;color:#fff;border:1px solid #566174;font-size:16px;text-align:center';
+    const typeSelect=document.createElement('select');typeSelect.setAttribute('aria-label','当選種別');typeSelect.style.cssText='width:96px;min-width:0;height:44px;border-radius:8px;background:#253143;color:#fff;border:1px solid #566174;font-size:14px;text-align:center';
+    ['CZ','直撃'].forEach(v=>typeSelect.add(new Option(v,v)));fields.appendChild(typeSelect);
     ['111','222','333','444','555','666','777','888'].forEach(v=>select.add(new Option(v,v)));fields.appendChild(select);
     const add=document.createElement('button');add.type='button';add.textContent='追加';add.style.cssText='padding:12px 26px;border-radius:9px;background:#2563eb;color:#fff;font-weight:800';
-    add.onclick=()=>{d.macrossRecords.push({value:select.value});save()};fields.appendChild(add);form.appendChild(fields);root.appendChild(form);
+    add.onclick=()=>{d.macrossRecords.push({type:typeSelect.value,value:select.value});save()};fields.appendChild(add);form.appendChild(fields);root.appendChild(form);
     return;
   }
   if(state.selected===MONSTER_HUNTER_RISE_MACHINE && displayMode==='通常' && !combined){
