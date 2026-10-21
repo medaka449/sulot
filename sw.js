@@ -1,5 +1,5 @@
-// PWA v1.1.545: app shell offline, fresh HTML online, image caching.
-const CACHE='koyaku-pwa-v1.1.545';
+// PWA v1.1.546: app shell offline, fresh HTML online, image caching.
+const CACHE='koyaku-pwa-v1.1.546';
 const SHELL=['./','./index.html','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{const cache=await caches.open(CACHE);await Promise.allSettled(SHELL.map(async path=>{const response=await fetch(path,{cache:'reload'});if(response.ok)await cache.put(path,response);}));await self.skipWaiting();})());
