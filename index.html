@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.533</title>
+<title>小役カウンター v1.1.534</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -200,7 +200,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.533</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.534</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -988,7 +988,7 @@ function render(){
     const atHeading=document.createElement('div');atHeading.textContent='AT'+atRound+'回目';atHeading.style.cssText='font-size:13px;font-weight:800;color:#dbeafe;padding:5px 3px 2px';history.appendChild(atHeading);
     d.riseRecords.forEach((entry,i)=>{
       const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;background:#222c3a;border-radius:8px;font-size:13px';
-      const label=document.createElement('span');label.textContent=(i+1)+'回目　'+entry.area+'　'+entry.points+'　';
+      const label=document.createElement('span');label.textContent=(i+1)+'回目　';const areaText=document.createElement('span');areaText.textContent=entry.area;areaText.style.color=({'大社跡':'#60a5fa','寒冷群島':'#4ade80','溶岩洞':'#f87171'})[entry.area]||'#fff';areaText.style.fontWeight='800';label.appendChild(areaText);label.appendChild(document.createTextNode('　'+entry.points+'　'));
       const color=document.createElement('span');color.textContent=entry.color;color.style.fontWeight='800';color.style.color=({'白':'#f8fafc','青':'#60a5fa','黄':'#facc15','緑':'#4ade80','赤':'#f87171'})[entry.color]||'#fff';
       label.appendChild(color);row.appendChild(label);
       history.appendChild(row);
@@ -1006,7 +1006,7 @@ function render(){
       const select=document.createElement('select');select.style.cssText='width:100%;height:42px;min-width:0;border-radius:8px;background:#253143;color:white;border:1px solid #566174;font-size:14px';
       values.forEach(v=>select.add(new Option(v,v)));wrap.appendChild(select);fields.appendChild(wrap);return select;
     };
-    const area=makeSelect('フィールド',['大社跡','寒冷群島','溶岩洞']);
+    const area=makeSelect('フィールド',['大社跡','寒冷群島','溶岩洞']);const updateAreaColor=()=>{area.style.color=({'大社跡':'#60a5fa','寒冷群島':'#4ade80','溶岩洞':'#f87171'})[area.value]||'#fff';area.style.fontWeight='800'};area.addEventListener('change',updateAreaColor);updateAreaColor();
     const points=makeSelect('ポイント',['100','200','300','400','500','600']);
     const color=makeSelect('色',['-','白','青','黄','緑','赤']);
     form.appendChild(fields);
