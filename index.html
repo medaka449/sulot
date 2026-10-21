@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.574</title>
+<title>小役カウンター v1.1.575</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -431,12 +431,12 @@ localStorage.setItem(KEY,JSON.stringify(state));
   if(JSON.stringify(old)!==JSON.stringify(updated)){d.counters=updated;changed=true}
   if(d.layout!=='2'){d.layout='2';changed=true}
   // RB専用画面へ移動。通常画面からRB項目を取り除く。
-  const rbNames=['RB','1枚役回避','ハズレ'];
+  const rbNames=['RB','1枚役回避','ハズレ4回以下','ハズレ5・6回','ハズレ7回以上'];
   if(!m.modes['RB']){m.modes['RB']=blankData();changed=true}
   const rbData=m.modes['RB'];
   const rbOld=Array.isArray(rbData.counters)?rbData.counters:[];
   const rbNew=rbNames.map((name,i)=>{
-    const oldName=i===2?'ハズレ（RB）':name;
+    const oldName=name;
     const saved=rbOld.find(c=>c.name===name)||old.find(c=>c.name===oldName);
     return saved?{...saved,name,color:i===0?'#dc2626':saved.color||''}:{name,count:0,color:i===0?'#dc2626':''};
   });
