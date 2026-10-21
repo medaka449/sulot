@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.565</title>
+<title>小役カウンター v1.1.566</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -396,7 +396,7 @@ localStorage.setItem(KEY,JSON.stringify(state));
   const d=m.modes['通常']||(m.modes['通常']=blankData());
   const defs=[
    ['BB','#dc2626', 'BIG回数','通常'],
-   ['平行ベル','#eab308','平行ベル','通常'],
+   ['斜めベル','#eab308','斜めベル','通常'],
    ['ハズレ','', 'ハズレ','通常'],
    ['リプレイ','', 'リプレイ','ボーナス中'],
    ['ハズレ（ボーナス中）','', 'ハズレ','ボーナス中'],
@@ -409,9 +409,9 @@ localStorage.setItem(KEY,JSON.stringify(state));
    const saved=old.find(x=>x.name===name)||source.find(x=>x.name===legacy);
    return saved?{...saved,name,color:color||saved.color||''}:{name,count:0,color};
   });
-  // BIG中の平行風鈴・バラケ目：設定1/2/5/6の公表値
+  // BIG中の斜め風鈴・バラケ目：設定1/2/5/6の公表値
   const bigRates={
-    '平行ベル':['1/1.10','1/1.13','','','1/1.10','1/1.13'],
+    '斜めベル':['1/11.0','1/9.0','','','1/11.0','1/9.0'],
     'ハズレ':['1/16384.0','1/16384.0','','','1/16384.0','1/655.4']
   };
   updated.forEach(counter=>{
@@ -741,7 +741,7 @@ function rate(n,data,counter){
   const count=counter?effectiveCount(data,counter):Number(n)||0;
   if(state.selected==='S新ハナビ' && displayMode==='通常' && data===currentData()){
     if(counter?.name==='BB')return '';
-    if(['平行ベル','ハズレ'].includes(counter?.name)){
+    if(['斜めベル','ハズレ'].includes(counter?.name)){
       const bb=Number((data.counters||[]).find(x=>x.name==='BB')?.count)||0;
       const denominator=bb*24;
       if(count<=0||denominator<=0)return '1/0.00';
@@ -2309,7 +2309,7 @@ function judgeSetting(){
     if(count<=0 && c.zeroCountGuess===false)return;
     let exposure=Number(d.games)||0;
     const gf=String(c.gameFormula||'').trim();
-    if(state.selected==='S新ハナビ' && displayMode==='通常' && ['平行ベル','ハズレ'].includes(c.name))exposure=(Number((d.counters||[]).find(x=>x.name==='BB')?.count)||0)*24;
+    if(state.selected==='S新ハナビ' && displayMode==='通常' && ['斜めベル','ハズレ'].includes(c.name))exposure=(Number((d.counters||[]).find(x=>x.name==='BB')?.count)||0)*24;
     else if(gf)exposure=calcGameFormula(d,c);
     if(!Number.isFinite(exposure)||exposure<=0)return;
     const observed=count/exposure;
