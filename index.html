@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.529</title>
+<title>小役カウンター v1.1.530</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -200,7 +200,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.529</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.530</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -984,12 +984,19 @@ function render(){
     const history=document.createElement('div');
     history.style.cssText='display:flex;flex-direction:column;gap:7px;padding-bottom:170px';
     const heading=document.createElement('div');heading.textContent='入力履歴';heading.style.cssText='font-size:13px;font-weight:700;margin:4px 0 8px';history.appendChild(heading);
+    let atRound=1;
+    const atHeading=document.createElement('div');atHeading.textContent='AT'+atRound+'回目';atHeading.style.cssText='font-size:13px;font-weight:800;color:#dbeafe;padding:5px 3px 2px';history.appendChild(atHeading);
     d.riseRecords.forEach((entry,i)=>{
       const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;background:#222c3a;border-radius:8px;font-size:13px';
       const label=document.createElement('span');label.textContent=(i+1)+'回目　'+entry.area+'　'+entry.points+'　'+(entry.winType||'')+'　';
       const color=document.createElement('span');color.textContent=entry.color;color.style.fontWeight='800';color.style.color=({'白':'#f8fafc','青':'#60a5fa','黄':'#facc15','緑':'#4ade80','赤':'#f87171'})[entry.color]||'#fff';
       label.appendChild(color);row.appendChild(label);
       history.appendChild(row);
+      if(entry.winType && entry.winType!=='クエスト失敗' && entry.winType!=='-'){
+        const separator=document.createElement('div');separator.textContent='--'+entry.winType+'--';separator.style.cssText='text-align:center;font-size:13px;font-weight:800;color:#facc15;padding:7px 0 4px';history.appendChild(separator);
+        atRound++;
+        const next=document.createElement('div');next.textContent='AT'+atRound+'回目';next.style.cssText='font-size:13px;font-weight:800;color:#dbeafe;padding:5px 3px 2px';history.appendChild(next);
+      }
     });
     root.appendChild(history);
     const form=document.createElement('div');form.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:100;background:#151b23;border-top:1px solid #465367;padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px));box-shadow:0 -5px 20px #000b';
