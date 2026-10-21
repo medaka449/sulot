@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.531</title>
+<title>小役カウンター v1.1.532</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -200,7 +200,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.531</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.532</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -1000,7 +1000,7 @@ function render(){
     });
     root.appendChild(history);
     const form=document.createElement('div');form.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:100;background:#151b23;border-top:1px solid #465367;padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px));box-shadow:0 -5px 20px #000b';
-    const fields=document.createElement('div');fields.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:10px';
+    const fields=document.createElement('div');fields.style.cssText='display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.8fr) minmax(0,.65fr) minmax(0,1.5fr);gap:5px;margin-bottom:10px';
     const makeSelect=(label,values)=>{
       const wrap=document.createElement('label');wrap.style.cssText='display:flex;flex-direction:column;gap:5px;text-align:center;font-size:12px';wrap.textContent=label;
       const select=document.createElement('select');select.style.cssText='width:100%;height:42px;min-width:0;border-radius:8px;background:#253143;color:white;border:1px solid #566174;font-size:14px';
@@ -1013,7 +1013,7 @@ function render(){
     const add=document.createElement('button');add.type='button';add.textContent='追加';add.style.cssText='width:100%;padding:12px;border-radius:9px;background:#2563eb;color:#fff;font-weight:800';
     add.onclick=()=>{d.riseRecords.push({area:area.value,points:points.value,color:color.value,winType:winType.value});save()};
     const winType=document.createElement('select');winType.setAttribute('aria-label','当選種別');winType.style.cssText='flex:1;min-width:0;height:44px;border-radius:8px;background:#253143;color:#fff;border:1px solid #566174;font-size:12px';['クエスト失敗','クエストによる当選','CZ・直撃による当選','書き換えによる当選'].forEach(v=>winType.add(new Option(v,v)));
-    const winLabel=document.createElement('label');winLabel.textContent='当選種別';winLabel.style.cssText='display:flex;flex-direction:row;align-items:center;gap:10px;font-size:13px;font-weight:700;text-align:left;margin-bottom:10px';winType.style.cssText+=';flex:1;min-width:0;width:auto';winLabel.appendChild(winType);form.appendChild(winLabel);const remove=document.createElement('button');remove.type='button';remove.textContent='削除';remove.style.cssText='flex:1;padding:12px 8px;border-radius:9px;background:#3b4556;color:#fff;font-weight:800';remove.onclick=()=>{if(d.riseRecords.length){d.riseRecords.pop();save()}};const actionRow=document.createElement('div');actionRow.style.cssText='display:flex;align-items:center;gap:8px';add.style.cssText='flex:1;padding:12px 8px;border-radius:9px;background:#2563eb;color:#fff;font-weight:800';actionRow.append(remove,add);form.appendChild(actionRow);root.appendChild(form);
+    const winLabel=document.createElement('label');winLabel.textContent='当選種別';winLabel.style.cssText='display:flex;flex-direction:column;gap:5px;text-align:center;font-size:12px;min-width:0';winType.style.cssText+=';width:100%;min-width:0;height:42px;font-size:11px';winLabel.appendChild(winType);fields.appendChild(winLabel);const remove=document.createElement('button');remove.type='button';remove.textContent='削除';remove.style.cssText='flex:1;padding:12px 8px;border-radius:9px;background:#3b4556;color:#fff;font-weight:800';remove.onclick=()=>{if(d.riseRecords.length){d.riseRecords.pop();save()}};const actionRow=document.createElement('div');actionRow.style.cssText='display:flex;align-items:center;gap:8px';add.style.cssText='flex:1;padding:12px 8px;border-radius:9px;background:#2563eb;color:#fff;font-weight:800';actionRow.append(remove,add);form.appendChild(actionRow);root.appendChild(form);
     return;
   }
   if(state.selected===ONIMUSHA2_MACHINE && displayMode==='CZ' && !combined){
