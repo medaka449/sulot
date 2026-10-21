@@ -988,14 +988,14 @@ function render(){
     const atHeading=document.createElement('div');atHeading.textContent='AT'+atRound+'回目';atHeading.style.cssText='font-size:13px;font-weight:800;color:#dbeafe;padding:5px 3px 2px';history.appendChild(atHeading);
     d.riseRecords.forEach((entry,i)=>{
       const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;background:#222c3a;border-radius:8px;font-size:13px';
-      const label=document.createElement('span');label.textContent=(i+1)+'回目　'+entry.area+'　'+entry.points+'　'+(entry.winType||'')+'　';
+      const label=document.createElement('span');label.textContent=(i+1)+'回目　'+entry.area+'　'+entry.points+'　';
       const color=document.createElement('span');color.textContent=entry.color;color.style.fontWeight='800';color.style.color=({'白':'#f8fafc','青':'#60a5fa','黄':'#facc15','緑':'#4ade80','赤':'#f87171'})[entry.color]||'#fff';
       label.appendChild(color);row.appendChild(label);
       history.appendChild(row);
       if(entry.winType && entry.winType!=='クエスト失敗' && entry.winType!=='-'){
         const separator=document.createElement('div');separator.textContent='--'+entry.winType+'--';separator.style.cssText='text-align:center;font-size:13px;font-weight:800;color:#facc15;padding:7px 0 4px';history.appendChild(separator);
         atRound++;
-        const next=document.createElement('div');next.textContent='AT'+atRound+'回目';next.style.cssText='font-size:13px;font-weight:800;color:#dbeafe;padding:5px 3px 2px';history.appendChild(next);
+        if(i<d.riseRecords.length-1){const next=document.createElement('div');next.textContent='AT'+atRound+'回目';next.style.cssText='font-size:13px;font-weight:800;color:#dbeafe;padding:5px 3px 2px';history.appendChild(next);}
       }
     });
     root.appendChild(history);
