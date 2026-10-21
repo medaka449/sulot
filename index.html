@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.583</title>
+<title>小役カウンター v1.1.584</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -448,7 +448,8 @@ localStorage.setItem(KEY,JSON.stringify(state));
   if(JSON.stringify(rbOld)!==JSON.stringify(rbNew)){rbData.counters=rbNew;changed=true}
   const normalOnly=updated.filter(c=>['BB','斜めベル','ハズレ'].includes(c.name));
   if(JSON.stringify(d.counters)!==JSON.stringify(normalOnly)){d.counters=normalOnly;changed=true}
-  if(JSON.stringify(m.modeOrder)!==JSON.stringify(['BB・RT','RB'])){m.modeOrder=['通常','RB'];changed=true}
+  if(m.modes['通常']){delete m.modes['通常'];changed=true}
+  if(JSON.stringify(m.modeOrder)!==JSON.stringify(['BB・RT','RB'])){m.modeOrder=['BB・RT','RB'];changed=true}
   if(changed)localStorage.setItem(KEY,JSON.stringify(state));
  }
 }
