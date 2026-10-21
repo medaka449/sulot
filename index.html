@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.547</title>
+<title>小役カウンター v1.1.548</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -229,7 +229,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.547</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.548</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -2296,30 +2296,32 @@ function judgeSetting(){
     });
     riseJudge={total:valid.length,lamps:valid.filter(e=>lamps[e.color]).length,likelihoods};
   }
-  const logs=Array(6).fill(-Infinity);
   const allowedJudge=Array.isArray(current()?.settingLevels)&&current().settingLevels.length?current().settingLevels:[1,2,3,4,5,6];
-  usable.forEach(u=>u.expected.forEach((p,i)=>{if(allowedJudge.includes(i+1)&&p>0){const lambda=u.exposure*p;const k=u.count;logs[i]=(Number.isFinite(logs[i])?logs[i]:0)+k*Math.log(lambda)-lambda-(k>1?(k*Math.log(k)-k):0)}}));
-  if(oniCzJudge?.total){
-    const {total,hits,rates}=oniCzJudge;
-    rates.forEach((pct,i)=>{
-      if(!allowedJudge.includes(i+1))return;
-      const p=pct/100;
-      const ll=hits*Math.log(p)+(total-hits)*Math.log(1-p);
-      logs[i]=(Number.isFinite(logs[i])?logs[i]:0)+ll;
-    });
-  }
-  if(darumaJudge?.total){
-    darumaJudge.rates.forEach((rates,i)=>{
-      if(!allowedJudge.includes(i+1))return;
-      const logLikelihood=darumaJudge.observed.reduce((sum,n,j)=>sum+n*Math.log(rates[j]/100),0);
-      logs[i]=(Number.isFinite(logs[i])?logs[i]:0)+logLikelihood;
-    });
-  }
-  if(riseJudge?.total)riseJudge.likelihoods.forEach((ll,i)=>{if(allowedJudge.includes(i+1))logs[i]=(Number.isFinite(logs[i])?logs[i]:0)+ll});
-  const finiteLogs=logs.filter(Number.isFinite);
-  const max=finiteLogs.length?Math.max(...finiteLogs):-Infinity;
-  const weights=logs.map(x=>Number.isFinite(x)&&max>-Infinity?Math.exp(x-max):0);
   const active=Array(6).fill(false);allowedJudge.forEach(n=>{active[n-1]=true});
+  const judgeFactors=[];
+  usable.forEach((u,i)=>judgeFactors.push({key:'counter-'+i,label:u.c.name||'小役'+(i+1),detail:'実測 '+u.count+'回',apply:logs=>{
+    u.expected.forEach((p,j)=>{if(allowedJudge.includes(j+1)&&p>0){const lambda=u.exposure*p,k=u.count;logs[j]=(Number.isFinite(logs[j])?logs[j]:0)+k*Math.log(lambda)-lambda-(k>1?(k*Math.log(k)-k):0)}});
+  }}));
+  if(oniCzJudge?.total)judgeFactors.push({key:'oni-cz',label:'鬼武者2 CZテーブル',detail:oniCzJudge.hits+' / '+oniCzJudge.total+'回',apply:logs=>{
+    oniCzJudge.rates.forEach((pct,i)=>{if(!allowedJudge.includes(i+1))return;const p=pct/100;logs[i]=(Number.isFinite(logs[i])?logs[i]:0)+oniCzJudge.hits*Math.log(p)+(oniCzJudge.total-oniCzJudge.hits)*Math.log(1-p)});
+  }});
+  if(darumaJudge?.total)judgeFactors.push({key:'daruma',label:'アイルーだるま落とし',detail:darumaJudge.total+'回',apply:logs=>{
+    darumaJudge.rates.forEach((rates,i)=>{if(allowedJudge.includes(i+1)){const ll=darumaJudge.observed.reduce((sum,n,j)=>sum+n*Math.log(rates[j]/100),0);logs[i]=(Number.isFinite(logs[i])?logs[i]:0)+ll}});
+  }});
+  if(riseJudge?.total)judgeFactors.push({key:'rise',label:'モンハンライズ モード・ポイント・ランプ',detail:riseJudge.total+'件',apply:logs=>{
+    riseJudge.likelihoods.forEach((ll,i)=>{if(allowedJudge.includes(i+1))logs[i]=(Number.isFinite(logs[i])?logs[i]:0)+ll});
+  }});
+  const factorEnabled=new Map(judgeFactors.map(f=>[f.key,true]));
+  let weights=Array(6).fill(0);
+  const recomputeWeights=()=>{
+    const logs=Array(6).fill(-Infinity);
+    judgeFactors.forEach(f=>{if(factorEnabled.get(f.key))f.apply(logs)});
+    const finite=logs.filter(Number.isFinite),max=finite.length?Math.max(...finite):-Infinity;
+    weights=logs.map(x=>Number.isFinite(x)&&max>-Infinity?Math.exp(x-max):0);
+    // 要素を全て外した場合は設定間に差がないため均等表示
+    if(!finite.length)weights=allowedJudge.map(()=>1).length?Array.from({length:6},(_,i)=>allowedJudge.includes(i+1)?1:0):weights;
+  };
+  recomputeWeights();
   const calcProbs=()=>{
     const selected=weights.map((w,i)=>active[i]?w:0);
     const sum=selected.reduce((a,b)=>a+b,0);
@@ -2391,6 +2393,18 @@ function judgeSetting(){
   box.appendChild(grid);
   renderRows();
 
+  const factorBox=document.createElement('div');factorBox.className='judgeFactors';
+  factorBox.style.cssText='background:#121e30;border:1px solid #31435a;border-radius:12px;padding:10px;margin-top:9px;color:#e6efff';
+  const factorTitle=document.createElement('div');factorTitle.textContent='設定判別要素（チェックを外すと計算から除外）';factorTitle.style.cssText='font-size:13px;font-weight:800;margin-bottom:7px';factorBox.appendChild(factorTitle);
+  if(!judgeFactors.length){const empty=document.createElement('div');empty.textContent='現在、判別に使用できるデータはありません';empty.style.fontSize='12px';factorBox.appendChild(empty)}
+  judgeFactors.forEach(f=>{
+    const label=document.createElement('label');label.style.cssText='display:flex;align-items:center;gap:9px;padding:7px 3px;border-top:1px solid #304159;font-size:12px;cursor:pointer';
+    const input=document.createElement('input');input.type='checkbox';input.checked=true;input.style.cssText='width:18px;height:18px;flex-shrink:0;accent-color:#38bdf8';
+    const name=document.createElement('span');name.textContent=f.label+'（'+f.detail+'）';name.style.cssText='flex:1;min-width:0;overflow-wrap:anywhere';
+    input.addEventListener('change',()=>{factorEnabled.set(f.key,input.checked);recomputeWeights();renderRows()});
+    label.append(input,name);factorBox.appendChild(label);
+  });
+  box.appendChild(factorBox);
   const detail=document.createElement('div');detail.className='judgeDetail';
   const detailTitle=document.createElement('div');detailTitle.className='judgeDetailTitle';detailTitle.textContent='設定判別要素';detail.appendChild(detailTitle);
   if(riseJudge?.total){
