@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.580</title>
+<title>小役カウンター v1.1.581</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -38,7 +38,7 @@ body:has(.counterGrid.hanabiFour) .topGrid{display:none!important}
 .counterGrid.hanabiRbGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .counterGrid.hanabiRbGrid>.card{grid-column:auto!important;min-width:0;padding:6px 3px}
 .counterGrid.hanabiRbGrid>.card .name{font-size:clamp(9px,2.4vw,12px);overflow-wrap:anywhere}
-.counterGrid.hanabiRbGrid>.card:last-child{grid-column:1 / -1!important}
+.counterGrid.hanabiRbGrid>.card:last-child{grid-column:auto!important}
 /* 新ハナビ：BIG・斜めベル・平行ベル・ハズレを横一列 */
 .counterGrid.hanabiFour>.card{min-width:0;padding:5px 2px}
 .counterGrid.hanabiFour>.card .name{font-size:clamp(9px,2.3vw,12px);overflow-wrap:anywhere}
@@ -444,6 +444,7 @@ localStorage.setItem(KEY,JSON.stringify(state));
     const saved=rbOld.find(c=>c.name===name)||old.find(c=>c.name===oldName);
     return saved?{...saved,name,color:i===0?'#dc2626':saved.color||''}:{name,count:0,color:i===0?'#dc2626':''};
   });
+  rbNew.forEach(c=>{if(!c.countOnly){c.countOnly=true;changed=true}});
   if(JSON.stringify(rbOld)!==JSON.stringify(rbNew)){rbData.counters=rbNew;changed=true}
   const normalOnly=updated.filter(c=>['BB','斜めベル','ハズレ'].includes(c.name));
   if(JSON.stringify(d.counters)!==JSON.stringify(normalOnly)){d.counters=normalOnly;changed=true}
