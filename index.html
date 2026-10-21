@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.571</title>
+<title>小役カウンター v1.1.572</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -399,11 +399,14 @@ localStorage.setItem(KEY,JSON.stringify(state));
    ['BB','#dc2626', 'BIG回数','通常'],
    ['斜めベル','#eab308','斜めベル','通常'],
    ['ハズレ','', 'ハズレ','通常'],
-   ['リプレイ','#2563eb', 'リプレイ','ボーナス中'],
-   ['ハズレ（ボーナス中）','', 'ハズレ','ボーナス中'],
+   ['RB','#dc2626', 'RB','RB'],
+   ['1枚役回避','', '1枚役回避','RB'],
+   ['ハズレ（RB）','', 'ハズレ（RB）','RB'],
    ['RTリプレイ','#2563eb', 'RTリプレイ','RT中'],
    ['ハズレ（RT中）','', 'ハズレ','RT中']
   ];
+  // 旧ボーナス中の表示・カウンターはRB専用に切替
+  if(m.modes['ボーナス中']){delete m.modes['ボーナス中'];changed=true}
   const old=Array.isArray(d.counters)?d.counters:[];
   const updated=defs.map(([name,color,legacy,mode])=>{
    const source=mode==='通常'?old:(m.modes[mode]?.counters||[]);
@@ -1434,7 +1437,7 @@ const target=currentData().counters.includes(c)?c:currentData().counters[counter
         card.style.minHeight='0';
       }
     }
-    if(state.selected==='S新ハナビ' && displayMode==='通常' && !combined){if(c.name==='ハズレ（ボーナス中）'||c.name==='ハズレ（RT中）'){const n=card.querySelector('.name');if(n)n.textContent='ハズレ'}}
+    if(state.selected==='S新ハナビ' && displayMode==='通常' && !combined){if(c.name==='ハズレ（RB）'||c.name==='ハズレ（RT中）'){const n=card.querySelector('.name');if(n)n.textContent='ハズレ'}}
     root.appendChild(card);
   });
   if(state.selected===HOKUTO_MACHINE && displayMode==='通常・AT' && !combined){
