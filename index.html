@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.508</title>
+<title>小役カウンター v1.1.509</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -200,7 +200,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.508</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.509</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -710,7 +710,7 @@ function render(){
         kegareChanged=true;
       }
       const kegare=machine.modes['穢れ'];
-      const kegareNames=['CZ失敗','駿城ボーナス失敗','CZ前兆失敗(発光時)','周期前兆失敗','貫け鋼の魂失敗'];
+      const kegareNames=['CZ前兆失敗(発光時)','周期前兆失敗','CZ失敗','駿城ボーナス失敗','貫け鋼の魂失敗'];
       if(!Array.isArray(kegare.counters))kegare.counters=[];
       const beforeKegareCount=kegare.counters.length;
       kegare.counters=kegare.counters.filter(x=>!['ベル','チェリー','スイカ'].includes(x.name));
@@ -721,6 +721,12 @@ function render(){
           kegareChanged=true;
         }
       }
+      const kegareOrder=['CZ前兆失敗(発光時)','周期前兆失敗','CZ失敗','駿城ボーナス失敗','貫け鋼の魂失敗'];
+      const orderedKegare=[...kegare.counters].sort((a,b)=>{
+        const ai=kegareOrder.indexOf(a.name),bi=kegareOrder.indexOf(b.name);
+        return (ai<0?999:ai)-(bi<0?999:bi);
+      });
+      if(orderedKegare.some((item,i)=>item!==kegare.counters[i])){kegare.counters=orderedKegare;kegareChanged=true;}
       if(!Array.isArray(machine.modeOrder))machine.modeOrder=Object.keys(machine.modes);
       if(!machine.modeOrder.includes('穢れ')){machine.modeOrder.push('穢れ');kegareChanged=true;}
       if(kegareChanged)save();
@@ -844,11 +850,18 @@ function render(){
   syncEntryMode();
   if(entryMode==='income'){renderIncome();return;}
   // キャラ紹介・ボイスとおみくじではゲーム数入力行を表示しない
-  const hideGamesRow=(state.selected===KABANERI_MACHINE && (displayMode==='キャラ紹介・ボイス'||displayMode==='おみくじ') || state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='CZ' || state.selected===ONIMUSHA2_MACHINE && displayMode==='CZ' || state.selected===MONSTER_HUNTER_RISE_MACHINE && displayMode==='通常') && !combined;
+  const hideGamesRow=(state.selected===KABANERI_MACHINE && (displayMode==='キャラ紹介・ボイス'||displayMode==='おみくじ'||displayMode==='穢れ') || state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='CZ' || state.selected===ONIMUSHA2_MACHINE && displayMode==='CZ' || state.selected===MONSTER_HUNTER_RISE_MACHINE && displayMode==='通常') && !combined;
   document.querySelector('.topGrid').style.display=hideGamesRow?'none':'';
   const d=displayData();
   document.getElementById("gamesInput").value=d.games;document.getElementById("startGamesInput").value=d.startGames||0;
-  const root=document.getElementById("counters");root.className='counterGrid '+(d.layout==='first2four3five1'?'firstTwoFourThreeFiveOne':d.layout==='first2four3'?'firstTwoFourThree':'');if(state.selected===HOKUTO_MACHINE && displayMode==='通常・AT' && !combined)root.classList.add('hokutoNormalGrid');if(state.selected.includes('マイジャグラー'))root.classList.add('myJugglerTightRows');if([KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected) && displayMode==='通常' && !combined)root.classList.add('kabaneriNormalExtra');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='通常' && !combined)root.classList.add('bioRe3Grid');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='CZ' && !combined)root.classList.add('bioRe3CzTable');if(state.selected===ONIMUSHA2_MACHINE && displayMode==='AT終了画面' && !combined)root.classList.add('oniEndScreenGrid');if(state.selected===KABANERI_MACHINE && displayMode==='キャラ紹介・ボイス' && !combined)root.classList.add('kabaneriOmikuji');if(state.selected===KABANERI_MACHINE && displayMode==='おみくじ' && !combined)root.classList.add('kabaneriFortuneGrid');root.innerHTML="";
+  const root=document.getElementById("counters");root.className='counterGrid '+(d.layout==='first2four3five1'?'firstTwoFourThreeFiveOne':d.layout==='first2four3'?'firstTwoFourThree':'');if(state.selected===HOKUTO_MACHINE && displayMode==='通常・AT' && !combined)root.classList.add('hokutoNormalGrid');if(state.selected.includes('マイジャグラー'))root.classList.add('myJugglerTightRows');if([KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected) && displayMode==='通常' && !combined)root.classList.add('kabaneriNormalExtra');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='通常' && !combined)root.classList.add('bioRe3Grid');if(state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='CZ' && !combined)root.classList.add('bioRe3CzTable');if(state.selected===ONIMUSHA2_MACHINE && displayMode==='AT終了画面' && !combined)root.classList.add('oniEndScreenGrid');if(state.selected===KABANERI_MACHINE && displayMode==='キャラ紹介・ボイス' && !combined)root.classList.add('kabaneriOmikuji');if(state.selected===KABANERI_MACHINE && displayMode==='おみくじ' && !combined)root.classList.add('kabaneriFortuneGrid');if(state.selected===KABANERI_MACHINE && displayMode==='穢れ' && !combined){
+    root.style.gridTemplateColumns='repeat(4,minmax(0,1fr))';
+    root.classList.add('kegareFourColumns');
+  }else{
+    root.style.gridTemplateColumns='';
+    root.classList.remove('kegareFourColumns');
+  }
+  root.innerHTML="";
   let kegareExpected=document.getElementById('kegareExpectedPoints');
   if(!kegareExpected){
     kegareExpected=document.createElement('div');
