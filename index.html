@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.570</title>
+<title>小役カウンター v1.1.571</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -522,6 +522,10 @@ if(!state.machines[BIOHAZARD_RE3_MACHINE])state.machines[BIOHAZARD_RE3_MACHINE]=
     if(bio.counters[0]){
       if(bio.counters[0].name!=='斜めベル'){bio.counters[0].name='斜めベル';changed=true}
       if(bio.counters[0].color!=='#eab308'){bio.counters[0].color='#eab308';changed=true}
+      const bellRates=['1/20.0','1/19.3','1/18.6','1/18.0','1/17.2','1/15.9'];
+      if(JSON.stringify(bio.counters[0].settingRates)!==JSON.stringify(bellRates)){bio.counters[0].settingRates=bellRates;changed=true}
+      if(bio.counters[0].gameFormula){bio.counters[0].gameFormula='';changed=true}
+
     }
     // 下段の10個は50刻みのポイント名にする。カウントは維持。
     for(let i=1;i<=10;i++){
