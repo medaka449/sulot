@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.577</title>
+<title>小役カウンター v1.1.578</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -38,6 +38,7 @@ body:has(.counterGrid.hanabiFour) .topGrid{display:none!important}
 .counterGrid.hanabiRbGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .counterGrid.hanabiRbGrid>.card{grid-column:auto!important;min-width:0;padding:6px 3px}
 .counterGrid.hanabiRbGrid>.card .name{font-size:clamp(9px,2.4vw,12px);overflow-wrap:anywhere}
+.counterGrid.hanabiRbGrid>.card:last-child{grid-column:1 / -1!important}
 /* 新ハナビ：BIG・斜めベル・平行ベル・ハズレを横一列 */
 .counterGrid.hanabiFour>.card{min-width:0;padding:5px 2px}
 .counterGrid.hanabiFour>.card .name{font-size:clamp(9px,2.3vw,12px);overflow-wrap:anywhere}
@@ -434,7 +435,7 @@ localStorage.setItem(KEY,JSON.stringify(state));
   if(JSON.stringify(old)!==JSON.stringify(updated)){d.counters=updated;changed=true}
   if(d.layout!=='2'){d.layout='2';changed=true}
   // RB専用画面へ移動。通常画面からRB項目を取り除く。
-  const rbNames=['RB','1枚役回避','ハズレ','ハズレ4回以下','ハズレ5・6回','ハズレ7回以上'];
+  const rbNames=['RB','1枚役回避','ハズレ','ハズレ4回以下','ハズレ5・6回','ハズレ7回以上','ピース花火'];
   if(!m.modes['RB']){m.modes['RB']=blankData();changed=true}
   const rbData=m.modes['RB'];
   const rbOld=Array.isArray(rbData.counters)?rbData.counters:[];
