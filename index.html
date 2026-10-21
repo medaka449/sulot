@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.568</title>
+<title>小役カウンター v1.1.569</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -34,8 +34,6 @@ button{border:0;touch-action:manipulation;color:#fff;font:inherit;font-weight:70
 .counterGrid.hanabiThreeRows>.card:nth-child(-n+3){grid-column:span 2}
 .counterGrid.hanabiThreeRows>.card:nth-child(n+4){grid-column:span 3}
 .counterGrid.hanabiThreeRows>.card .name{font-size:clamp(9px,2.3vw,12px)}
-.counterGrid .hanabiDiagonalBell{position:relative;padding-top:17px!important}
-.counterGrid .hanabiBBLabel{position:absolute;top:3px;left:5px;font-size:10px;font-weight:800;color:#f87171;line-height:1;pointer-events:none}
 body:has(.counterGrid.hanabiFour) .topGrid{display:none!important}
 /* 新ハナビ：BIG・斜めベル・平行ベル・ハズレを横一列 */
 .counterGrid.hanabiFour>.card{min-width:0;padding:5px 2px}
@@ -1433,13 +1431,6 @@ const target=currentData().counters.includes(c)?c:currentData().counters[counter
       }
     }
     if(state.selected==='S新ハナビ' && displayMode==='通常' && !combined){if(c.name==='ハズレ（ボーナス中）'||c.name==='ハズレ（RT中）'){const n=card.querySelector('.name');if(n)n.textContent='ハズレ'}}
-    if(state.selected==='S新ハナビ' && displayMode==='通常' && !combined && c.name==='斜めベル'){
-      card.classList.add('hanabiDiagonalBell');
-      const bbLabel=document.createElement('span');
-      bbLabel.className='hanabiBBLabel';
-      bbLabel.textContent='BB';
-      card.appendChild(bbLabel);
-    }
     root.appendChild(card);
   });
   if(state.selected===HOKUTO_MACHINE && displayMode==='通常・AT' && !combined){
