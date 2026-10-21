@@ -1211,9 +1211,30 @@
               "alias": ""
             },
             {
-              "name": "カウント7",
+              "name": "無音",
               "count": 0,
-              "color": "",
+              "color": "#258449",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "この台普通じゃないよ",
+              "count": 0,
+              "color": "#38bdf8",
               "countMethod": "プッシュ",
               "countFormula": "",
               "gameFormula": "",
@@ -1286,48 +1307,6 @@
           "startGames": 0,
           "counters": [
             {
-              "name": "CZ失敗",
-              "count": 0,
-              "color": "#a78bfa",
-              "countMethod": "プッシュ",
-              "countFormula": "",
-              "gameFormula": "",
-              "displayFormat": "fraction",
-              "settingRates": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "zeroCountGuess": true,
-              "countOnly": false,
-              "includeTrend": true,
-              "alias": ""
-            },
-            {
-              "name": "駿城ボーナス失敗",
-              "count": 0,
-              "color": "#a78bfa",
-              "countMethod": "プッシュ",
-              "countFormula": "",
-              "gameFormula": "",
-              "displayFormat": "fraction",
-              "settingRates": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-              ],
-              "zeroCountGuess": true,
-              "countOnly": false,
-              "includeTrend": true,
-              "alias": ""
-            },
-            {
               "name": "CZ前兆失敗(発光時)",
               "count": 0,
               "color": "#a78bfa",
@@ -1350,6 +1329,48 @@
             },
             {
               "name": "周期前兆失敗",
+              "count": 0,
+              "color": "#a78bfa",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "CZ失敗",
+              "count": 0,
+              "color": "#a78bfa",
+              "countMethod": "プッシュ",
+              "countFormula": "",
+              "gameFormula": "",
+              "displayFormat": "fraction",
+              "settingRates": [
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+              ],
+              "zeroCountGuess": true,
+              "countOnly": false,
+              "includeTrend": true,
+              "alias": ""
+            },
+            {
+              "name": "駿城ボーナス失敗",
               "count": 0,
               "color": "#a78bfa",
               "countMethod": "プッシュ",
