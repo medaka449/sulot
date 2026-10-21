@@ -2246,16 +2246,18 @@ function judgeSetting(){
         let z=posterior.reduce((a,b)=>a+b,0);
         if(z<=0){log+=Math.log(1e-12);posterior=[.25,.25,.25,.25]}else{log+=Math.log(z);posterior=posterior.map(v=>v/z)}
         let next=[0,0,0,0];
-        posterior.forEach((v,j)=>matrix[j].forEach((pct,k)=>{next[k]+=v*pct/100}));
+        const won=e.winType && e.winType!=='クエスト失敗' && e.winType!=='-';
+        if(won)posterior.forEach((v,j)=>matrix[j].forEach((pct,k)=>{next[k]+=v*pct/100}));
+        else next=posterior.slice();
         // ランプ色は復活なしのケースのみ確率表が公開されている。
         // 復活の入力欄がないため、暫定的に通常時の示唆として扱う。
-        const lamp=lamps[e.color];
+        const lamp=won?lamps[e.color]:null;
         if(lamp){next=next.map((v,k)=>v*lamp[k]/100);const s=next.reduce((a,b)=>a+b,0);if(s>0){log+=Math.log(s);next=next.map(v=>v/s)}else{log+=Math.log(1e-12);next=[.25,.25,.25,.25]}}
         probs=next;
       });
       return log;
     });
-    riseJudge={total:valid.length,lamps:valid.filter(e=>lamps[e.color]).length,likelihoods};
+    riseJudge={total:valid.length,lamps:valid.filter(e=>e.winType && e.winType!=='クエスト失敗' && e.winType!=='-' && lamps[e.color]).length,likelihoods};
   }
   const logs=Array(6).fill(-Infinity);
   const allowedJudge=Array.isArray(current()?.settingLevels)&&current().settingLevels.length?current().settingLevels:[1,2,3,4,5,6];
