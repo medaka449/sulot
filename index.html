@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.503</title>
+<title>小役カウンター v1.1.504</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -200,7 +200,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.503</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.504</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -861,8 +861,12 @@ function render(){
     const attempts=Number(d.counters.find(x=>x.name==='貫け鋼の魂失敗')?.count)||0;
     const eventExpected=attempts*0.125;
     const initialExpected=21.55;
+    const cycleFailures=Number(d.counters.find(x=>x.name==='周期前兆失敗')?.count)||0;
+    const cycleRates=[0.50,0.50,0.56,0.63,0.69,0.76];
+    const cycleHits=cycleRates.map(p=>cycleFailures*p);
     kegareExpected.style.cssText='display:block;background:#242b37;border:1px solid #475569;border-radius:10px;padding:12px;margin:5px 0 12px;text-align:center';
     kegareExpected.innerHTML='<div style="font-size:12px;color:#cbd5e1">穢れ期待ポイント（判明分）</div><div style="font-size:25px;font-weight:800">'+(initialExpected+eventExpected).toFixed(2)+'pt</div><div style="font-size:11px;color:#cbd5e1">初期平均 21.55pt ＋ 貫け鋼の魂失敗 '+eventExpected.toFixed(3)+'pt</div><div style="font-size:10px;color:#94a3b8">その他の失敗による獲得分は未計算</div>';
+    kegareExpected.innerHTML+='<div style="margin-top:9px;border-top:1px solid #475569;padding-top:8px;font-size:12px">周期前兆失敗 '+cycleFailures+'回：黒煙ポイント獲得の期待当選回数</div><div style="font-size:12px;line-height:1.8">'+cycleHits.map((v,i)=>'設定'+(i+1)+' '+v.toFixed(2)+'回（約'+Math.round(cycleRates[i]*100)+'%）').join(' ／ ')+'</div><div style="font-size:10px;color:#94a3b8">獲得pt数は未判明のため期待ポイント合計に含めません</div>';
   }
   if(state.selected===MACROSS_DELTA_MACHINE && displayMode==='通常' && !combined){
     root.className='macrossDeltaForm';
