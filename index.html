@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.532</title>
+<title>小役カウンター v1.1.533</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -200,7 +200,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.532</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.533</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -1179,7 +1179,7 @@ function render(){
     d.czEntries.forEach((entry,index)=>{
       const row=document.createElement('div');
       row.style.cssText='display:flex;align-items:center;gap:7px;padding:10px 4px;border-bottom:1px solid #354052;font-size:12px';
-      const summary=fields.map(f=>f+' '+(entry[f]||'—')).join('　');
+      const summary=entry.czType?(entry.czType+' '+(entry[entry.czType]||'—')):fields.map(f=>f+' '+(entry[f]||'—')).join('　');
       row.textContent=(index+1)+'回目　'+summary;
       history.appendChild(row);
     });
@@ -1187,18 +1187,20 @@ function render(){
     const form=document.createElement('div');
     form.style.cssText='position:fixed;bottom:0;left:0;right:0;width:100%;max-width:none;z-index:100;background:#151b23;border:1px solid #465367;border-bottom:0;border-radius:12px 12px 0 0;padding:12px 12px calc(10px + env(safe-area-inset-bottom, 0px));box-shadow:0 -5px 20px #000c';
     const formTitle=document.createElement('div');formTitle.style.cssText='font-weight:700;margin-bottom:10px';formTitle.textContent='入力フォーム　'+d.czEntries.length+'回目';form.appendChild(formTitle);
-    const selectors=document.createElement('div');selectors.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:10px';
+    const selectors=document.createElement('div');selectors.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px';
     const last=d.czEntries[d.czEntries.length-1];
-    fields.forEach(field=>{
-      const wrap=document.createElement('label');wrap.style.cssText='display:flex;flex-direction:column;gap:5px;font-size:12px;text-align:center';wrap.textContent=field;
-      const select=document.createElement('select');select.style.cssText='width:100%;height:40px;font-size:14px;background:#222b39;color:white;border:1px solid #566174;border-radius:8px';
-      select.appendChild(new Option('—',''));
-      values.forEach(value=>select.appendChild(new Option(value,value)));
-      select.value=values.includes(String(last[field]))?String(last[field]):'';
-      select.onchange=()=>{last[field]=select.value;localStorage.setItem(KEY,JSON.stringify(state))};
-      wrap.appendChild(select);selectors.appendChild(wrap);
-    });
-    form.appendChild(selectors);
+    if(!last.czType)last.czType=fields.find(f=>last[f])||'通常';
+    const typeWrap=document.createElement('label');typeWrap.style.cssText='display:flex;flex-direction:column;gap:5px;font-size:12px;text-align:center';typeWrap.textContent='CZ種別';
+    const typeSelect=document.createElement('select');typeSelect.style.cssText='width:100%;min-width:0;height:42px;font-size:14px;background:#222b39;color:white;border:1px solid #566174;border-radius:8px';
+    fields.forEach(f=>typeSelect.add(new Option(f,f)));typeSelect.value=last.czType;
+    const valueWrap=document.createElement('label');valueWrap.style.cssText='display:flex;flex-direction:column;gap:5px;font-size:12px;text-align:center';valueWrap.textContent='ポイント';
+    const valueSelect=document.createElement('select');valueSelect.style.cssText='width:100%;min-width:0;height:42px;font-size:14px;background:#222b39;color:white;border:1px solid #566174;border-radius:8px';
+    valueSelect.add(new Option('—',''));values.forEach(v=>valueSelect.add(new Option(v,v)));
+    const refreshValue=()=>{valueSelect.value=values.includes(String(last[last.czType]))?String(last[last.czType]):''};
+    refreshValue();
+    typeSelect.onchange=()=>{last.czType=typeSelect.value;refreshValue();localStorage.setItem(KEY,JSON.stringify(state))};
+    valueSelect.onchange=()=>{fields.forEach(f=>last[f]='');last[last.czType]=valueSelect.value;localStorage.setItem(KEY,JSON.stringify(state))};
+    typeWrap.appendChild(typeSelect);valueWrap.appendChild(valueSelect);selectors.append(typeWrap,valueWrap);form.appendChild(selectors);
     const buttons=document.createElement('div');buttons.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:8px';
     const add=document.createElement('button');add.type='button';add.textContent='追加';
     const remove=document.createElement('button');remove.type='button';remove.textContent='削除';
