@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.536</title>
+<title>小役カウンター v1.1.537</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -200,7 +200,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.536</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.537</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -2223,6 +2223,40 @@ function judgeSetting(){
     const rates=[[12.5,12.5,25,25,25],[13.3,13.3,24.2,24.6,24.6],[15.6,15.6,21.9,23.4,23.4],[19.5,19.5,20.3,20.3,20.3],[21.9,21.9,19.5,18.4,18.4],[22.7,22.7,18.8,18,18]];
     darumaJudge={observed,rates,total:observed.reduce((a,b)=>a+b,0)};
   }
+  // モンハンライズ：モードを隠れ状態としてポイント・移行・示唆色を前向き計算
+  let riseJudge=null;
+  if(state.selected===MONSTER_HUNTER_RISE_MACHINE){
+    const records=current()?.modes?.['通常']?.riseRecords||[];
+    const trans=[
+      [[50,40.6,6.3,3.1],[0,50,43.7,6.3],[0,0,0,100],[50,34.4,3.1,12.5]],
+      [[48.8,40.7,7,3.5],[0,49.6,43.8,6.6],[0,0,0,100],[46.5,34.4,3.5,15.6]],
+      [[47.7,40.6,7.8,3.9],[0,49.2,43.8,7],[0,0,0,100],[43,34.4,3.9,18.7]],
+      [[40.6,40.6,14.1,4.7],[0,47.7,43.8,8.5],[0,0,0,100],[35.9,34.4,4.7,25]],
+      [[35.9,40.6,18,5.5],[0,44.5,43.8,11.7],[0,0,0,100],[32,34.4,5.5,28.1]],
+      [[34.3,40.6,18.8,6.3],[0,43.8,43.8,12.4],[0,0,0,100],[30.4,34.4,6.3,28.9]]
+    ];
+    const points={100:[.8,.8,.8,100],200:[30.1,.4,28.9,0],300:[.4,43.4,6.3,0],400:[30.1,.4,28.9,0],500:[.4,55,6.3,0],600:[38.2,0,28.8,0]};
+    const lamps={'白':[63.3,50,45,26.7],'青':[20,20,20,20],'黄':[16.7,20,25,33.3],'緑':[0,10,10,10],'赤':[0,0,0,10]};
+    const valid=records.filter(e=>points[Number(e.points)]);
+    const likelihoods=trans.map(matrix=>{
+      let probs=[.25,.25,.25,.25],log=0;
+      valid.forEach((e,idx)=>{
+        const pp=points[Number(e.points)];
+        let posterior=probs.map((v,j)=>v*pp[j]/100);
+        let z=posterior.reduce((a,b)=>a+b,0);
+        if(z<=0){log+=Math.log(1e-12);posterior=[.25,.25,.25,.25]}else{log+=Math.log(z);posterior=posterior.map(v=>v/z)}
+        let next=[0,0,0,0];
+        posterior.forEach((v,j)=>matrix[j].forEach((pct,k)=>{next[k]+=v*pct/100}));
+        // ランプ色は復活なしのケースのみ確率表が公開されている。
+        // 復活の入力欄がないため、暫定的に通常時の示唆として扱う。
+        const lamp=lamps[e.color];
+        if(lamp){next=next.map((v,k)=>v*lamp[k]/100);const s=next.reduce((a,b)=>a+b,0);if(s>0){log+=Math.log(s);next=next.map(v=>v/s)}else{log+=Math.log(1e-12);next=[.25,.25,.25,.25]}}
+        probs=next;
+      });
+      return log;
+    });
+    riseJudge={total:valid.length,lamps:valid.filter(e=>lamps[e.color]).length,likelihoods};
+  }
   const logs=Array(6).fill(-Infinity);
   const allowedJudge=Array.isArray(current()?.settingLevels)&&current().settingLevels.length?current().settingLevels:[1,2,3,4,5,6];
   usable.forEach(u=>u.expected.forEach((p,i)=>{if(allowedJudge.includes(i+1)&&p>0){const lambda=u.exposure*p;const k=u.count;logs[i]=(Number.isFinite(logs[i])?logs[i]:0)+k*Math.log(lambda)-lambda-(k>1?(k*Math.log(k)-k):0)}}));
@@ -2242,6 +2276,7 @@ function judgeSetting(){
       logs[i]=(Number.isFinite(logs[i])?logs[i]:0)+logLikelihood;
     });
   }
+  if(riseJudge?.total)riseJudge.likelihoods.forEach((ll,i)=>{if(allowedJudge.includes(i+1))logs[i]=(Number.isFinite(logs[i])?logs[i]:0)+ll});
   const finiteLogs=logs.filter(Number.isFinite);
   const max=finiteLogs.length?Math.max(...finiteLogs):-Infinity;
   const weights=logs.map(x=>Number.isFinite(x)&&max>-Infinity?Math.exp(x-max):0);
@@ -2320,6 +2355,12 @@ function judgeSetting(){
 
   const detail=document.createElement('div');detail.className='judgeDetail';
   const detailTitle=document.createElement('div');detailTitle.className='judgeDetailTitle';detailTitle.textContent='設定判別要素';detail.appendChild(detailTitle);
+  if(riseJudge?.total){
+    const info=document.createElement('div');info.className='judgeDetailRow';info.style.cssText='display:block;padding:10px 6px;line-height:1.7';
+    info.textContent='モンハンライズ通常：ポイント '+riseJudge.total+'件／ランプ色 '+riseJudge.lamps+'件（モードA〜Dの移行を含む）';detail.appendChild(info);
+    const note=document.createElement('div');note.style.cssText='font-size:11px;color:#aeb9c7;padding:0 6px 10px';
+    note.textContent='暫定推測：初期モードは均等仮定。ランプ色は復活なしの振り分けを使用（復活の有無は未記録）。示唆・推定値であり設定確定ではありません。';detail.appendChild(note);
+  }
   if(darumaJudge?.total){
     const info=document.createElement('div');
     info.className='judgeDetailRow';
