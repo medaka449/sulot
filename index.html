@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.576</title>
+<title>小役カウンター v1.1.577</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -35,6 +35,9 @@ button{border:0;touch-action:manipulation;color:#fff;font:inherit;font-weight:70
 .counterGrid.hanabiThreeRows>.card:nth-child(n+4){grid-column:span 3}
 .counterGrid.hanabiThreeRows>.card .name{font-size:clamp(9px,2.3vw,12px)}
 body:has(.counterGrid.hanabiFour) .topGrid{display:none!important}
+.counterGrid.hanabiRbGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.counterGrid.hanabiRbGrid>.card{grid-column:auto!important;min-width:0;padding:6px 3px}
+.counterGrid.hanabiRbGrid>.card .name{font-size:clamp(9px,2.4vw,12px);overflow-wrap:anywhere}
 /* 新ハナビ：BIG・斜めベル・平行ベル・ハズレを横一列 */
 .counterGrid.hanabiFour>.card{min-width:0;padding:5px 2px}
 .counterGrid.hanabiFour>.card .name{font-size:clamp(9px,2.3vw,12px);overflow-wrap:anywhere}
@@ -1046,6 +1049,7 @@ function render(){
   }
   root.classList.toggle('hanabiFour',state.selected==='S新ハナビ' && displayMode==='通常' && !combined);
   root.classList.toggle('hanabiThreeRows',state.selected==='S新ハナビ' && displayMode==='通常' && !combined);
+  root.classList.toggle('hanabiRbGrid',state.selected==='S新ハナビ' && displayMode==='RB' && !combined);
   const riseFormToKeep=(state.selected===MONSTER_HUNTER_RISE_MACHINE && displayMode==='通常' && !combined && (currentData().riseRecords||[]).length>0)?root.querySelector('[data-rise-fixed-form]'):null;
   if(riseFormToKeep)document.body.appendChild(riseFormToKeep);
   root.innerHTML="";
