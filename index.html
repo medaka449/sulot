@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.595</title>
+<title>小役カウンター v1.1.596</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -444,6 +444,11 @@ localStorage.setItem(KEY,JSON.stringify(state));
     // BIG回数×24Gを試行ゲーム数として使用（1BIG=24G換算）
     if(counter.gameFormula!=='BB*24'){counter.gameFormula='BB*24';changed=true}
   });
+  // 花火チャレンジ中・花火GAME中のハズレ確率は各リプレイ回数を分母にする
+  for(const [name,formula] of [['ハズレ（RT）','リプレイ'],['ハズレ（RT3）','RTリプレイ']]){
+    const c=updated.find(x=>x.name===name);
+    if(c&&c.gameFormula!==formula){c.gameFormula=formula;changed=true}
+  }
   const bbCounter=updated.find(x=>x.name==='BB');
   if(bbCounter&&!bbCounter.countOnly){bbCounter.countOnly=true;changed=true}
   if(bbCounter&&bbCounter.color!=='#dc2626'){bbCounter.color='#dc2626';changed=true}
