@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.590</title>
+<title>小役カウンター v1.1.591</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -1484,6 +1484,10 @@ const target=currentData().counters.includes(c)?c:currentData().counters[counter
     if(cards.length>3){
       const title=document.createElement('div');title.className='hokutoRowTitle';title.textContent='花火チャレンジ中';
       root.insertBefore(title,cards[3]);
+    }
+    if(cards.length>5){
+      const title=document.createElement('div');title.className='hokutoRowTitle';title.textContent='花火GAME中';
+      root.insertBefore(title,cards[5]);
     }
   }
   if(state.selected===HOKUTO_MACHINE && displayMode==='通常・AT' && !combined){
