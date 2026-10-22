@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.597</title>
+<title>小役カウンター v1.1.598</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -451,7 +451,7 @@ localStorage.setItem(KEY,JSON.stringify(state));
   }
   const gameMiss=updated.find(x=>x.name==='ハズレ（RT3）');
   if(gameMiss){
-    const rates=['1/2','1/1.87','','','1/1.6','1/1.5'];
+    const rates=['1/7.65','1/6.96','','','1/5.46','1/5.02'];
     if(JSON.stringify(gameMiss.settingRates)!==JSON.stringify(rates)){gameMiss.settingRates=rates;changed=true}
   }
   const bbCounter=updated.find(x=>x.name==='BB');
