@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.591</title>
+<title>小役カウンター v1.1.592</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -460,6 +460,19 @@ localStorage.setItem(KEY,JSON.stringify(state));
     return saved?{...saved,name,color:i===0?'#dc2626':saved.color||''}:{name,count:0,color:i===0?'#dc2626':''};
   });
   rbNew.forEach(c=>{const hide=c.name==='RB';if(Boolean(c.countOnly)!==hide){c.countOnly=hide;changed=true}});
+  const rbMissRates={
+    'ハズレ4回以下':['','3.1%','','','3.1%','3.1%'],
+    'ハズレ5・6回':['','25.0%','','','25.0%','25.0%'],
+    'ハズレ7回以上':['','25.0%','','','50.0%','50.0%']
+  };
+  rbNew.forEach(c=>{
+    const rates=rbMissRates[c.name];
+    if(!rates)return;
+    if(JSON.stringify(c.settingRates)!==JSON.stringify(rates)){c.settingRates=rates;changed=true}
+    if(c.gameFormula!=='RB'){c.gameFormula='RB';changed=true}
+    if(c.displayFormat!=='percent'){c.displayFormat='percent';changed=true}
+  });
+
   if(JSON.stringify(rbOld)!==JSON.stringify(rbNew)){rbData.counters=rbNew;changed=true}
   const normalOnly=updated.filter(c=>['BB','斜めベル','ハズレ','リプレイ','ハズレ（RT）','RTリプレイ','ハズレ（RT3）'].includes(c.name));
   if(JSON.stringify(d.counters)!==JSON.stringify(normalOnly)){d.counters=normalOnly;changed=true}
