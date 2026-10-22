@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.592</title>
+<title>小役カウンター v1.1.593</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -461,9 +461,9 @@ localStorage.setItem(KEY,JSON.stringify(state));
   });
   rbNew.forEach(c=>{const hide=c.name==='RB';if(Boolean(c.countOnly)!==hide){c.countOnly=hide;changed=true}});
   const rbMissRates={
-    'ハズレ4回以下':['','3.1%','','','3.1%','3.1%'],
-    'ハズレ5・6回':['','25.0%','','','25.0%','25.0%'],
-    'ハズレ7回以上':['','25.0%','','','50.0%','50.0%']
+    'ハズレ4回以下':['0%','3.1%','','','3.1%','3.1%'],
+    'ハズレ5・6回':['0%','25.0%','','','25.0%','25.0%'],
+    'ハズレ7回以上':['0%','25.0%','','','50.0%','50.0%']
   };
   rbNew.forEach(c=>{
     const rates=rbMissRates[c.name];
