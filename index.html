@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.589</title>
+<title>小役カウンター v1.1.590</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -30,6 +30,12 @@ button{border:0;touch-action:manipulation;color:#fff;font:inherit;font-weight:70
 .topCard{background:#151b23;border:1px solid #27303c;border-radius:14px;padding:7px}
 .judgeBtn{width:100%;height:34px;border-radius:10px;background:#2563eb;white-space:nowrap;font-size:13px}.rateBtn{width:100%;height:34px;border-radius:10px;background:#343d49;font-size:14px}.rateBtn.active{background:#2563eb}.progressTools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;margin-bottom:10px}.progressTools button{height:42px;border-radius:12px;background:#222a35}.historyRow{padding:9px 0;border-bottom:1px solid #26303b}.historyTime{font-size:12px;color:#9da8b7}.historyMain{font-size:14px;font-weight:700;margin-top:3px}.historyTabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#222a35;border-radius:10px;padding:3px;margin:10px 0}.historyTab{height:36px;border-radius:8px;background:transparent;color:#aeb4aa;font-weight:800}.historyTab.active{background:#2563eb;color:#fff}.historyTableWrap{overflow-x:auto;border:1px solid #27303c;border-radius:12px;margin-top:10px}.historyTable{width:100%;border-collapse:collapse;min-width:max-content}.historyTable th,.historyTable td{padding:9px 10px;border-bottom:1px solid #27303c;text-align:center;white-space:nowrap}.historyTable th{background:#1c2430;font-size:12px}.historyTable td{font-size:13px;font-weight:700}.historyTable tr:last-child td{border-bottom:0}
 .modeTools{display:flex;justify-content:center;margin:6px 0 8px}.modeTools .headerBtn{width:150px;height:38px;border-radius:10px} .modeSwitch{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;background:#2a2d27;border-radius:8px;padding:1px;margin:0 0 7px;width:100%;max-width:none;box-sizing:border-box;overflow:hidden}.modeBtn{position:relative;z-index:2;height:20px;border-radius:7px;background:transparent;color:#aeb4aa;font-weight:800;font-size:11px;padding:0;transition:color .24s ease}.modeBtn.active{background:transparent;color:#071114}.modeIndicator{position:absolute;z-index:1;left:1px;top:1px;height:20px;width:calc((100% - 2px) / 2);background:#19d8e8;border-radius:7px;transform:translateX(0);transition:transform .26s cubic-bezier(.22,.61,.36,1);pointer-events:none}.counterGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* BB・RTの各セクション見出しを独立行に配置 */
+.counterGrid.hanabiThreeRows>.hokutoRowTitle{grid-column:1/-1!important}
+.counterGrid.hanabiThreeRows>.card{grid-column:span 3!important}
+.counterGrid.hanabiThreeRows>.card:nth-child(2),
+.counterGrid.hanabiThreeRows>.card:nth-child(3),
+.counterGrid.hanabiThreeRows>.card:nth-child(4){grid-column:span 2!important}
 /* BB見出しはカウンターとは別の1行 */
 .counterGrid.hanabiThreeRows>.hokutoRowTitle{grid-column:1/-1!important}
 .counterGrid.hanabiThreeRows>.card:nth-child(n+2):nth-child(-n+4){grid-column:span 2!important}
@@ -1474,6 +1480,10 @@ const target=currentData().counters.includes(c)?c:currentData().counters[counter
     if(cards.length){
       const title=document.createElement('div');title.className='hokutoRowTitle';title.textContent='BB';
       root.insertBefore(title,cards[0]);
+    }
+    if(cards.length>3){
+      const title=document.createElement('div');title.className='hokutoRowTitle';title.textContent='花火チャレンジ中';
+      root.insertBefore(title,cards[3]);
     }
   }
   if(state.selected===HOKUTO_MACHINE && displayMode==='通常・AT' && !combined){
