@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.598</title>
+<title>小役カウンター v1.1.599</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -444,8 +444,8 @@ localStorage.setItem(KEY,JSON.stringify(state));
     // BIG回数×24Gを試行ゲーム数として使用（1BIG=24G換算）
     if(counter.gameFormula!=='BB*24'){counter.gameFormula='BB*24';changed=true}
   });
-  // 花火チャレンジ中・花火GAME中のハズレ確率は各リプレイ回数を分母にする
-  for(const [name,formula] of [['ハズレ（RT）','リプレイ'],['ハズレ（RT3）','RTリプレイ']]){
+  // 花火チャレンジ中・花火GAME中のハズレ確率は（ハズレ＋リプレイ）を母数にする
+  for(const [name,formula] of [['ハズレ（RT）','ハズレ（RT）+リプレイ'],['ハズレ（RT3）','ハズレ（RT3）+RTリプレイ']]){
     const c=updated.find(x=>x.name===name);
     if(c&&c.gameFormula!==formula){c.gameFormula=formula;changed=true}
   }
@@ -813,6 +813,12 @@ function rate(n,data,counter){
       const ratio=denominator/count;
       return '1/'+(ratio>=100?ratio.toFixed(1):ratio.toFixed(2));
     }
+  }
+  if(state.selected==='S新ハナビ' && displayMode==='BB・RT' && data===currentData() && ['ハズレ（RT）','ハズレ（RT3）'].includes(counter?.name)){
+    const replayName=counter.name==='ハズレ（RT）'?'リプレイ':'RTリプレイ';
+    const replay=effectiveCount(data,(data.counters||[]).find(x=>x.name===replayName));
+    const total=count+replay;
+    return replay>0?'1/'+(total/replay).toFixed(2):'1/0.00';
   }
   if(count===0)return counter?.displayFormat==='percent'?'0.00%':'1/0.00';
   const formula=String(counter?.gameFormula||'').trim();
