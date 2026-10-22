@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.594</title>
+<title>小役カウンター v1.1.595</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -450,7 +450,7 @@ localStorage.setItem(KEY,JSON.stringify(state));
   if(JSON.stringify(old)!==JSON.stringify(updated)){d.counters=updated;changed=true}
   if(d.layout!=='2'){d.layout='2';changed=true}
   // RB専用画面へ移動。通常画面からRB項目を取り除く。
-  const rbNames=['RB','1枚役回避','ハズレ','ハズレ4回以下','ハズレ5・6回','ハズレ7回以上','ピースハナビ/4回以下','ピースハナビ/56回','ピースハナビ/7回以上'];
+  const rbNames=['RB','1枚役回避','ハズレ','ハズレ4回以下','ハズレ5・6回','ハズレ7回以上','ピース花火'];
   if(!m.modes['RB']){m.modes['RB']=blankData();changed=true}
   const rbData=m.modes['RB'];
   const rbOld=Array.isArray(rbData.counters)?rbData.counters:[];
@@ -469,7 +469,7 @@ localStorage.setItem(KEY,JSON.stringify(state));
     const rates=rbMissRates[c.name];
     if(!rates)return;
     if(JSON.stringify(c.settingRates)!==JSON.stringify(rates)){c.settingRates=rates;changed=true}
-    if(c.gameFormula!=='RB'){c.gameFormula='RB';changed=true}
+    if(c.gameFormula!=='ピース花火'){c.gameFormula='ピース花火';changed=true}
     if(c.displayFormat!=='percent'){c.displayFormat='percent';changed=true}
   });
 
