@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.603</title>
+<title>小役カウンター v1.1.604</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -470,6 +470,11 @@ localStorage.setItem(KEY,JSON.stringify(state));
     return saved?{...saved,name,color:i===0?'#dc2626':saved.color||''}:{name,count:0,color:i===0?'#dc2626':''};
   });
   rbNew.forEach(c=>{const hide=c.name==='RB';if(Boolean(c.countOnly)!==hide){c.countOnly=hide;changed=true}});
+  rbNew.forEach(c=>{
+    if(c.name==='ハズレ'||c.name.startsWith('ピース花火/')){
+      if(c.color!=='#16a34a'){c.color='#16a34a';changed=true}
+    }
+  });
   // ハズレ回数別の総RB回数とピース花火出現回数を別々に記録する。
   // 出現率は設定判別の二項尤度で処理し、通常の小役判別には重複計上しない。
   rbNew.forEach(c=>{
