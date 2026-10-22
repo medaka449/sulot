@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.604</title>
+<title>小役カウンター v1.1.605</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -2573,12 +2573,12 @@ function judgeSetting(){
   const factorEnabled=new Map(judgeFactors.map(f=>[f.key,true]));
   let weights=Array(6).fill(0);
   const recomputeWeights=()=>{
-    const logs=Array(6).fill(-Infinity);
+    const logs=Array.from({length:6},(_,i)=>allowedJudge.includes(i+1)?0:-Infinity);
     judgeFactors.forEach(f=>{if(factorEnabled.get(f.key)&&(viewedFactor==='all'||viewedFactor===f.key))f.apply(logs)});
     const finite=logs.filter(Number.isFinite),max=finite.length?Math.max(...finite):-Infinity;
     weights=logs.map(x=>Number.isFinite(x)&&max>-Infinity?Math.exp(x-max):0);
     // 要素を全て外した場合は設定間に差がないため均等表示
-    if(!finite.length)weights=allowedJudge.map(()=>1).length?Array.from({length:6},(_,i)=>allowedJudge.includes(i+1)?1:0):weights;
+    if(!finite.length && !judgeFactors.some(f=>factorEnabled.get(f.key)&&(viewedFactor==='all'||viewedFactor===f.key)))weights=Array.from({length:6},(_,i)=>allowedJudge.includes(i+1)?1:0);
   };
   recomputeWeights();
   const calcProbs=()=>{
