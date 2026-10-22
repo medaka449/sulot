@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.605</title>
+<title>小役カウンター v1.1.606</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -2485,11 +2485,11 @@ function judgeSetting(){
     ];
     const getCount=name=>Math.max(0,Math.floor(Number(d.counters.find(c=>c.name===name)?.count)||0));
     bins.forEach(([totalName,hitName,rates],idx)=>{
-      const total=getCount(totalName),hits=getCount(hitName);
+      const misses=getCount(totalName),hits=getCount(hitName),total=misses+hits;
       judgeFactors.push({key:'hanabi-peace-'+idx,label:'ピース花火（'+totalName+'）',
         detail:total?hits+' / '+total+'回':'未入力',
         apply:logs=>{
-          if(!total||hits>total)return;
+          if(!total)return;
           rates.forEach((p,j)=>{
             if(!allowedJudge.includes(j+1))return;
             if((p===0&&hits>0)||(p===1&&hits<total)){logs[j]=-Infinity;return}
