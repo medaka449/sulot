@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.601</title>
+<title>小役カウンター v1.1.602</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -460,7 +460,7 @@ localStorage.setItem(KEY,JSON.stringify(state));
   if(JSON.stringify(old)!==JSON.stringify(updated)){d.counters=updated;changed=true}
   if(d.layout!=='2'){d.layout='2';changed=true}
   // RB専用画面へ移動。通常画面からRB項目を取り除く。
-  const rbNames=['RB','1枚役回避','ハズレ','ハズレ4回以下','ハズレ5・6回','ハズレ7回以上','ピース花火'];
+  const rbNames=['RB','1枚役回避','ハズレ','ハズレ4回以下','ハズレ5・6回','ハズレ7回以上','ピース花火','ピース花火/4回以下','ピース花火/5・6回','ピース花火/7回以上'];
   if(!m.modes['RB']){m.modes['RB']=blankData();changed=true}
   const rbData=m.modes['RB'];
   const rbOld=Array.isArray(rbData.counters)?rbData.counters:[];
@@ -470,19 +470,14 @@ localStorage.setItem(KEY,JSON.stringify(state));
     return saved?{...saved,name,color:i===0?'#dc2626':saved.color||''}:{name,count:0,color:i===0?'#dc2626':''};
   });
   rbNew.forEach(c=>{const hide=c.name==='RB';if(Boolean(c.countOnly)!==hide){c.countOnly=hide;changed=true}});
-  const rbMissRates={
-    'ハズレ4回以下':['0%','3.1%','','','3.1%','3.1%'],
-    'ハズレ5・6回':['0%','25.0%','','','25.0%','25.0%'],
-    'ハズレ7回以上':['0%','25.0%','','','50.0%','50.0%']
-  };
+  // ハズレ回数別の総RB回数とピース花火出現回数を別々に記録する。
+  // 出現率は設定判別の二項尤度で処理し、通常の小役判別には重複計上しない。
   rbNew.forEach(c=>{
-    const rates=rbMissRates[c.name];
-    if(!rates)return;
-    if(JSON.stringify(c.settingRates)!==JSON.stringify(rates)){c.settingRates=rates;changed=true}
-    if(c.gameFormula!=='ピース花火'){c.gameFormula='ピース花火';changed=true}
-    if(c.displayFormat!=='percent'){c.displayFormat='percent';changed=true}
+    if(!['ハズレ4回以下','ハズレ5・6回','ハズレ7回以上'].includes(c.name))return;
+    if(c.settingRates?.some(x=>x)){c.settingRates=Array(6).fill('');changed=true}
+    if(c.gameFormula){c.gameFormula='';changed=true}
+    if(c.displayFormat==='percent'){c.displayFormat='rate';changed=true}
   });
-
   if(JSON.stringify(rbOld)!==JSON.stringify(rbNew)){rbData.counters=rbNew;changed=true}
   const normalOnly=updated.filter(c=>['BB','斜めベル','ハズレ','リプレイ','ハズレ（RT）','RTリプレイ','ハズレ（RT3）'].includes(c.name));
   if(JSON.stringify(d.counters)!==JSON.stringify(normalOnly)){d.counters=normalOnly;changed=true}
@@ -2477,6 +2472,28 @@ function judgeSetting(){
       u.expected.forEach((p,j)=>{if(allowedJudge.includes(j+1)&&p>0){const lambda=u.exposure*p,k=u.count;logs[j]=(Number.isFinite(logs[j])?logs[j]:0)+k*Math.log(lambda)-lambda-(k>1?(k*Math.log(k)-k):0)}});
     }});
   });
+  if(state.selected==='S新ハナビ' && displayMode==='RB'){
+    const bins=[
+      ['ハズレ4回以下','ピース花火/4回以下',[0,.031,0,0,.031,.031]],
+      ['ハズレ5・6回','ピース花火/5・6回',[0,.25,0,0,.25,.25]],
+      ['ハズレ7回以上','ピース花火/7回以上',[0,.25,0,0,.5,.5]]
+    ];
+    const getCount=name=>Math.max(0,Math.floor(Number(d.counters.find(c=>c.name===name)?.count)||0));
+    bins.forEach(([totalName,hitName,rates],idx)=>{
+      const total=getCount(totalName),hits=getCount(hitName);
+      judgeFactors.push({key:'hanabi-peace-'+idx,label:'ピース花火（'+totalName+'）',
+        detail:total?hits+' / '+total+'回':'未入力',
+        apply:logs=>{
+          if(!total||hits>total)return;
+          rates.forEach((p,j)=>{
+            if(!allowedJudge.includes(j+1))return;
+            if((p===0&&hits>0)||(p===1&&hits<total)){logs[j]=-Infinity;return}
+            const ll=(hits&&p>0?hits*Math.log(p):0)+(total-hits&&p<1?(total-hits)*Math.log(1-p):0);
+            if(Number.isFinite(logs[j]))logs[j]+=ll;
+          });
+        }});
+    });
+  }
   // RE:3 規定NEポイント。通常時のカウンターとCZ履歴の通常/AT/上位を集計する。
   if(state.selected===BIOHAZARD_RE3_MACHINE){
     const fixed=v=>Array(6).fill(v);
