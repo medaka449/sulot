@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.607</title>
+<title>小役カウンター v1.1.608</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -454,6 +454,10 @@ localStorage.setItem(KEY,JSON.stringify(state));
     const rates=['1/7.65','1/6.96','','','1/5.46','1/5.02'];
     if(JSON.stringify(gameMiss.settingRates)!==JSON.stringify(rates)){gameMiss.settingRates=rates;changed=true}
   }
+  // 花火チャレンジ中・花火GAME中のリプレイは回数のみ表示し、確率を非表示にする。
+  updated.forEach(c=>{
+    if(['リプレイ','RTリプレイ'].includes(c.name) && c.countOnly!==true){c.countOnly=true;changed=true}
+  });
   const bbCounter=updated.find(x=>x.name==='BB');
   if(bbCounter&&!bbCounter.countOnly){bbCounter.countOnly=true;changed=true}
   if(bbCounter&&bbCounter.color!=='#dc2626'){bbCounter.color='#dc2626';changed=true}
