@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.606</title>
+<title>小役カウンター v1.1.607</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -2472,6 +2472,7 @@ function judgeSetting(){
     const u=usable.find(x=>x.c===counter);
     const hasRates=Array.isArray(counter.settingRates)&&counter.settingRates.some(x=>parseSettingRate(x,counter)>0);
     if(!hasRates)return;
+    if(state.selected==='S新ハナビ' && displayMode==='BB・RT' && counter.name==='ハズレ（RT3）')return;
     judgeFactors.push({key:'counter-'+i,label:counter.name||'小役'+(i+1),detail:u?'実測 '+u.count+'回':'未入力',apply:logs=>{
       if(!u)return;
       u.expected.forEach((p,j)=>{if(allowedJudge.includes(j+1)&&p>0){const lambda=u.exposure*p,k=u.count;logs[j]=(Number.isFinite(logs[j])?logs[j]:0)+k*Math.log(lambda)-lambda-(k>1?(k*Math.log(k)-k):0)}});
@@ -2498,6 +2499,23 @@ function judgeSetting(){
           });
         }});
     });
+  }
+  // 新ハナビ：花火GAME中ハズレは（ハズレ＋RTリプレイ）を試行回数とする二項尤度。
+  if(state.selected==='S新ハナビ' && displayMode==='BB・RT'){
+    const miss=(d.counters||[]).find(c=>c.name==='ハズレ（RT3）');
+    const replay=(d.counters||[]).find(c=>c.name==='RTリプレイ');
+    const hits=miss?Math.max(0,Math.floor(effectiveCount(d,miss))):0;
+    const other=replay?Math.max(0,Math.floor(effectiveCount(d,replay))):0;
+    const trials=hits+other;
+    const probs=[1/7.65,1/6.96,0,0,1/5.46,1/5.02];
+    judgeFactors.push({key:'hanabi-game-miss',label:'花火GAME中 ハズレ',
+      detail:trials?hits+' / '+trials+'回':'未入力',apply:logs=>{
+        if(!trials)return;
+        probs.forEach((p,i)=>{
+          if(!allowedJudge.includes(i+1))return;
+          if(Number.isFinite(logs[i]))logs[i]+=hits*Math.log(p)+other*Math.log(1-p);
+        });
+      }});
   }
   // RE:3 規定NEポイント。通常時のカウンターとCZ履歴の通常/AT/上位を集計する。
   if(state.selected===BIOHAZARD_RE3_MACHINE){
