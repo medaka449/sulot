@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.609</title>
+<title>小役カウンター v1.1.610</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -401,6 +401,26 @@ if(!state.machines[MONSTER_HUNTER_RISE_MACHINE]){
 if(!state.machines['SバイオハザードRE:2']){
   state.machines['SバイオハザードRE:2']=blankMachine();
   localStorage.setItem(KEY,JSON.stringify(state));
+}
+// RE:2 心音リプレイと当選を通常モードに追加
+{
+ const m=state.machines['SバイオハザードRE:2'];
+ const d=m.modes['通常']||(m.modes['通常']=blankData());
+ const names=[
+  ['心音青リプレイ','#2563eb'],
+  ['心音青リプレイ当選','#2563eb'],
+  ['心音緑リプレイ','#16a34a'],
+  ['心音緑リプレイ当選','#16a34a']
+ ];
+ const old=Array.isArray(d.counters)?d.counters:[];
+ const updated=names.map(([name,color])=>{
+  const saved=old.find(c=>c.name===name);
+  return saved?{...saved,name,color}:{name,count:0,color};
+ });
+ if(JSON.stringify(old)!==JSON.stringify(updated)){
+  d.counters=updated;
+  localStorage.setItem(KEY,JSON.stringify(state));
+ }
 }
 // ハナビ2機種を既存データを維持したまま機種一覧に追加
 ['S新ハナビ','Lハナビ'].forEach(name=>{
