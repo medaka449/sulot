@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.608</title>
+<title>小役カウンター v1.1.609</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -396,6 +396,11 @@ if(!state.machines[MONSTER_HUNTER_RISE_MACHINE]){
  const order=['通常','アイルーだるま落とし','ボーナス開始画面','AT終了画面'];
  if(JSON.stringify(m.modeOrder)!==JSON.stringify(order)){m.modeOrder=order;changed=true}
  if(changed)localStorage.setItem(KEY,JSON.stringify(state));
+}
+// SバイオハザードRE:2を既存データを保持したまま機種一覧に追加
+if(!state.machines['SバイオハザードRE:2']){
+  state.machines['SバイオハザードRE:2']=blankMachine();
+  localStorage.setItem(KEY,JSON.stringify(state));
 }
 // ハナビ2機種を既存データを維持したまま機種一覧に追加
 ['S新ハナビ','Lハナビ'].forEach(name=>{
