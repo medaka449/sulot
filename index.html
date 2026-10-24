@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.610</title>
+<title>小役カウンター v1.1.611</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -421,6 +421,27 @@ if(!state.machines['SバイオハザードRE:2']){
   d.counters=updated;
   localStorage.setItem(KEY,JSON.stringify(state));
  }
+}
+// A-SLOT+ 異世界かるてっと BT：通常時の設定差小役
+{
+ const name='A-SLOT+ 異世界かるてっと';
+ if(!state.machines[name])state.machines[name]=blankMachine([1,2,5,6]);
+ const m=state.machines[name];
+ let changed=false;
+ if(JSON.stringify(m.settingLevels)!==JSON.stringify([1,2,5,6])){m.settingLevels=[1,2,5,6];changed=true}
+ const d=m.modes['通常']||(m.modes['通常']=blankData());
+ const defs=[
+  ['ベル','#eab308',['1/7.0','1/6.7','','','1/6.6','1/6.4']],
+  ['スイカ','#16a34a',['1/45.0','1/39.7','','','1/39.0','1/37.4']],
+  ['いせかる目','#2563eb',['1/107.6','1/106.2','','','1/97.1','1/89.2']]
+ ];
+ const old=Array.isArray(d.counters)?d.counters:[];
+ const updated=defs.map(([counterName,color,settingRates])=>{
+  const saved=old.find(c=>c.name===counterName);
+  return {...(saved||{count:0}),name:counterName,color,settingRates};
+ });
+ if(JSON.stringify(old)!==JSON.stringify(updated)){d.counters=updated;changed=true}
+ if(changed)localStorage.setItem(KEY,JSON.stringify(state));
 }
 // ハナビ2機種を既存データを維持したまま機種一覧に追加
 ['S新ハナビ','Lハナビ'].forEach(name=>{
