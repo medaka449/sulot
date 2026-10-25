@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.613</title>
+<title>小役カウンター v1.1.614</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -1519,7 +1519,25 @@ if(c.countOnly){card.querySelector('.rate').textContent='';card.querySelector('.
   rateEl.textContent=combinedCount>0?((numerator/combinedCount)*100).toFixed(1)+'%':'0.0%';
 }else{rateEl.textContent=rate(numerator,d,c)}
 if(state.selected===KABANERI_MACHINE && displayMode==='穢れ' && !combined){rateEl.textContent='';rateEl.style.display='none'}
-let rateFs=15;const rateLen=String(rateEl.textContent||'').length;if(rateLen>9)rateFs=14;if(rateLen>11)rateFs=13;if(rateLen>14)rateFs=12;if(rateLen>17)rateFs=11;if(rateLen>20)rateFs=10;rateEl.style.fontSize=rateFs+'px';requestAnimationFrame(()=>{let guard=0;while(rateEl.scrollWidth>rateEl.clientWidth&&rateFs>8&&guard<20){rateFs=Math.max(8,rateFs-0.5);rateEl.style.fontSize=rateFs+'px';guard++}})}}if(!combined&&!isFormula){let counterTouchStart=null;
+let rateFs=15;const rateLen=String(rateEl.textContent||'').length;if(rateLen>9)rateFs=14;if(rateLen>11)rateFs=13;if(rateLen>14)rateFs=12;if(rateLen>17)rateFs=11;if(rateLen>20)rateFs=10;rateEl.style.fontSize=rateFs+'px';requestAnimationFrame(()=>{let guard=0;while(rateEl.scrollWidth>rateEl.clientWidth&&rateFs>8&&guard<20){rateFs=Math.max(8,rateFs-0.5);rateEl.style.fontSize=rateFs+'px';guard++}})}}if(!combined&&!isFormula && [KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected) && displayMode==='通常' && String(c.name||'')==='当選ポイント確認'){
+    // 履歴確認はカウント操作と分離。指を離した時点で開き、クリックの二重発火を防ぐ。
+    let lastOpen=0;
+    const openPointHistory=e=>{
+      if(Date.now()-lastOpen<450)return;
+      lastOpen=Date.now();
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      showKabaneriPointHistory();
+    };
+    card.style.touchAction='manipulation';
+    card.style.cursor='pointer';
+    card.setAttribute('role','button');
+    card.setAttribute('tabindex','0');
+    card.addEventListener('pointerup',openPointHistory,true);
+    card.addEventListener('click',openPointHistory,true);
+    card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){openPointHistory(e)}});
+  }
+  if(!combined&&!isFormula){let counterTouchStart=null;
     card.addEventListener('pointerdown',e=>{
       counterTouchStart={id:e.pointerId,x:e.clientX,y:e.clientY,time:Date.now(),moved:false};
     });
