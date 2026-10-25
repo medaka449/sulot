@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.611</title>
+<title>小役カウンター v1.1.612</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -330,6 +330,16 @@ const ORIGINAL_KABANERI_MACHINE='パチスロ甲鉄城のカバネリ';
   const target=d.counters.find(x=>x.name==='貫け鋼の魂失敗');
   if(target){target.name='貫け鋼の魂失敗';changed=true;}
   if(changed)localStorage.setItem(KEY,JSON.stringify(state));
+ }
+}
+// 海門決戦：穢れを通常の右隣に配置する
+{
+ const m=state.machines[KABANERI_MACHINE];
+ if(m?.modes?.['通常']&&m?.modes?.['穢れ']){
+  const order=['通常','穢れ',...(m.modeOrder||[]).filter(n=>n!=='通常'&&n!=='穢れ')];
+  if(JSON.stringify(m.modeOrder)!==JSON.stringify(order)){
+   m.modeOrder=order;localStorage.setItem(KEY,JSON.stringify(state));
+  }
  }
 }
 if(!state.machines[ORIGINAL_KABANERI_MACHINE])state.machines[ORIGINAL_KABANERI_MACHINE]=blankMachine();
@@ -1172,7 +1182,9 @@ function render(){
     const fixedFailurePoints=czFailed+bonusFailed;
     kegareExpected.style.cssText='display:block;background:#242b37;border:1px solid #475569;border-radius:10px;padding:12px;margin:5px 0 12px;text-align:center';
     const detailsOpen=kegareExpected.querySelector('details')?.open||false;
-    kegareExpected.innerHTML='<div style="font-size:12px;color:#cbd5e1">穢れ期待ポイント（設定1・2基準）</div><div style="font-size:25px;font-weight:800">'+(initialExpected+eventExpected+uiFlashExpected+cycleHits[0]+fixedFailurePoints).toFixed(2)+'pt</div>';
+    const countedEvents=attempts+cycleFailures+uiFlashFailures+czFailed+bonusFailed;
+    const earnedExpected=eventExpected+uiFlashExpected+cycleHits[0]+fixedFailurePoints;
+    kegareExpected.innerHTML='<div style="font-size:12px;color:#cbd5e1">穢れ期待ポイント（設定1・2基準）</div><div style="font-size:25px;font-weight:800">'+(initialExpected+earnedExpected).toFixed(2)+'pt</div><div style="font-size:12px;color:#cbd5e1;margin-top:5px">カウント '+countedEvents+'回 ／ 1回あたり平均 '+(countedEvents?earnedExpected/countedEvents:0).toFixed(3)+'pt</div>';
     const detailHtml='iv style="font-size:11px;color:#cbd5e1">初期平均 21.55pt ＋ CZ失敗 '+czFailed+'pt ＋ 駿城ボーナス失敗 '+bonusFailed+'pt ＋ 貫け鋼の魂失敗 '+eventExpected.toFixed(3)+'pt ＋ CZ前兆失敗 '+uiFlashExpected.toFixed(3)+'pt ＋ 周期前兆失敗 '+cycleHits[0].toFixed(3)+'pt</div><div style="font-size:10px;color:#94a3b8">CZ失敗・駿城ボーナス失敗は1回につき1ptとして加算</div>';
     kegareExpected.innerHTML+='<details style="margin-top:8px"><summary style="cursor:pointer;font-size:13px;padding:7px">内訳を表示</summary><div class="kegareBreakdown" style="padding-top:8px"></div></details>';
     const breakdown=kegareExpected.querySelector('.kegareBreakdown');
@@ -2773,7 +2785,7 @@ window.addEventListener('load',()=>{setTimeout(preloadFortuneImages,0)},{once:tr
 function setDisplayMode(mode){const m=current();if(!m||!m.modes||!m.modes[mode])return;displayMode=mode;combined=false;render()}
 function setupGameInput(id,key){const el=document.getElementById(id);el.addEventListener('focus',()=>{if(el.value==='0')el.value=''});el.addEventListener('click',()=>{if(el.value==='0')el.value=''});el.addEventListener('blur',()=>{if(el.value==='')el.value='0'});const commit=()=>{if(combined)return;const m=current();if(!m||!m.modes[displayMode])return;const d=normalizeData(m.modes[displayMode]);d[key]=Math.max(0,parseInt(el.value||'0',10)||0);m.modes[displayMode]=d;localStorage.setItem(KEY,JSON.stringify(state));render()};el.addEventListener('input',commit);el.addEventListener('change',commit)}
 setupGameInput('gamesInput','games');setupGameInput('startGamesInput','startGames');
-document.getElementById('reset').onclick=()=>{if(confirm(`「${state.selected}」の「${displayMode}」のゲーム数と小役カウント、小役確率の推移をリセットしますか？`)){const d=currentData();d.games=0;d.startGames=0;d.counters.forEach(c=>c.count=0);d.history=[];if([KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected) && displayMode==='通常')d.pointHistory=[];save()}};
+document.getElementById('reset').onclick=()=>{if(confirm(`「${state.selected}」の「${displayMode}」のゲーム数と小役カウント、小役確率の推移をリセットしますか？`)){const d=currentData();d.games=0;d.startGames=0;d.counters.forEach(c=>{c.count=0;if(state.selected===KABANERI_MACHINE&&displayMode==='穢れ'){c.countFormula='';c.countMethod='プッシュ'}});d.history=[];if([KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected) && displayMode==='通常')d.pointHistory=[];save()}};
 function formatLayoutHistoryTime(v){const s=String(v||'');const m=s.match(/(?:^|\s)(\d{1,2}):(\d{2})(?::\d{2})?(?:\s|$)/);return m?String(m[1]).padStart(2,'0')+':'+m[2]:s;}
 function showLayoutNumberHistory(d){
   const box=document.getElementById('historyView');modal.classList.add('show');document.getElementById('modalTitle').textContent='当選履歴';document.getElementById('newMachine').style.display='none';document.querySelector('.sheetRow').style.display='none';document.getElementById('machines').style.display='none';document.getElementById('modeSettings').style.display='none';box.style.display='block';box.innerHTML='';
