@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.615</title>
+<title>小役カウンター v1.1.616</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -1182,9 +1182,8 @@ function render(){
     const fixedFailurePoints=czFailed+bonusFailed;
     kegareExpected.style.cssText='display:block;background:#242b37;border:1px solid #475569;border-radius:10px;padding:12px;margin:5px 0 12px;text-align:center';
     const detailsOpen=kegareExpected.querySelector('details')?.open||false;
-    const countedEvents=attempts+cycleFailures+uiFlashFailures+czFailed+bonusFailed;
     const earnedExpected=eventExpected+uiFlashExpected+cycleHits[0]+fixedFailurePoints;
-    kegareExpected.innerHTML='<div style="font-size:12px;color:#cbd5e1">穢れ期待ポイント（設定1・2基準）</div><div style="font-size:25px;font-weight:800">'+(initialExpected+earnedExpected).toFixed(2)+'pt</div><div style="font-size:12px;color:#cbd5e1;margin-top:5px">カウント '+countedEvents+'カウント分の累計期待 '+earnedExpected.toFixed(2)+'pt</div>';
+    kegareExpected.innerHTML='<div style="font-size:12px;color:#cbd5e1">穢れ期待ポイント（設定1・2基準）</div><div style="font-size:25px;font-weight:800">'+(initialExpected+earnedExpected).toFixed(2)+'pt</div><div style="font-size:12px;color:#cbd5e1;margin-top:5px">カウント分の累計期待 '+earnedExpected.toFixed(2)+'pt</div>';
     const detailHtml='iv style="font-size:11px;color:#cbd5e1">初期平均 21.55pt ＋ CZ失敗 '+czFailed+'pt ＋ 駿城ボーナス失敗 '+bonusFailed+'pt ＋ 貫け鋼の魂失敗 '+eventExpected.toFixed(3)+'pt ＋ CZ前兆失敗 '+uiFlashExpected.toFixed(3)+'pt ＋ 周期前兆失敗 '+cycleHits[0].toFixed(3)+'pt</div><div style="font-size:10px;color:#94a3b8">CZ失敗・駿城ボーナス失敗は1回につき1ptとして加算</div>';
     kegareExpected.innerHTML+='<details style="margin-top:8px"><summary style="cursor:pointer;font-size:13px;padding:7px">内訳を表示</summary><div class="kegareBreakdown" style="padding-top:8px"></div></details>';
     const breakdown=kegareExpected.querySelector('.kegareBreakdown');
