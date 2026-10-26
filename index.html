@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.618</title>
+<title>小役カウンター v1.1.619</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -257,7 +257,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.618</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.619</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -301,6 +301,15 @@ function blankMachine(settingLevels=[1,2,3,4,5,6]){return {modes:{通常:blankDa
 let state=JSON.parse(localStorage.getItem(KEY)||"null");
 if(!state){const old=JSON.parse(localStorage.getItem(OLD_KEY)||"null");state={selected:"マイジャグラーV",machines:{}};DEFAULT_MACHINES.forEach(n=>state.machines[n]=blankMachine());if(old)state.machines["マイジャグラーV"].modes.通常={games:old.games||0,startGames:old.startGames||0,counters:(old.counters||[]).map(c=>({name:c.name,count:c.count||0})),layout:'2'};localStorage.setItem(KEY,JSON.stringify(state))}
 Object.keys(state.machines||{}).forEach(n=>state.machines[n]=normalizeMachine(state.machines[n]));
+const SENGOKU_OTOME5_MACHINE='L戦国乙女5';
+{
+ const name=SENGOKU_OTOME5_MACHINE;
+ if(!state.machines[name])state.machines[name]={modes:{'履歴':blankData(),'入力フォーム':blankData()},modeOrder:['履歴','入力フォーム'],settingLevels:[1,2,3,4,5,6]};
+ const m=state.machines[name];
+ for(const mode of ['履歴','入力フォーム'])if(!m.modes[mode])m.modes[mode]=blankData();
+ m.modeOrder=['履歴','入力フォーム'];
+ localStorage.setItem(KEY,JSON.stringify(state));
+}
 const KABANERI_MACHINE='スマスロ 甲鉄城のカバネリ 海門決戦';
 const ORIGINAL_KABANERI_MACHINE='パチスロ甲鉄城のカバネリ';
 {
@@ -1474,6 +1483,39 @@ function render(){
     add.onclick=()=>{d.czEntries.push({通常:'',AT:'',上位:''});save()};
     remove.onclick=()=>{if(d.czEntries.length>1)d.czEntries.pop();else d.czEntries[0]={通常:'',AT:'',上位:''};save()};
     form.appendChild(buttons);root.appendChild(form);
+    return;
+  }
+  if(state.selected===SENGOKU_OTOME5_MACHINE && !combined && ['履歴','入力フォーム'].includes(displayMode)){
+    root.className='otome5Panel';
+    const data=state.machines[SENGOKU_OTOME5_MACHINE].modes['入力フォーム'];
+    if(!Array.isArray(data.otomeEntries))data.otomeEntries=[];
+    const entries=data.otomeEntries;
+    const wrap=document.createElement('div');wrap.style.cssText='grid-column:1/-1;width:100%;display:flex;flex-direction:column;gap:10px';
+    const title=document.createElement('div');title.style.cssText='font-weight:800;font-size:15px';title.textContent=displayMode==='履歴'?'戦国乙女5　履歴':'戦国乙女5　入力フォーム';wrap.appendChild(title);
+    const list=document.createElement('div');list.style.cssText='display:flex;flex-direction:column;gap:7px';
+    if(!entries.length){const empty=document.createElement('div');empty.style.cssText='color:#94a3b8;font-size:13px;padding:16px 6px';empty.textContent='履歴はまだありません';list.appendChild(empty)}
+    entries.forEach((entry,i)=>{
+      const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:8px;background:#1f2937;border:1px solid #374151;border-radius:9px;padding:10px;font-size:13px';
+      const label=document.createElement('div');label.style.flex='1';label.textContent=(i+1)+'回目　'+(entry.label||'記録')+(entry.games?'　'+entry.games+'G':'')+(entry.note?'　'+entry.note:'');row.appendChild(label);
+      if(displayMode==='入力フォーム'){
+        const del=document.createElement('button');del.type='button';del.textContent='削除';del.style.cssText='padding:7px 9px;background:#374151;border-radius:7px;color:white;font-size:12px';
+        del.onclick=()=>{if(confirm('この履歴を削除しますか？')){entries.splice(i,1);save()}};row.appendChild(del);
+      }
+      list.appendChild(row);
+    });
+    wrap.appendChild(list);
+    if(displayMode==='入力フォーム'){
+      const form=document.createElement('form');form.style.cssText='display:flex;flex-direction:column;gap:8px;margin-top:12px;padding:12px;background:#1b2534;border:1px solid #475569;border-radius:10px';
+      const makeInput=(placeholder,type='text')=>{const el=document.createElement('input');el.type=type;el.placeholder=placeholder;el.style.cssText='width:100%;height:42px;padding:8px;border-radius:7px;background:#111827;color:white;border:1px solid #64748b;font-size:15px';return el};
+      const label=makeInput('項目名（例：AT当選）');label.required=true;
+      const games=makeInput('ゲーム数（任意）','number');games.min='0';games.inputMode='numeric';
+      const note=makeInput('メモ（任意）');
+      const add=document.createElement('button');add.type='submit';add.textContent='履歴に追加';add.style.cssText='height:44px;background:#2563eb;color:white;border-radius:8px;font-weight:700';
+      form.append(label,games,note,add);
+      form.onsubmit=e=>{e.preventDefault();if(!label.value.trim())return;entries.push({label:label.value.trim(),games:games.value?Number(games.value):null,note:note.value.trim(),time:Date.now()});save()};
+      wrap.appendChild(form);
+    }
+    root.appendChild(wrap);
     return;
   }
   if(d.layout==='memo'){const memo=document.createElement('textarea');memo.className='memoBox';memo.placeholder='ここに自由にメモを書けます';memo.value=d.memo;memo.addEventListener('input',()=>{d.memo=memo.value;localStorage.setItem(KEY,JSON.stringify(state))});root.appendChild(memo);return}
