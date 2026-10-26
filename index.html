@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.620</title>
+<title>小役カウンター v1.1.621</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -257,7 +257,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.620</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.621</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -304,10 +304,10 @@ Object.keys(state.machines||{}).forEach(n=>state.machines[n]=normalizeMachine(st
 const SENGOKU_OTOME5_MACHINE='L戦国乙女5';
 {
  const name=SENGOKU_OTOME5_MACHINE;
- if(!state.machines[name])state.machines[name]={modes:{'履歴':blankData(),'入力フォーム':blankData()},modeOrder:['履歴','入力フォーム'],settingLevels:[1,2,3,4,5,6]};
+ if(!state.machines[name])state.machines[name]={modes:{},modeOrder:[],settingLevels:[1,2,3,4,5,6]};
  const m=state.machines[name];
- for(const mode of ['履歴','入力フォーム'])if(!m.modes[mode])m.modes[mode]=blankData();
- m.modeOrder=['履歴','入力フォーム'];
+ for(const mode of ['履歴','入力フォーム','出陣ボーナス終了画面','AT終了画面'])if(!m.modes[mode])m.modes[mode]=blankData();
+ m.modeOrder=['履歴','入力フォーム','出陣ボーナス終了画面','AT終了画面'];
  localStorage.setItem(KEY,JSON.stringify(state));
 }
 const KABANERI_MACHINE='スマスロ 甲鉄城のカバネリ 海門決戦';
