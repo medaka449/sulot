@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.666</title>
+<title>小役カウンター v1.1.667</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -2879,6 +2879,34 @@ function judgeSetting(){
           }
         }});
     });
+  }
+  // 鬼武者2：鬼ボーナスの奇数・偶数シナリオを設定別の公表振り分けで判別。
+  if(state.selected===ONIMUSHA2_MACHINE){
+    const counters=current()?.modes?.['鬼ボーナス']?.counters||[];
+    const counts=Array.from({length:12},(_,i)=>Math.max(0,Math.floor(Number(counters[i]?.count)||0)));
+    const total=counts.reduce((a,b)=>a+b,0);
+    // 弱・強を合算した6分類（基本／高設定示唆弱／高設定示唆強）。
+    const rates=[
+      [57.90,34.43,54.66,30.96,48.13,27.48],
+      [35.55,56.22,33.38,51.03,29.03,45.81],
+      [3.89,3.05,6.87,4.80,10.53,6.41],
+      [2.21,5.49,3.81,8.92,5.64,11.90],
+      [0.29,0.29,0.82,0.76,2.52,1.84],
+      [0.16,0.52,0.46,1.38,1.45,3.34]
+    ];
+    judgeFactors.push({key:'oni-bonus-odd-even',label:'鬼ボーナス 奇数・偶数',detail:total?('奇数 '+counts.filter((_,i)=>i%2===0).reduce((a,b)=>a+b,0)+'回 / 偶数 '+counts.filter((_,i)=>i%2===1).reduce((a,b)=>a+b,0)+'回'):'未入力',apply:logs=>{
+      if(!total)return;
+      for(let setting=0;setting<6;setting++){
+        if(!allowedJudge.includes(setting+1))continue;
+        let ll=0;
+        for(let k=0;k<6;k++){
+          const n=counts[k];if(n)ll+=n*Math.log(Math.max(1e-12,rates[k][setting]/100));
+        }
+        // 信長＝4以上、覚醒鬼武者＝5以上、エンタライオン＝6確定。
+        if((counts[6]+counts[7]>0&&setting<3)||(counts[8]+counts[9]>0&&setting<4)||(counts[10]+counts[11]>0&&setting<5))ll=-Infinity;
+        if(Number.isFinite(logs[setting]))logs[setting]+=ll;
+      }
+    }});
   }
   if(oniCzJudge)judgeFactors.push({key:'oni-cz',label:'鬼武者2 CZテーブル',detail:oniCzJudge.total?oniCzJudge.hits+' / '+oniCzJudge.total+'回':'未入力',apply:logs=>{
     if(!oniCzJudge.total)return;
