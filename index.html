@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.640</title>
+<title>小役カウンター v1.1.641</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -631,12 +631,12 @@ if(!state.machines[ONIMUSHA2_MACHINE]){
  if(JSON.stringify(order)!==JSON.stringify(m.modeOrder)){m.modeOrder=order;changed=true}
  // AT終了画面：全8種類。旧カウンターの記録は可能な限り引き継ぐ。
  const at=m.modes['AT終了画面'];
- const atNames=['デフォルト（キャラなし）','蒼鬼＆ロベルト＆天海','茜＆お初','阿倫＆みの吉','蒼鬼＆大玄武','信長','覚醒鬼武者','味方集合'];
+ const atNames=['デフォルト','蒼鬼＆ロベルト＆天海','茜＆お初','阿倫＆みの吉','蒼鬼＆大玄武','信長','覚醒鬼武者','味方集合'];
  const atColors=['#334155','#1d4ed8','#be185d','#0f766e','#64748b','#a16207','#7c3aed','#b91c1c'];
  const atOld=Array.isArray(at.counters)?at.counters:[];
- if(!at.oniAtEndInitialized){
+ if(!at.oniAtEndInitialized || at.counters?.[0]?.name==='デフォルト（キャラなし）'){
    at.counters=atNames.map((name,i)=>{
-     const match=atOld.find(c=>c.name===name||c.name.replaceAll('&','＆')===name||((name==='デフォルト（キャラなし）')&&['デフォルト','キャラなし'].includes(c.name)));
+     const match=atOld.find(c=>c.name===name||c.name.replaceAll('&','＆')===name||((name==='デフォルト')&&['デフォルト（キャラなし）','キャラなし'].includes(c.name)));
      return {...(match||{name,count:0}),name,color:atColors[i],countOnly:true};
    });
    at.layout='3';
