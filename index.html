@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.637</title>
+<title>小役カウンター v1.1.638</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -257,7 +257,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.637</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.638</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -1419,7 +1419,7 @@ function render(){
       if(!entry.icon && !entry.color && !entry.bonus)return;
       const line=document.createElement('div');line.style.cssText='display:flex;align-items:center;gap:5px;padding:8px 4px;border-bottom:1px solid #354052;font-size:11px;white-space:nowrap;overflow-x:auto';
       const num=Number(entry.icon);
-      line.textContent=round+'回目　'+(num?patterns[num-1]:'未入力')+'　'+(entry.color||'—')+' '+(entry.bonus?'○':i<records.length-1?'×':'');
+      line.textContent=round+'回目　'+(num?patterns[num-1]:'未入力')+'　'+(entry.color||'—')+' '+(entry.bonus?'○':records.slice(i+1).some(e=>e.icon||e.color||e.bonus)?'×':'');
       history.appendChild(line);
       if(entry.bonus){
         const sep=document.createElement('div');sep.className='oniCzBonusSeparator';sep.textContent='--ボーナス当選--';history.appendChild(sep);
@@ -1435,7 +1435,7 @@ function render(){
     pattern.appendChild(new Option('テーブルを選択',''));
     patterns.forEach((p,i)=>pattern.appendChild(new Option(Array.from(p).slice(0,4).join(''),String(i+1))));
     const color=document.createElement('select');color.style.cssText=pattern.style.cssText;
-    color.appendChild(new Option('色',''));
+    color.appendChild(new Option('獲得アイコン',''));
     ['🟦','🟨','🟩','🟥','🟪','🟧'].forEach(c=>color.appendChild(new Option(c,c)));
     const last=records[records.length-1];pattern.value=last.icon||'';color.value=last.color||'';
     fields.appendChild(pattern);fields.appendChild(color);form.appendChild(fields);
@@ -1508,7 +1508,7 @@ function render(){
       picker.appendChild(trigger);picker.appendChild(menu);row.appendChild(picker);
       const colorSelect=document.createElement('select');
       colorSelect.className='oniCzColorSelect';
-      colorSelect.setAttribute('aria-label',round+'回目の色');
+      colorSelect.setAttribute('aria-label',round+'回目の獲得アイコン');
       ['', '🟦','🟨','🟩','🟥','🟪','🟧'].forEach(value=>{
         const option=document.createElement('option');
         option.value=value;option.textContent=value||'—';
