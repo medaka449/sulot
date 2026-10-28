@@ -1450,7 +1450,7 @@ function render(){
     update();
     add.onclick=()=>{if(add.disabled)return;records.push({icon:'',color:'',bonus:false});save()};
     bonus.onclick=()=>{if(bonus.disabled)return;last.bonus=true;records.push({icon:'',color:'',bonus:false});save()};
-    remove.onclick=()=>{if(records.length===1)records[0]={icon:'',color:'',bonus:false};else{records.pop();if(records.length&&records[records.length-1].bonus)records[records.length-1].bonus=false}save()};
+    remove.onclick=()=>{if(records.length===1){records[0]={icon:'',color:'',bonus:false}}else{if(!records[records.length-1].icon&&!records[records.length-1].color&&!records[records.length-1].bonus)records.pop();records.pop();if(!records.length)records.push({icon:'',color:'',bonus:false})}save()};
     form.appendChild(buttons);root.appendChild(form);
     return;
   }
