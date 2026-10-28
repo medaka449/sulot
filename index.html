@@ -1417,7 +1417,7 @@ function render(){
     records.forEach((entry,i)=>{
       round++;
       if(!entry.icon && !entry.color && !entry.bonus)return;
-      const line=document.createElement('div');line.style.cssText='display:flex;align-items:center;gap:5px;padding:8px 4px;border-bottom:1px solid #354052;font-size:11px;white-space:nowrap;overflow-x:auto';
+      const line=document.createElement('div');line.style.cssText='display:flex;align-items:center;gap:5px;padding:8px 4px;border-bottom:1px solid #354052;font-size:9px;white-space:nowrap;overflow:hidden;letter-spacing:-.4px';
       const num=Number(entry.icon);
       line.textContent=round+'回目　'+(num?patterns[num-1]:'未入力')+'　'+(entry.color||'—')+' '+(entry.bonus?'○':records.slice(i+1).some(e=>e.icon||e.color||e.bonus)?'×':'');
       history.appendChild(line);
@@ -1430,8 +1430,8 @@ function render(){
     root.appendChild(history);
     const form=document.createElement('div');form.style.cssText='position:fixed;bottom:0;left:0;right:0;width:100%;max-width:none;z-index:100;background:#151b23;border:1px solid #465367;border-bottom:0;border-radius:12px 12px 0 0;padding:12px 12px calc(10px + env(safe-area-inset-bottom, 0px));box-shadow:0 -5px 20px #000c';root.style.paddingBottom='0';root.style.minHeight='0';
     const heading=document.createElement('div');heading.style.cssText='font-weight:700;margin-bottom:10px';heading.textContent='入力フォーム　AT'+at+'回目・'+(round||1)+'回目';form.appendChild(heading);
-    const fields=document.createElement('div');fields.style.cssText='display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:6px;margin-bottom:10px';
-    const pattern=document.createElement('select');pattern.style.cssText='width:100%;height:40px;font-size:12px;background:#222b39;color:white;border:1px solid #566174;border-radius:8px';
+    const fields=document.createElement('div');fields.style.cssText='display:grid;grid-template-columns:minmax(0,1fr) 102px;gap:4px;margin-bottom:10px'
+    const pattern=document.createElement('select');pattern.style.cssText='width:100%;min-width:0;height:40px;font-size:9px;letter-spacing:-.5px;padding:0 1px;background:#222b39;color:white;border:1px solid #566174;border-radius:8px';
     pattern.appendChild(new Option('テーブルを選択',''));
     patterns.forEach((p,i)=>pattern.appendChild(new Option((i+1)+' '+p,String(i+1))));
     const color=document.createElement('select');color.style.cssText=pattern.style.cssText+';font-size:9px;min-width:0;padding:0 1px';
