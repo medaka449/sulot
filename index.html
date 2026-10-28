@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.668</title>
+<title>小役カウンター v1.1.669</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -312,7 +312,8 @@ const ONIMUSHA3_MACHINE='L新鬼武者3';
   d.counters=[bell||{name:'上段ベル',count:0,color:'#eab308',countOnly:true}];
   d.counters[0].color='#eab308';
   d.counters[0].countOnly=true;
-  m.modeOrder=['通常'];
+  if(!m.modes['モード周期'])m.modes['モード周期']={...blankData(),counters:[],cycleRecords:[]};
+  m.modeOrder=['通常','モード周期'];
   localStorage.setItem(KEY,JSON.stringify(state));
 }
 const SENGOKU_OTOME5_MACHINE='L戦国乙女5';
@@ -1404,6 +1405,31 @@ function render(){
     });
     root.appendChild(form);
     return;
+  }
+  if(state.selected===ONIMUSHA3_MACHINE && displayMode==='モード周期' && !combined){
+    root.className='oniCzTableWrap';
+    const mode=current().modes['モード周期'];
+    if(!Array.isArray(mode.cycleRecords))mode.cycleRecords=[];
+    const records=mode.cycleRecords;
+    const select=(values,placeholder)=>{const el=document.createElement('select');el.style.cssText='min-width:0;width:100%;height:42px;background:#222b39;color:white;border:1px solid #566174;border-radius:8px;font-size:14px;padding:0 5px';el.add(new Option(placeholder,''));values.forEach(v=>el.add(new Option(v,v)));return el};
+    const form=document.createElement('div');form.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:100;background:#151b23;border:1px solid #465367;border-radius:12px 12px 0 0;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -5px 20px #000c';
+    const fields=document.createElement('div');fields.style.cssText='display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px';
+    const modeSelect=select(['通常','チャンス','天国','上位後'],'モード');
+    const typeSelect=select(['A','B','C','D'],'種類');
+    const pointSelect=select(['111','222','333','444','555','666'],'ポイント');
+    fields.append(modeSelect,typeSelect,pointSelect);form.appendChild(fields);
+    const actions=document.createElement('div');actions.style.cssText='display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px';
+    const add=document.createElement('button');add.textContent='追加';
+    const charge=document.createElement('button');charge.textContent='鬼斬チャージ';
+    const del=document.createElement('button');del.textContent='削除';
+    [add,charge,del].forEach(b=>{b.type='button';b.style.cssText='min-height:42px;border:1px solid #566174;border-radius:8px;background:#263449;color:white;font-weight:700';actions.appendChild(b)});
+    form.appendChild(actions);
+    const previous=records[records.length-1];if(previous?.mode)modeSelect.value=previous.mode;
+    const put=(event)=>{if(!modeSelect.value)return; if(event==='周期'&&(!typeSelect.value||!pointSelect.value))return;records.push({mode:modeSelect.value,type:event==='周期'?typeSelect.value:'',point:event==='周期'?pointSelect.value:'',event});save()};
+    add.onclick=()=>put('周期');charge.onclick=()=>put('鬼斬チャージ');del.onclick=()=>{if(records.length){records.pop();save()}};
+    const history=document.createElement('div');history.style.cssText='display:grid;gap:5px;padding:5px 4px 180px';
+    let cycle=0,lastMode='';records.forEach((entry,i)=>{if(entry.mode!==lastMode||entry.event==='鬼斬チャージ'){if(entry.mode!==lastMode){cycle=0;lastMode=entry.mode;const title=document.createElement('div');title.style.cssText='font-size:13px;font-weight:800;color:#93c5fd;margin-top:8px';title.textContent=entry.mode;history.appendChild(title)}}if(entry.event==='周期')cycle++;const line=document.createElement('div');line.style.cssText='background:#222b39;border:1px solid #3c4657;border-radius:7px;padding:8px 10px;font-size:13px';line.textContent=(i+1)+'　'+(entry.event==='周期'?cycle+'周期目　'+entry.type+entry.point:'鬼斬チャージ');history.appendChild(line)});
+    root.appendChild(history);root.appendChild(form);return;
   }
   if(state.selected===ONIMUSHA2_MACHINE && displayMode==='CZ' && !combined){
     root.className='oniCzTableWrap';
