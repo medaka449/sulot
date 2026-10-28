@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.653</title>
+<title>小役カウンター v1.1.654</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -257,7 +257,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.653</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.654</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -1446,8 +1446,11 @@ function render(){
     const colorButton=document.createElement('button');colorButton.type='button';colorButton.style.cssText='width:100%;height:40px;background:#222b39;color:white;border:1px solid #566174;border-radius:8px;font-size:9px;padding:0 2px;white-space:nowrap';
     const colorMenu=document.createElement('div');colorMenu.style.cssText='display:none;position:absolute;bottom:100%;right:0;width:100%;background:#222b39;border:1px solid #566174;border-radius:8px;z-index:120;box-shadow:0 5px 18px #000b';
     const syncColor=()=>{colorButton.replaceChildren();if(color.value==='🌈')colorButton.appendChild(rainbowSquare());else if(color.value)colorButton.appendChild(oniSquare(color.value));else colorButton.textContent='獲得アイコン'};
-    ['🟦','🟨','🟩','🟥','🟪','🟧','🌈'].forEach(c=>{const b=document.createElement('button');b.type='button';b.style.cssText='display:block;width:100%;height:35px;text-align:center;background:transparent;border:0;border-bottom:1px solid #3c4657;color:white';b.appendChild(oniSquare(c));b.onclick=()=>{color.value=c;color.dispatchEvent(new Event('change'));syncColor();colorMenu.style.display='none'};colorMenu.appendChild(b)});
-    colorButton.onclick=()=>{colorMenu.style.display=colorMenu.style.display==='none'?'block':'none'};
+    const colorOptions=[];
+    ['🟦','🟨','🟩','🟥','🟪','🟧','🌈'].forEach(c=>{const b=document.createElement('button');b.type='button';b.style.cssText='display:block;width:100%;height:35px;text-align:center;background:transparent;border:0;border-bottom:1px solid #3c4657;color:white';b.appendChild(oniSquare(c));b.onclick=()=>{color.value=c;color.dispatchEvent(new Event('change'));syncColor();colorMenu.style.display='none'};colorMenu.appendChild(b);colorOptions.push({color:c,button:b})});
+    const allowedColors=()=>pattern.value?[...new Set([...patterns[Number(pattern.value)-1],'🌈'])]:[];
+    const refreshColors=()=>{const allowed=allowedColors();colorOptions.forEach(({color:c,button:b})=>{b.style.display=allowed.includes(c)?'block':'none'});if(color.value&&!allowed.includes(color.value)){color.value='';last.color='';localStorage.setItem(KEY,JSON.stringify(state))}syncColor()};
+    colorButton.onclick=()=>{if(!pattern.value)return;refreshColors();colorMenu.style.display=colorMenu.style.display==='none'?'block':'none'};
     colorPicker.appendChild(colorButton);colorPicker.appendChild(colorMenu);
 
     pattern.style.display='none';
@@ -1455,7 +1458,7 @@ function render(){
     const patternButton=document.createElement('button');patternButton.type='button';
     patternButton.style.cssText='width:100%;min-width:0;height:40px;white-space:nowrap;overflow:hidden;text-overflow:clip;font-size:10px;letter-spacing:-.7px;padding:0 2px;display:flex;align-items:center;gap:1px;background:#222b39;color:white;border:1px solid #566174;border-radius:8px;text-align:center;display:flex;align-items:center;justify-content:center;gap:2px';
     const syncPatternLabel=()=>{patternButton.replaceChildren();if(pattern.value){oniSquares(patternButton,patterns[Number(pattern.value)-1]);patternButton.appendChild(rainbowSquare());patternButton.style.justifyContent='space-between';patternButton.style.padding='0 6px';patternButton.querySelectorAll('span').forEach(el=>{el.style.width='clamp(12px, 3.4vw, 19px)';el.style.height='clamp(12px, 3.4vw, 19px)'})}else {patternButton.textContent='テーブルを選択';patternButton.style.justifyContent='center'}};
-    syncPatternLabel();
+    syncPatternLabel();refreshColors();
     if(window.oniPatternDismissController)window.oniPatternDismissController.abort();
     const oniPatternDismissController=new AbortController();window.oniPatternDismissController=oniPatternDismissController;
     document.addEventListener('pointerdown',e=>{if(colorMenu.style.display!=='none'&&!colorPicker.contains(e.target))colorMenu.style.display='none'},{signal:oniPatternDismissController.signal});
@@ -1466,12 +1469,12 @@ function render(){
     document.addEventListener('pointerdown',e=>{if(patternMenu.style.display!=='none' && !patternMenu.contains(e.target) && !patternButton.contains(e.target))patternMenu.style.display='none'},{signal:oniPatternDismissController.signal});
     fields.appendChild(pattern);fields.appendChild(patternButton);fields.appendChild(colorPicker);fields.appendChild(color);form.appendChild(fields);form.appendChild(patternMenu);
     const buttons=document.createElement('div');buttons.style.cssText='display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:6px';
-    const add=document.createElement('button');add.type='button';add.textContent='追加';
+    const add=document.createElement('button');add.type='button';add.textContent='CZ失敗';
     const bonus=document.createElement('button');bonus.type='button';bonus.textContent='ボーナス当選';
     const remove=document.createElement('button');remove.type='button';remove.textContent='削除';
     [add,bonus,remove].forEach(btn=>{btn.style.cssText='min-width:0;padding:9px 2px;font-size:11px;border-radius:7px';buttons.appendChild(btn)});
     const update=()=>{add.disabled=bonus.disabled=!(pattern.value&&color.value)};
-    pattern.onchange=()=>{last.icon=pattern.value;localStorage.setItem(KEY,JSON.stringify(state));update()};
+    pattern.onchange=()=>{last.icon=pattern.value;refreshColors();colorMenu.style.display='none';localStorage.setItem(KEY,JSON.stringify(state));update()};
     color.onchange=()=>{last.color=color.value;localStorage.setItem(KEY,JSON.stringify(state));update()};
     update();
     add.onclick=()=>{if(add.disabled)return;records.push({icon:'',color:'',bonus:false});save()};
