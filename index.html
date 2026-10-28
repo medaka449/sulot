@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.671</title>
+<title>小役カウンター v1.1.672</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -257,7 +257,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.671</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.672</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -1413,22 +1413,23 @@ function render(){
     const records=mode.cycleRecords;
     const select=(values,placeholder)=>{const el=document.createElement('select');el.style.cssText='min-width:0;width:100%;height:42px;background:#222b39;color:white;border:1px solid #566174;border-radius:8px;font-size:14px;padding:0 5px';el.add(new Option(placeholder,''));values.forEach(v=>el.add(new Option(v,v)));return el};
     const form=document.createElement('div');form.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:100;background:#151b23;border:1px solid #465367;border-radius:12px 12px 0 0;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -5px 20px #000c';
-    const fields=document.createElement('div');fields.style.cssText='display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px';
+    const fields=document.createElement('div');fields.style.cssText='display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px';
     const modeSelect=select(['通常','チャンス','天国','上位後'],'');
+    const cycleSelect=select(Array.from({length:10},(_,i)=>String(i+1)),'周期');
     const typeSelect=select(['A','B','C','D'],'種類');
     const pointSelect=select(['111','222','333','444','555','666'],'ポイント');
-    fields.append(modeSelect,typeSelect,pointSelect);form.appendChild(fields);
+    fields.append(modeSelect,cycleSelect,typeSelect,pointSelect);form.appendChild(fields);
     const actions=document.createElement('div');actions.style.cssText='display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px';
     const add=document.createElement('button');add.textContent='追加';
     const charge=document.createElement('button');charge.textContent='鬼斬チャージ';
     const del=document.createElement('button');del.textContent='削除';
     [add,charge,del].forEach(b=>{b.type='button';b.style.cssText='min-height:42px;border:1px solid #566174;border-radius:8px;background:#263449;color:white;font-weight:700';actions.appendChild(b)});
     form.appendChild(actions);
-    const previous=records[records.length-1];if(previous?.mode)modeSelect.value=previous.mode;
-    const put=(event)=>{if(!modeSelect.value)return; if(event==='周期'&&(!typeSelect.value||!pointSelect.value))return;records.push({mode:modeSelect.value,type:event==='周期'?typeSelect.value:'',point:event==='周期'?pointSelect.value:'',event});save()};
+    const previous=records[records.length-1];if(previous?.mode)modeSelect.value=previous.mode;cycleSelect.value=String(previous?.event==='周期'?(Math.min(10,(Number(previous.cycle)||1)+1)):1);
+    const put=(event)=>{if(!modeSelect.value)return; if(event==='周期'&&(!typeSelect.value||!pointSelect.value))return;records.push({mode:modeSelect.value,cycle:event==='周期'?Number(cycleSelect.value)||1:null,type:event==='周期'?typeSelect.value:'',point:event==='周期'?pointSelect.value:'',event});save()};
     add.onclick=()=>put('周期');charge.onclick=()=>put('鬼斬チャージ');del.onclick=()=>{if(records.length){records.pop();save()}};
     const history=document.createElement('div');history.style.cssText='display:grid;gap:5px;padding:5px 4px 180px';
-    let cycle=0,lastMode='';records.forEach((entry,i)=>{if(entry.mode!==lastMode||entry.event==='鬼斬チャージ'){if(entry.mode!==lastMode){cycle=0;lastMode=entry.mode;const title=document.createElement('div');title.style.cssText='font-size:13px;font-weight:800;color:#93c5fd;margin-top:8px';title.textContent=entry.mode;history.appendChild(title)}}if(entry.event==='周期')cycle++;const line=document.createElement('div');line.style.cssText='background:#222b39;border:1px solid #3c4657;border-radius:7px;padding:8px 10px;font-size:13px';line.textContent=(i+1)+'　'+(entry.event==='周期'?cycle+'周期目　'+entry.type+entry.point:'鬼斬チャージ');history.appendChild(line)});
+    let cycle=0,lastMode='';records.forEach((entry,i)=>{if(entry.mode!==lastMode||entry.event==='鬼斬チャージ'){if(entry.mode!==lastMode){cycle=0;lastMode=entry.mode;const title=document.createElement('div');title.style.cssText='font-size:13px;font-weight:800;color:#93c5fd;margin-top:8px';title.textContent=entry.mode;history.appendChild(title)}}if(entry.event==='周期')cycle=Number(entry.cycle)||cycle+1;const line=document.createElement('div');line.style.cssText='background:#222b39;border:1px solid #3c4657;border-radius:7px;padding:8px 10px;font-size:13px';line.textContent=(i+1)+'　'+(entry.event==='周期'?cycle+'周期目　'+entry.type+entry.point:'鬼斬チャージ');history.appendChild(line)});
     root.appendChild(history);root.appendChild(form);return;
   }
   if(state.selected===ONIMUSHA2_MACHINE && displayMode==='CZ' && !combined){
