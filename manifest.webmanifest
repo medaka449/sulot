@@ -4,7 +4,7 @@
   "description": "スロットの小役・当選履歴を記録するカウンター",
   "lang": "ja",
   "id": "/sulot/",
-  "start_url": "/sulot/",
+  "start_url": "/sulot/index.html",
   "scope": "/sulot/",
   "display": "standalone",
   "background_color": "#111827",
@@ -14,7 +14,7 @@
       "src": "icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
