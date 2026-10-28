@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.632</title>
+<title>小役カウンター v1.1.633</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -257,7 +257,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.632</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.633</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -1010,6 +1010,18 @@ function ensureOnimushaModes(){
     if(displayMode==='合成'||displayMode==='通常')displayMode='CZ';
     if(displayMode==='CZテーブル'||displayMode==='鬼ボーナス・AT終了画面')displayMode='鬼ボーナス';
   }
+  // 保存済みの古い構成でも鬼ボーナスのキャラカウンターを必ず表示する。
+  const oni=m.modes['鬼ボーナス'];
+  const names=['蒼鬼','ロベルト','天海','茜','お初','秀吉','フロイス','三成','宗矩','淀','阿倫＆みの吉','ガルガント','白い紳士','織田信長','覚醒鬼武者','エンタライオン','奇数示唆','偶数示唆'];
+  const previous=Array.isArray(oni.counters)?oni.counters:[];
+  const next=names.map((name,i)=>{
+    const aliases=name==='奇数示唆'?['奇数弱','奇数強']:name==='偶数示唆'?['偶数弱','偶数強']:[];
+    const saved=previous.find(c=>c.name===name);
+    const aliasTotal=previous.filter(c=>aliases.includes(c.name)).reduce((n,c)=>n+(Number(c.count)||0),0);
+    return {...(saved||{name,count:0}),name,count:(Number(saved?.count)||0)+aliasTotal,countOnly:true,color:i===17?'#dc2626':i===16?'#2563eb':i>=13?'#a16207':'#334155'};
+  });
+  if(JSON.stringify(previous)!==JSON.stringify(next)){oni.counters=next;changed=true}
+  if(oni.layout!=='4'){oni.layout='4';changed=true}
   if(changed)localStorage.setItem(KEY,JSON.stringify(state));
 }
 function ensureOnimushaEndScreen(){
