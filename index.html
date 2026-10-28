@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.643</title>
+<title>小役カウンター v1.1.644</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -1436,7 +1436,7 @@ function render(){
     patterns.forEach((p,i)=>pattern.appendChild(new Option((i+1)+' '+p,String(i+1))));
     const color=document.createElement('select');color.style.cssText=pattern.style.cssText+';font-size:9px;min-width:0;padding:0 1px';
     color.appendChild(new Option('獲得アイコン',''));
-    ['🟦','🟨','🟩','🟥','🟪','🟧'].forEach(c=>color.appendChild(new Option(c,c)));
+    ['🟦','🟨','🟩','🟥','🟪','🟧','🌈'].forEach(c=>color.appendChild(new Option(c,c)));
     const last=records[records.length-1];pattern.value=last.icon||'';color.value=last.color||'';
     pattern.style.display='none';
     const patternButton=document.createElement('button');patternButton.type='button';
