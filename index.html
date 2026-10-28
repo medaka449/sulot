@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.662</title>
+<title>小役カウンター v1.1.663</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -1260,7 +1260,7 @@ function render(){
   syncEntryMode();
   if(entryMode==='income'){renderIncome();return;}
   // キャラ紹介・ボイスとおみくじではゲーム数入力行を表示しない
-  const hideGamesRow=(state.selected===KABANERI_MACHINE && (displayMode==='キャラ紹介・ボイス'||displayMode==='おみくじ'||displayMode==='穢れ') || state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='CZ' || state.selected===ONIMUSHA2_MACHINE && ['CZ','鬼ボーナス'].includes(displayMode) || state.selected===MONSTER_HUNTER_RISE_MACHINE && (displayMode==='通常'||displayMode==='アイルーだるま落とし')) && !combined;
+  const hideGamesRow=(state.selected===KABANERI_MACHINE && (displayMode==='キャラ紹介・ボイス'||displayMode==='おみくじ'||displayMode==='穢れ') || state.selected===BIOHAZARD_RE3_MACHINE && displayMode==='CZ' || state.selected===ONIMUSHA2_MACHINE && ['CZ','鬼ボーナス','AT終了画面'].includes(displayMode) || state.selected===MONSTER_HUNTER_RISE_MACHINE && (displayMode==='通常'||displayMode==='アイルーだるま落とし')) && !combined;
   document.querySelector('.topGrid').style.display=hideGamesRow?'none':'';
   const d=displayData();
   document.getElementById("gamesInput").value=d.games;document.getElementById("startGamesInput").value=d.startGames||0;
