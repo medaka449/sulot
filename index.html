@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.685</title>
+<title>小役カウンター v1.1.686</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -257,7 +257,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.685</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.686</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -2864,6 +2864,35 @@ function judgeSetting(){
       u.expected.forEach((p,j)=>{if(allowedJudge.includes(j+1)&&p>0){const lambda=u.exposure*p,k=u.count;logs[j]=(Number.isFinite(logs[j])?logs[j]:0)+k*Math.log(lambda)-lambda-(k>1?(k*Math.log(k)-k):0)}});
     }});
   });
+  // ディスクUR：REG中の示唆5種を多項分布として一括評価する。
+  // 1回のREG示唆を複数の独立試行として重複評価しない。
+  if(state.selected===DISC_UR_MACHINE){
+    const regCounters=current()?.modes?.['REG示唆']?.counters||[];
+    const names=['奇数示唆','偶数示唆','設定2以上','設定5以上','設定6濃厚'];
+    const counts=names.map(name=>Math.max(0,Math.floor(Number(regCounters.find(c=>c.name===name)?.count)||0)));
+    const total=counts.reduce((a,b)=>a+b,0);
+    const pctBySetting={
+      1:[55,45,0,0,0],
+      2:[45,53.90,1.10,0,0],
+      5:[57.50,39.57,2.02,.92,0],
+      6:[46.15,50,2.02,.92,.92]
+    };
+    judgeFactors.push({key:'disc-ur-reg',label:'REG中の設定示唆',detail:total?total+'回':'未入力',apply:logs=>{
+      if(!total)return;
+      for(const [setting,percentages] of Object.entries(pctBySetting)){
+        const index=Number(setting)-1;
+        if(!allowedJudge.includes(Number(setting))||!Number.isFinite(logs[index]))continue;
+        let ll=0;
+        for(let i=0;i<counts.length;i++){
+          if(!counts[i])continue;
+          const p=percentages[i]/100;
+          if(p<=0){ll=-Infinity;break}
+          ll+=counts[i]*Math.log(p);
+        }
+        logs[index]+=ll;
+      }
+    }});
+  }
   if(state.selected==='S新ハナビ' && displayMode==='RB'){
     const bins=[
       ['ハズレ4回以下','ピース花火/4回以下',[0,.031,0,0,.031,.031]],
