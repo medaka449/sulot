@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.682</title>
+<title>小役カウンター v1.1.683</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -257,7 +257,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.682</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.683</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -320,6 +320,39 @@ const ONIMUSHA3_MACHINE='L新鬼武者3';
   }
   m.modeOrder=['通常','周期','鬼ボーナス','AT終了画面'];
   localStorage.setItem(KEY,JSON.stringify(state));
+}
+const DISC_UR_MACHINE='A-SLOT+ ディスクアップ ULTRAREMIX';
+{
+ const name=DISC_UR_MACHINE;
+ const m=state.machines[name]||(state.machines[name]={modes:{},modeOrder:[],settingLevels:[1,2,5,6]});
+ m.settingLevels=[1,2,5,6];
+ const defs={
+  '通常':[
+   ['3枚役','#eab308',['1/13.7','1/13.4','','','1/12.9','1/12.6']],
+   ['スイカ合算','#16a34a',['1/49.3','1/49.0','','','1/47.5','1/45.7']],
+   ['BIG','#dc2626',['1/287.2','1/284.3','','','1/273.8','1/260.9']],
+   ['REG','#2563eb',['1/495.3','1/477.2','','','1/398.6','1/334.1']],
+   ['T2 REG','#a78bfa',['1/1919','1/1864','','','1/1421','1/1055']],
+   ['D2 REG','#a78bfa',['1/4433','1/4154','','','1/2876','1/2278']],
+   ['G2 REG','#a78bfa',['1/5862','1/5381','','','1/4314','1/3417']]
+  ],
+  'REG示唆':[
+   ['奇数示唆','#eab308',[]],['偶数示唆','#38bdf8',[]],
+   ['設定2以上','#16a34a',[]],['設定5以上','#a78bfa',[]],['設定6濃厚','#dc2626',[]]
+  ],
+  'BIG中':[['ULTRA上乗せ（スイカ契機）','#a78bfa',[]]]
+ };
+ for(const [mode,rows] of Object.entries(defs)){
+  const d=m.modes[mode]||(m.modes[mode]={...blankData(),counters:[]});
+  const old=Array.isArray(d.counters)?d.counters:[];
+  d.counters=rows.map(([counterName,color,settingRates])=>{
+   const saved=old.find(c=>c.name===counterName);
+   return {...(saved||{count:0}),name:counterName,color,settingRates:settingRates.length?settingRates:Array(6).fill(''),countOnly:mode!=='通常'};
+  });
+  d.layout='first2four3';
+ }
+ m.modeOrder=['通常','REG示唆','BIG中'];
+ localStorage.setItem(KEY,JSON.stringify(state));
 }
 const SENGOKU_OTOME5_MACHINE='L戦国乙女5';
 {
@@ -2183,6 +2216,11 @@ function mergeMachineDefinition(def,existing){
       imported.modes['CZ'].bioCzTableInitialized=true;
     }
     imported.modeOrder=['通常','フィギュア','CZ'].filter(name=>imported.modes[name]);
+  }
+  if(state.machines?.[DISC_UR_MACHINE]===existing){
+    for(const mode of ['通常','REG示唆','BIG中'])if(old.modes?.[mode])imported.modes[mode]=old.modes[mode];
+    imported.modeOrder=['通常','REG示唆','BIG中'];
+    imported.settingLevels=[1,2,5,6];
   }
   if(state.machines?.[ONIMUSHA3_MACHINE]===existing){
     // Cloud definitions can lag behind built-in modes. Preserve the local
