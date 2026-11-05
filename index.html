@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.690</title>
+<title>小役カウンター v1.1.691</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -257,7 +257,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.690</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.691</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -907,7 +907,12 @@ function saveCounterFast(card,counter,data){
     const countEl=card.querySelector('.countLine');
     if(countEl)countEl.textContent=String(effectiveCount(data,counter));
     const rateEl=card.querySelector('.rate');
-    if(rateEl && !counter.countOnly && rateEl.style.display!=='none')rateEl.textContent=rate(effectiveCount(data,counter),data,counter);
+    if(rateEl && !counter.countOnly && rateEl.style.display!=='none'){
+      if(state.selected===KABANERI_MACHINE && displayMode==='穢れ'){
+        const pointRate={'CZ前兆失敗(発光時)':0.07,'周期前兆失敗':0.50,'CZ失敗':1,'駿城ボーナス失敗':1,'貫け鋼の魂失敗':0.125}[String(counter.name||'')];
+        rateEl.textContent=pointRate===undefined?'':(effectiveCount(data,counter)*pointRate).toFixed(2)+'pt';
+      }else rateEl.textContent=rate(effectiveCount(data,counter),data,counter);
+    }
   }
   if(!counterRenderQueued){
     counterRenderQueued=true;
@@ -1847,7 +1852,19 @@ if(c.countOnly){const rateNode=card.querySelector('.rate');if(state.selected===O
   const ratio=numerator>0?combinedCount/numerator:0;
   rateEl.textContent=combinedCount>0?((numerator/combinedCount)*100).toFixed(1)+'%':'0.0%';
 }else{rateEl.textContent=rate(numerator,d,c)}
-if(state.selected===KABANERI_MACHINE && displayMode==='穢れ' && !combined){rateEl.textContent='';rateEl.style.display='none'}
+if(state.selected===KABANERI_MACHINE && displayMode==='穢れ' && !combined){
+  const count=Math.max(0,Number(c.count)||0);
+  const pointRate={
+    'CZ前兆失敗(発光時)':0.07,
+    '周期前兆失敗':0.50,
+    'CZ失敗':1,
+    '駿城ボーナス失敗':1,
+    '貫け鋼の魂失敗':0.125
+  }[String(c.name||'')];
+  rateEl.textContent=pointRate===undefined?'':(count*pointRate).toFixed(2)+'pt';
+  rateEl.style.display=pointRate===undefined?'none':'block';
+  rateEl.style.fontSize='12px';
+}
 let rateFs=15;const rateLen=String(rateEl.textContent||'').length;if(rateLen>9)rateFs=14;if(rateLen>11)rateFs=13;if(rateLen>14)rateFs=12;if(rateLen>17)rateFs=11;if(rateLen>20)rateFs=10;rateEl.style.fontSize=rateFs+'px';requestAnimationFrame(()=>{let guard=0;while(rateEl.scrollWidth>rateEl.clientWidth&&rateFs>8&&guard<20){rateFs=Math.max(8,rateFs-0.5);rateEl.style.fontSize=rateFs+'px';guard++}})}}if(!combined&&!isFormula && [KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected) && displayMode==='通常' && String(c.name||'')==='当選ポイント確認'){
     // 履歴確認はカウント操作と分離。指を離した時点で開き、クリックの二重発火を防ぐ。
     let lastOpen=0;
