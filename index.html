@@ -352,6 +352,8 @@ const DISC_UR_MACHINE='A-SLOT+ ディスクアップ ULTRAREMIX';
  m.modeOrder=['通常','REG示唆','BIG中'];
  localStorage.setItem(KEY,JSON.stringify(state));
 }
+const TAKOSLOT_MACHINE='Lタコスロ';
+{const name=TAKOSLOT_MACHINE;const m=state.machines[name]||(state.machines[name]={modes:{},modeOrder:[],settingLevels:[1,2,3,4,5,6]});if(!m.modes['通常'])m.modes['通常']=blankData();if(!Array.isArray(m.modeOrder)||!m.modeOrder.includes('通常'))m.modeOrder=['通常',...(m.modeOrder||[]).filter(x=>x!=='通常')];localStorage.setItem(KEY,JSON.stringify(state));}
 const SENGOKU_OTOME5_MACHINE='L戦国乙女5';
 {
  const name=SENGOKU_OTOME5_MACHINE;
