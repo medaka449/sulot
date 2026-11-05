@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.704</title>
+<title>小役カウンター v1.1.705</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -1432,8 +1432,14 @@ function render(){
     hintSelect.style.cssText='width:100%;padding:9px;background:#263449;color:#fff;border:1px solid #566174;border-radius:7px;font-size:13px';
     [['','選択なし'],['保有示唆','保有示唆（40pt）'],['保有示唆(強)','保有示唆(強)（45pt）'],['保有示唆(極)','保有示唆(極)（50pt）']].forEach(([value,label])=>{const option=document.createElement('option');option.value=value;option.textContent=label;hintSelect.appendChild(option)});
     hintSelect.value=hintPoints[d.kegareHoldingHint]?d.kegareHoldingHint:'';
+    const currentHintMinimum=hintValue();
+    [...hintSelect.options].forEach(option=>{option.disabled=(hintPoints[option.value]||0)<currentHintMinimum});
     hintSelect.addEventListener('change',()=>{
       if(d.kegareHoldingHint===hintSelect.value)return;
+      if((hintPoints[hintSelect.value]||0)<hintValue()){
+        hintSelect.value=d.kegareHoldingHint||'';
+        return;
+      }
       d.kegareHoldingHint=hintSelect.value;
       (d.counters||[]).forEach(c=>{c.count=0;c.countFormula='';c.countMethod='プッシュ'});
       localStorage.setItem(KEY,JSON.stringify(state));
