@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.694</title>
+<title>小役カウンター v1.1.695</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -257,7 +257,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.694</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.695</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -1367,7 +1367,7 @@ function render(){
     const detailsOpen=kegareExpected.querySelector('details')?.open||false;
     const earnedExpected=eventExpected+uiFlashExpected+cycleHits[selectedSetting-1]+fixedFailurePoints;
     kegareExpected.innerHTML='<div style="font-size:12px;color:#cbd5e1">穢れ期待ポイント（設定<span data-kegare-setting-title>'+selectedSetting+'</span>基準）</div><div data-kegare-total style="font-size:25px;font-weight:800">'+(initialExpected+earnedExpected).toFixed(2)+'pt</div><div style="font-size:12px;color:#cbd5e1;margin-top:5px">カウント分の累計期待 <span data-kegare-earned>'+earnedExpected.toFixed(2)+'</span>pt</div>';
-    const detailHtml='iv style="font-size:11px;color:#cbd5e1"><span data-kegare-initial>'+(initialValues.includes(selectedInitial)?'初期選択 '+selectedInitial+'pt':'初期平均 21.55pt')+'</span> ＋ CZ失敗 '+czFailed+'pt ＋ 駿城ボーナス失敗 '+bonusFailed+'pt ＋ 貫け鋼の魂失敗 '+eventExpected.toFixed(3)+'pt ＋ CZ前兆失敗 '+uiFlashExpected.toFixed(3)+'pt ＋ 周期前兆失敗 <span data-kegare-cycle-detail>'+cycleHits[selectedSetting-1].toFixed(3)+'</span>pt</div><div style="font-size:10px;color:#94a3b8">CZ失敗・駿城ボーナス失敗は1回につき1ptとして加算</div>';
+    const detailHtml='';
     const sliderWrap=document.createElement('div');
     sliderWrap.style.cssText='margin-top:12px;text-align:left;border-top:1px solid #475569;padding-top:10px';
     const sliderTitle=document.createElement('div');
