@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.715</title>
+<title>小役カウンター v1.1.716</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -257,7 +257,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.715</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.716</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -535,6 +535,40 @@ if(!state.machines['SバイオハザードRE:2']){
  });
  if(JSON.stringify(old)!==JSON.stringify(updated)){d.counters=updated;changed=true}
  if(changed)localStorage.setItem(KEY,JSON.stringify(state));
+}
+// Lタコスロ：既存機種のデータを維持しながら追加
+{
+ const name='Lタコスロ';
+ if(!state.machines[name])state.machines[name]=blankMachine([1,2,5,6]);
+ const m=state.machines[name];
+ m.settingLevels=[1,2,5,6];
+ const definitions={
+  '通常':[
+   ['プラム','#eab308',['1/9.8','1/9.7','','','1/9.4','1/9.0']],
+   ['スイカA','#22c55e',['1/66.6','1/62.4','','','1/58.8','1/55.5']],
+   ['スイカB','#16a34a',['1/601.2','1/565.0','','','1/541.6','1/504.1']],
+   ['チェリーA','#ef4444',['1/184.6','1/184.6','','','1/184.6','1/184.6']],
+   ['チェリーB','#dc2626',['1/136.5','1/126.0','','','1/117.0','1/109.2']],
+   ['チェリーC','#f97316',['1/32.3','1/30.9','','','1/29.7','1/28.5']]
+  ],
+  'ボーナス':[
+   ['白7BIG','#dc2626',null],['タコBIG','#f97316',null],['REG','#2563eb',['1/352.3','1/336.1','','','1/312.1','1/300.6']]
+  ],
+  'BT中':[['リプレイ＋タコゲーム','#22c55e',['1/728.2','1/728.2','','','1/366.1','1/242.7']]],
+  'BIG終了画面':[['夕方','#eab308',null],['夜','#1d4ed8',null],['タコゲーム非入賞時の夜','#8b5cf6',null]]
+ };
+ for(const [mode,defs] of Object.entries(definitions)){
+  if(!m.modes[mode])m.modes[mode]=blankData();
+  const d=m.modes[mode];
+  const old=Array.isArray(d.counters)?d.counters:[];
+  d.counters=defs.map(([name,color,rates])=>{
+   const saved=old.find(c=>c.name===name)||{};
+   return {...saved,name,color,count:Number(saved.count)||0,...(rates?{settingRates:rates}:{countOnly:true})};
+  });
+  d.layout='2';
+ }
+ m.modeOrder=Object.keys(definitions);
+ localStorage.setItem(KEY,JSON.stringify(state));
 }
 // ハナビ2機種を既存データを維持したまま機種一覧に追加
 ['S新ハナビ','Lハナビ'].forEach(name=>{
