@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.699</title>
+<title>小役カウンター v1.1.700</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -1366,7 +1366,7 @@ function render(){
     kegareExpected.style.cssText='display:block;background:#242b37;border:1px solid #475569;border-radius:10px;padding:12px;margin:5px 0 12px;text-align:center';
     const detailsOpen=kegareExpected.querySelector('details')?.open||false;
     const earnedExpected=eventExpected+uiFlashExpected+cycleHits[selectedSetting-1]+fixedFailurePoints;
-    kegareExpected.innerHTML='<div style="font-size:12px;color:#cbd5e1">穢れ期待ポイント（設定<span data-kegare-setting-title>'+selectedSetting+'</span>基準）</div><div data-kegare-total style="font-size:25px;font-weight:800">'+(initialExpected+earnedExpected).toFixed(2)+'pt</div><div style="font-size:12px;color:#cbd5e1;margin-top:5px">カウント分の累計期待 <span data-kegare-earned>'+earnedExpected.toFixed(2)+'</span>pt</div>';
+    kegareExpected.innerHTML='<div style="font-size:12px;color:#cbd5e1">穢れ期待ポイント（設定<span data-kegare-setting-title>'+selectedSetting+'</span>基準）</div><div style="font-size:16px;font-weight:800;margin-top:5px"><span data-kegare-initial-value>'+initialExpected.toFixed(2)+'</span>pt + <span data-kegare-earned>'+Number(earnedExpected.toFixed(3))+'</span>pt ＝ <span data-kegare-total>'+(initialExpected+earnedExpected).toFixed(2)+'pt</span>（残り<span data-kegare-remaining>'+Math.max(0,50-initialExpected-earnedExpected).toFixed(2)+'</span>pt）</div>';
     const detailHtml='';
     const sliderWrap=document.createElement('div');
     sliderWrap.style.cssText='margin-top:12px;text-align:left;border-top:1px solid #475569;padding-top:10px';
@@ -1394,7 +1394,7 @@ function render(){
       d.kegareInitialPoints=points;
       sliderValue.textContent=points===null?'平均 21.55pt':points+'pt';
       const total=kegareExpected.querySelector('[data-kegare-total]');
-      if(total)total.textContent=((points===null?21.55:points)+(eventExpected+uiFlashExpected+cycleHits[Math.min(6,Math.max(1,Number(d.kegareSetting)||1))-1]+fixedFailurePoints)).toFixed(2)+'pt';
+      if(total){const init=points===null?21.55:points;const earned=eventExpected+uiFlashExpected+cycleHits[Math.min(6,Math.max(1,Number(d.kegareSetting)||1))-1]+fixedFailurePoints;total.textContent=(init+earned).toFixed(2)+'pt';kegareExpected.querySelector('[data-kegare-initial-value]').textContent=init.toFixed(2);kegareExpected.querySelector('[data-kegare-remaining]').textContent=Math.max(0,50-init-earned).toFixed(2);}
       const initialLabel=kegareExpected.querySelector('[data-kegare-initial]');
       if(initialLabel)initialLabel.textContent=points===null?'初期平均 21.55pt':'初期選択 '+points+'pt';
       localStorage.setItem(KEY,JSON.stringify(state));
@@ -1422,7 +1422,7 @@ function render(){
       const newEarned=eventExpected+uiFlashExpected+cycleHits[setting-1]+fixedFailurePoints;
       const chosenInitial=initialValues.includes(Number(d.kegareInitialPoints))?Number(d.kegareInitialPoints):21.55;
       const total=kegareExpected.querySelector('[data-kegare-total]');
-      if(total)total.textContent=(chosenInitial+newEarned).toFixed(2)+'pt';
+      if(total){total.textContent=(chosenInitial+newEarned).toFixed(2)+'pt';kegareExpected.querySelector('[data-kegare-initial-value]').textContent=chosenInitial.toFixed(2);kegareExpected.querySelector('[data-kegare-remaining]').textContent=Math.max(0,50-chosenInitial-newEarned).toFixed(2);}
       const cumulative=kegareExpected.querySelector('[data-kegare-earned]');
       if(cumulative)cumulative.textContent=newEarned.toFixed(2);
       const title=kegareExpected.querySelector('[data-kegare-setting-title]');
