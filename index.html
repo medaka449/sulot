@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.701</title>
+<title>小役カウンター v1.1.702</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -1440,8 +1440,6 @@ function render(){
     });
 
     kegareExpected.querySelector('details').open=detailsOpen;
-    breakdown.insertAdjacentHTML('beforeend','<div style="margin-top:8px;font-size:12px">CZ前兆失敗（UI発光時） '+uiFlashFailures+'回 × 7.0% ＝ 期待 '+uiFlashExpected.toFixed(2)+'pt（当選時1pt）</div>');
-    breakdown.insertAdjacentHTML('beforeend','<div style="margin-top:9px;border-top:1px solid #475569;padding-top:8px;font-size:12px">周期前兆失敗 '+cycleFailures+'回：設定別期待ポイント（当選時1pt）</div><div style="font-size:12px;line-height:1.8">'+cycleHits.map((v,i)=>'設定'+(i+1)+' '+v.toFixed(2)+'pt（約'+Math.round(cycleRates[i]*100)+'%）').join(' ／ ')+'</div><div style="font-size:10px;color:#94a3b8">上の合計は選択した設定の当選率で計算しています</div>');
   }
   if(state.selected===MACROSS_DELTA_MACHINE && displayMode==='通常' && !combined){
     root.className='macrossDeltaForm';
