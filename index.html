@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.698</title>
+<title>小役カウンター v1.1.699</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -3270,7 +3270,7 @@ window.addEventListener('load',()=>{setTimeout(preloadFortuneImages,0)},{once:tr
 function setDisplayMode(mode){const m=current();if(!m||!m.modes||!m.modes[mode])return;displayMode=mode;combined=false;render()}
 function setupGameInput(id,key){const el=document.getElementById(id);el.addEventListener('focus',()=>{if(el.value==='0')el.value=''});el.addEventListener('click',()=>{if(el.value==='0')el.value=''});el.addEventListener('blur',()=>{if(el.value==='')el.value='0'});const commit=()=>{if(combined)return;const m=current();if(!m||!m.modes[displayMode])return;const d=normalizeData(m.modes[displayMode]);d[key]=Math.max(0,parseInt(el.value||'0',10)||0);m.modes[displayMode]=d;localStorage.setItem(KEY,JSON.stringify(state));render()};el.addEventListener('input',commit);el.addEventListener('change',commit)}
 setupGameInput('gamesInput','games');setupGameInput('startGamesInput','startGames');
-document.getElementById('reset').onclick=()=>{if(confirm(`「${state.selected}」の「${displayMode}」のゲーム数と小役カウント、小役確率の推移をリセットしますか？`)){const d=currentData();d.games=0;d.startGames=0;d.counters.forEach(c=>{c.count=0;if(state.selected===KABANERI_MACHINE&&displayMode==='穢れ'){c.countFormula='';c.countMethod='プッシュ'}});d.history=[];if([KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected)){const fortune=current()?.modes?.['おみくじ'];if(fortune?.counters)fortune.counters.forEach(c=>{c.count=0});if(displayMode==='通常')d.pointHistory=[];}save()}};
+document.getElementById('reset').onclick=()=>{if(confirm(`「${state.selected}」の「${displayMode}」のゲーム数と小役カウント、小役確率の推移をリセットしますか？`)){const d=currentData();d.games=0;d.startGames=0;d.counters.forEach(c=>{c.count=0;if(state.selected===KABANERI_MACHINE&&displayMode==='穢れ'){c.countFormula='';c.countMethod='プッシュ'}});d.history=[];if([KABANERI_MACHINE,ORIGINAL_KABANERI_MACHINE].includes(state.selected)){const fortune=current()?.modes?.['おみくじ'];if(fortune){fortune.counters?.forEach(c=>{c.count=0});fortune.games=0;fortune.startGames=0;fortune.history=[];if(Array.isArray(fortune.layoutNumberHistory))fortune.layoutNumberHistory=[];}if(displayMode==='通常')d.pointHistory=[];}save()}};
 function formatLayoutHistoryTime(v){const s=String(v||'');const m=s.match(/(?:^|\s)(\d{1,2}):(\d{2})(?::\d{2})?(?:\s|$)/);return m?String(m[1]).padStart(2,'0')+':'+m[2]:s;}
 function showLayoutNumberHistory(d){
   const box=document.getElementById('historyView');modal.classList.add('show');document.getElementById('modalTitle').textContent='当選履歴';document.getElementById('newMachine').style.display='none';document.querySelector('.sheetRow').style.display='none';document.getElementById('machines').style.display='none';document.getElementById('modeSettings').style.display='none';box.style.display='block';box.innerHTML='';
