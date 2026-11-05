@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.703</title>
+<title>小役カウンター v1.1.704</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -1433,11 +1433,11 @@ function render(){
     [['','選択なし'],['保有示唆','保有示唆（40pt）'],['保有示唆(強)','保有示唆(強)（45pt）'],['保有示唆(極)','保有示唆(極)（50pt）']].forEach(([value,label])=>{const option=document.createElement('option');option.value=value;option.textContent=label;hintSelect.appendChild(option)});
     hintSelect.value=hintPoints[d.kegareHoldingHint]?d.kegareHoldingHint:'';
     hintSelect.addEventListener('change',()=>{
+      if(d.kegareHoldingHint===hintSelect.value)return;
       d.kegareHoldingHint=hintSelect.value;
-      const init=initialValues.includes(Number(d.kegareInitialPoints))?Number(d.kegareInitialPoints):21.55;
-      const earned=eventExpected+uiFlashExpected+cycleHits[Math.min(6,Math.max(1,Number(d.kegareSetting)||1))-1]+fixedFailurePoints;
-      updateKegareTotal(init,earned);
+      (d.counters||[]).forEach(c=>{c.count=0;c.countFormula='';c.countMethod='プッシュ'});
       localStorage.setItem(KEY,JSON.stringify(state));
+      render();
     });
     hintRow.append(hintLabel,hintSelect);
     breakdown.appendChild(hintRow);
