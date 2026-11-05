@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.702</title>
+<title>小役カウンター v1.1.703</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -1367,6 +1367,16 @@ function render(){
     const detailsOpen=kegareExpected.querySelector('details')?.open||false;
     const earnedExpected=eventExpected+uiFlashExpected+cycleHits[selectedSetting-1]+fixedFailurePoints;
     kegareExpected.innerHTML='<div style="font-size:12px;color:#cbd5e1">穢れ期待ポイント</div><div style="font-size:20px;font-weight:800;margin-top:5px"><span data-kegare-total>'+(initialExpected+earnedExpected).toFixed(2)+'pt</span><span style="font-size:14px">（残り<span data-kegare-remaining>'+Math.max(0,50-initialExpected-earnedExpected).toFixed(2)+'</span>pt）</span></div>';
+    const hintPoints={'保有示唆':40,'保有示唆(強)':45,'保有示唆(極)':50};
+    const hintValue=()=>hintPoints[d.kegareHoldingHint]||0;
+    const updateKegareTotal=(initial,earned)=>{
+      const total=Math.max(initial+earned,hintValue());
+      const totalEl=kegareExpected.querySelector('[data-kegare-total]');
+      const remainingEl=kegareExpected.querySelector('[data-kegare-remaining]');
+      if(totalEl)totalEl.textContent=total.toFixed(2)+'pt';
+      if(remainingEl)remainingEl.textContent=Math.max(0,50-total).toFixed(2);
+    };
+    updateKegareTotal(initialExpected,earnedExpected);
     const detailHtml='';
     const sliderWrap=document.createElement('div');
     sliderWrap.style.cssText='margin-top:12px;text-align:left;border-top:1px solid #475569;padding-top:10px';
@@ -1394,7 +1404,7 @@ function render(){
       d.kegareInitialPoints=points;
       sliderValue.textContent=points===null?'平均 21.55pt':points+'pt';
       const total=kegareExpected.querySelector('[data-kegare-total]');
-      if(total){const init=points===null?21.55:points;const earned=eventExpected+uiFlashExpected+cycleHits[Math.min(6,Math.max(1,Number(d.kegareSetting)||1))-1]+fixedFailurePoints;total.textContent=(init+earned).toFixed(2)+'pt';kegareExpected.querySelector('[data-kegare-remaining]').textContent=Math.max(0,50-init-earned).toFixed(2);}
+      updateKegareTotal(points===null?21.55:points,eventExpected+uiFlashExpected+cycleHits[Math.min(6,Math.max(1,Number(d.kegareSetting)||1))-1]+fixedFailurePoints);
       const initialLabel=kegareExpected.querySelector('[data-kegare-initial]');
       if(initialLabel)initialLabel.textContent=points===null?'初期平均 21.55pt':'初期選択 '+points+'pt';
       localStorage.setItem(KEY,JSON.stringify(state));
@@ -1415,6 +1425,23 @@ function render(){
     [1,2,3,4,5,6].forEach(n=>{const mark=document.createElement('span');mark.textContent=String(n);settingMarks.appendChild(mark)});
     settingRow.append(settingTitle,settingSlider,settingMarks);
     breakdown.appendChild(settingRow);
+    const hintRow=document.createElement('div');
+    hintRow.style.cssText='margin:10px 0 12px;padding:10px;background:#1b2532;border-radius:8px;text-align:left';
+    const hintLabel=document.createElement('div');hintLabel.textContent='保有示唆を選択';hintLabel.style.cssText='font-size:13px;margin-bottom:8px';
+    const hintSelect=document.createElement('select');
+    hintSelect.style.cssText='width:100%;padding:9px;background:#263449;color:#fff;border:1px solid #566174;border-radius:7px;font-size:13px';
+    [['','選択なし'],['保有示唆','保有示唆（40pt）'],['保有示唆(強)','保有示唆(強)（45pt）'],['保有示唆(極)','保有示唆(極)（50pt）']].forEach(([value,label])=>{const option=document.createElement('option');option.value=value;option.textContent=label;hintSelect.appendChild(option)});
+    hintSelect.value=hintPoints[d.kegareHoldingHint]?d.kegareHoldingHint:'';
+    hintSelect.addEventListener('change',()=>{
+      d.kegareHoldingHint=hintSelect.value;
+      const init=initialValues.includes(Number(d.kegareInitialPoints))?Number(d.kegareInitialPoints):21.55;
+      const earned=eventExpected+uiFlashExpected+cycleHits[Math.min(6,Math.max(1,Number(d.kegareSetting)||1))-1]+fixedFailurePoints;
+      updateKegareTotal(init,earned);
+      localStorage.setItem(KEY,JSON.stringify(state));
+    });
+    hintRow.append(hintLabel,hintSelect);
+    breakdown.appendChild(hintRow);
+
     settingSlider.addEventListener('input',()=>{
       const setting=Number(settingSlider.value);
       d.kegareSetting=setting;
@@ -1422,7 +1449,7 @@ function render(){
       const newEarned=eventExpected+uiFlashExpected+cycleHits[setting-1]+fixedFailurePoints;
       const chosenInitial=initialValues.includes(Number(d.kegareInitialPoints))?Number(d.kegareInitialPoints):21.55;
       const total=kegareExpected.querySelector('[data-kegare-total]');
-      if(total){total.textContent=(chosenInitial+newEarned).toFixed(2)+'pt';kegareExpected.querySelector('[data-kegare-remaining]').textContent=Math.max(0,50-chosenInitial-newEarned).toFixed(2);}
+      updateKegareTotal(chosenInitial,newEarned);
       const cumulative=kegareExpected.querySelector('[data-kegare-earned]');
       if(cumulative)cumulative.textContent=newEarned.toFixed(2);
       const title=kegareExpected.querySelector('[data-kegare-setting-title]');
