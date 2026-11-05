@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.691</title>
+<title>小役カウンター v1.1.692</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -257,7 +257,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.691</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.692</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -1356,6 +1356,7 @@ function render(){
     const initialExpected=initialValues.includes(selectedInitial)?selectedInitial:21.55;
     const cycleFailures=Number(d.counters.find(x=>x.name==='周期前兆失敗')?.count)||0;
     const cycleRates=[0.50,0.50,0.56,0.63,0.69,0.76];
+    const selectedSetting=Math.min(6,Math.max(1,Math.floor(Number(d.kegareSetting)||1)));
     const cycleHits=cycleRates.map(p=>cycleFailures*p);
     const uiFlashFailures=Number(d.counters.find(x=>x.name==='CZ前兆失敗(発光時)')?.count)||0;
     const uiFlashExpected=uiFlashFailures*0.07;
@@ -1364,9 +1365,9 @@ function render(){
     const fixedFailurePoints=czFailed+bonusFailed;
     kegareExpected.style.cssText='display:block;background:#242b37;border:1px solid #475569;border-radius:10px;padding:12px;margin:5px 0 12px;text-align:center';
     const detailsOpen=kegareExpected.querySelector('details')?.open||false;
-    const earnedExpected=eventExpected+uiFlashExpected+cycleHits[0]+fixedFailurePoints;
-    kegareExpected.innerHTML='<div style="font-size:12px;color:#cbd5e1">穢れ期待ポイント（設定1・2基準）</div><div data-kegare-total style="font-size:25px;font-weight:800">'+(initialExpected+earnedExpected).toFixed(2)+'pt</div><div style="font-size:12px;color:#cbd5e1;margin-top:5px">カウント分の累計期待 '+earnedExpected.toFixed(2)+'pt</div>';
-    const detailHtml='iv style="font-size:11px;color:#cbd5e1"><span data-kegare-initial>'+(initialValues.includes(selectedInitial)?'初期選択 '+selectedInitial+'pt':'初期平均 21.55pt')+'</span> ＋ CZ失敗 '+czFailed+'pt ＋ 駿城ボーナス失敗 '+bonusFailed+'pt ＋ 貫け鋼の魂失敗 '+eventExpected.toFixed(3)+'pt ＋ CZ前兆失敗 '+uiFlashExpected.toFixed(3)+'pt ＋ 周期前兆失敗 '+cycleHits[0].toFixed(3)+'pt</div><div style="font-size:10px;color:#94a3b8">CZ失敗・駿城ボーナス失敗は1回につき1ptとして加算</div>';
+    const earnedExpected=eventExpected+uiFlashExpected+cycleHits[selectedSetting-1]+fixedFailurePoints;
+    kegareExpected.innerHTML='<div style="font-size:12px;color:#cbd5e1">穢れ期待ポイント（設定<span data-kegare-setting-title>'+selectedSetting+'</span>基準）</div><div data-kegare-total style="font-size:25px;font-weight:800">'+(initialExpected+earnedExpected).toFixed(2)+'pt</div><div style="font-size:12px;color:#cbd5e1;margin-top:5px">カウント分の累計期待 <span data-kegare-earned>'+earnedExpected.toFixed(2)+'</span>pt</div>';
+    const detailHtml='iv style="font-size:11px;color:#cbd5e1"><span data-kegare-initial>'+(initialValues.includes(selectedInitial)?'初期選択 '+selectedInitial+'pt':'初期平均 21.55pt')+'</span> ＋ CZ失敗 '+czFailed+'pt ＋ 駿城ボーナス失敗 '+bonusFailed+'pt ＋ 貫け鋼の魂失敗 '+eventExpected.toFixed(3)+'pt ＋ CZ前兆失敗 '+uiFlashExpected.toFixed(3)+'pt ＋ 周期前兆失敗 <span data-kegare-cycle-detail>'+cycleHits[selectedSetting-1].toFixed(3)+'</span>pt</div><div style="font-size:10px;color:#94a3b8">CZ失敗・駿城ボーナス失敗は1回につき1ptとして加算</div>';
     const sliderWrap=document.createElement('div');
     sliderWrap.style.cssText='margin-top:12px;text-align:left;border-top:1px solid #475569;padding-top:10px';
     const sliderTitle=document.createElement('div');
@@ -1392,7 +1393,7 @@ function render(){
       d.kegareInitialPoints=points;
       sliderValue.textContent=points===null?'平均 21.55pt':points+'pt';
       const total=kegareExpected.querySelector('[data-kegare-total]');
-      if(total)total.textContent=((points===null?21.55:points)+earnedExpected).toFixed(2)+'pt';
+      if(total)total.textContent=((points===null?21.55:points)+(eventExpected+uiFlashExpected+cycleHits[Math.min(6,Math.max(1,Number(d.kegareSetting)||1))-1]+fixedFailurePoints)).toFixed(2)+'pt';
       const initialLabel=kegareExpected.querySelector('[data-kegare-initial]');
       if(initialLabel)initialLabel.textContent=points===null?'初期平均 21.55pt':'初期選択 '+points+'pt';
       localStorage.setItem(KEY,JSON.stringify(state));
@@ -1401,9 +1402,45 @@ function render(){
     kegareExpected.insertAdjacentHTML('beforeend','<details style="margin-top:8px"><summary style="cursor:pointer;font-size:13px;padding:7px">内訳を表示</summary><div class="kegareBreakdown" style="padding-top:8px"></div></details>');
     const breakdown=kegareExpected.querySelector('.kegareBreakdown');
     breakdown.innerHTML=detailHtml;
+    const settingRow=document.createElement('div');
+    settingRow.style.cssText='margin:10px 0 12px;padding:10px;background:#1b2532;border-radius:8px;text-align:left';
+    const settingTitle=document.createElement('div');settingTitle.style.cssText='display:flex;justify-content:space-between;font-size:13px';
+    const settingName=document.createElement('span');settingName.textContent='設定を選択';
+    const settingCurrent=document.createElement('strong');settingCurrent.style.color='#67e8f9';settingCurrent.textContent='設定'+selectedSetting+'（'+Math.round(cycleRates[selectedSetting-1]*100)+'%）';
+    settingTitle.append(settingName,settingCurrent);
+    const settingSlider=document.createElement('input');settingSlider.type='range';settingSlider.min='1';settingSlider.max='6';settingSlider.step='1';settingSlider.value=String(selectedSetting);
+    settingSlider.style.cssText='width:100%;height:32px;accent-color:#22d3ee;touch-action:pan-x';
+    const settingMarks=document.createElement('div');settingMarks.style.cssText='display:flex;justify-content:space-between;font-size:11px;color:#cbd5e1';
+    [1,2,3,4,5,6].forEach(n=>{const mark=document.createElement('span');mark.textContent=String(n);settingMarks.appendChild(mark)});
+    settingRow.append(settingTitle,settingSlider,settingMarks);
+    breakdown.appendChild(settingRow);
+    settingSlider.addEventListener('input',()=>{
+      const setting=Number(settingSlider.value);
+      d.kegareSetting=setting;
+      settingCurrent.textContent='設定'+setting+'（'+Math.round(cycleRates[setting-1]*100)+'%）';
+      const newEarned=eventExpected+uiFlashExpected+cycleHits[setting-1]+fixedFailurePoints;
+      const chosenInitial=initialValues.includes(Number(d.kegareInitialPoints))?Number(d.kegareInitialPoints):21.55;
+      const total=kegareExpected.querySelector('[data-kegare-total]');
+      if(total)total.textContent=(chosenInitial+newEarned).toFixed(2)+'pt';
+      const cumulative=kegareExpected.querySelector('[data-kegare-earned]');
+      if(cumulative)cumulative.textContent=newEarned.toFixed(2);
+      const title=kegareExpected.querySelector('[data-kegare-setting-title]');
+      if(title)title.textContent=String(setting);
+      const cycleDetail=kegareExpected.querySelector('[data-kegare-cycle-detail]');
+      if(cycleDetail)cycleDetail.textContent=cycleHits[setting-1].toFixed(3);
+      const cycleCounter=(d.counters||[]).find(c=>c.name==='周期前兆失敗');
+      if(cycleCounter){
+        const cards=[...root.querySelectorAll('.counterCard,.counter,.countCard')];
+        const index=(d.counters||[]).indexOf(cycleCounter);
+        const el=cards[index]?.querySelector('.rate');
+        if(el)el.textContent=cycleHits[setting-1].toFixed(2)+'pt';
+      }
+      localStorage.setItem(KEY,JSON.stringify(state));
+    });
+
     kegareExpected.querySelector('details').open=detailsOpen;
     breakdown.innerHTML+='<div style="margin-top:8px;font-size:12px">CZ前兆失敗（UI発光時） '+uiFlashFailures+'回 × 7.0% ＝ 期待 '+uiFlashExpected.toFixed(2)+'pt（当選時1pt）</div>';
-    breakdown.innerHTML+='<div style="margin-top:9px;border-top:1px solid #475569;padding-top:8px;font-size:12px">周期前兆失敗 '+cycleFailures+'回：設定別期待ポイント（当選時1pt）</div><div style="font-size:12px;line-height:1.8">'+cycleHits.map((v,i)=>'設定'+(i+1)+' '+v.toFixed(2)+'pt（約'+Math.round(cycleRates[i]*100)+'%）').join(' ／ ')+'</div><div style="font-size:10px;color:#94a3b8">上の合計は設定1・2の50%で計算しています</div>';
+    breakdown.innerHTML+='<div style="margin-top:9px;border-top:1px solid #475569;padding-top:8px;font-size:12px">周期前兆失敗 '+cycleFailures+'回：設定別期待ポイント（当選時1pt）</div><div style="font-size:12px;line-height:1.8">'+cycleHits.map((v,i)=>'設定'+(i+1)+' '+v.toFixed(2)+'pt（約'+Math.round(cycleRates[i]*100)+'%）').join(' ／ ')+'</div><div style="font-size:10px;color:#94a3b8">上の合計は選択した設定の当選率で計算しています</div>';
   }
   if(state.selected===MACROSS_DELTA_MACHINE && displayMode==='通常' && !combined){
     root.className='macrossDeltaForm';
