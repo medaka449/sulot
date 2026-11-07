@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.762</title>
+<title>小役カウンター v1.1.763</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -378,10 +378,10 @@ function renderSunbreakTables(){
  const iconMenu=el.querySelector('#sunbreakSingleChoices'),iconToggle=el.querySelector('#sunbreakIconToggle');
  const iconNames=['青クエスト','黄クエスト','ライゼクス','セルレギオス','オロミドロ亜種','テオ･テスカトル','AT','+G','猛焔一閃'];
  const refreshIconChoices=()=>{
-  const available=picked>=0&&picked<7?[...new Set(SUNBREAK_TABLES[picked])]:picked===7?[]:[];
+  const available=picked>=0&&picked<7?[...new Set(SUNBREAK_TABLES[picked])]:picked===7?['アイルー福引き']:iconNames;
   if(pickedIcon&&!available.includes(pickedIcon)){pickedIcon='';formBox.querySelector('#sunbreakIconValue').textContent='獲得アイコン'}
-  iconMenu.innerHTML=available.map(v=>'<button type="button" data-single-icon="'+iconNames.indexOf(v)+'" title="'+v+'" style="padding:4px;background:#1e293b;border:1px solid #475569;border-radius:5px">'+square(v)+'</button>').join('');
-  iconMenu.querySelectorAll('[data-single-icon]').forEach(btn=>btn.onclick=()=>{pickedIcon=iconNames[Number(btn.dataset.singleIcon)];formBox.querySelector('#sunbreakIconValue').innerHTML=square(pickedIcon);iconMenu.hidden=true;iconMenu.style.display='none';iconToggle.setAttribute('aria-expanded','false')});
+  iconMenu.innerHTML=available.map(v=>'<button type="button" data-single-icon="'+available.indexOf(v)+'" title="'+v+'" style="padding:4px;background:#1e293b;border:1px solid #475569;border-radius:5px">'+square(v)+'</button>').join('');
+  iconMenu.querySelectorAll('[data-single-icon]').forEach(btn=>btn.onclick=()=>{pickedIcon=available[Array.from(iconMenu.querySelectorAll('[data-single-icon]')).indexOf(btn)];formBox.querySelector('#sunbreakIconValue').innerHTML=square(pickedIcon);iconMenu.hidden=true;iconMenu.style.display='none';iconToggle.setAttribute('aria-expanded','false')});
  };
  refreshIconChoices();
  iconToggle.onclick=()=>{iconMenu.hidden=!iconMenu.hidden;iconMenu.style.display=iconMenu.hidden?'none':'grid';iconToggle.setAttribute('aria-expanded',String(!iconMenu.hidden));if(!iconMenu.hidden)close()};
