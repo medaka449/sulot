@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.750</title>
+<title>小役カウンター v1.1.751</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -257,7 +257,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.750</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.751</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -388,7 +388,7 @@ function renderSunbreakTables(){
  document.addEventListener('pointerdown',function sunbreakOutsideClose(e){const current=document.getElementById('sunbreakFixedInput');if(!current){document.removeEventListener('pointerdown',sunbreakOutsideClose);return}if(!current.contains(e.target)){menu.hidden=true;toggle.setAttribute('aria-expanded','false');iconMenu.hidden=true;iconToggle.setAttribute('aria-expanded','false')}}, {signal:(window.sunbreakOutsideAbort?.abort(),window.sunbreakOutsideAbort=new AbortController(),window.sunbreakOutsideAbort.signal)});
 
  const nextRound=()=>d.sunbreakRecords.reduce((n,r)=>r.result==='成功'?n+1:n,1);
- const updateRound=()=>{const label=formBox.querySelector('#sunbreakRoundLabel');if(label)label.textContent='AT'+nextRound()+'回目'};
+ const updateRound=()=>{const round='AT'+nextRound()+'回目';const label=formBox.querySelector('#sunbreakRoundLabel');if(label)label.textContent=round;const historyHeading=el.querySelector('#sunbreakHistory')?.previousElementSibling;if(historyHeading)historyHeading.textContent=round};
  const formBox=el.firstElementChild;
  const bzRoundAt=index=>{let n=1;for(let i=0;i<index;i++)n=d.sunbreakRecords[i].result==='成功'?1:n+1;return n};
  const history=()=>{updateRound();el.querySelector('#sunbreakHistory').innerHTML=d.sunbreakRecords.slice().reverse().map((r,j)=>{const arr=Array.isArray(r.icons)?r.icons:(Number.isInteger(r.table)&&SUNBREAK_TABLES[r.table]?SUNBREAK_TABLES[r.table]:[r.icon]);return '<div style="display:flex;align-items:center;gap:6px;padding:6px 2px;border-bottom:1px solid #334155"><span style="font-size:11px;color:#94a3b8">'+'BZ'+bzRoundAt(d.sunbreakRecords.length-1-j)+'回目'+'</span><span style="display:flex;gap:1px;align-items:center;justify-content:space-between;flex:1;min-width:0">'+arr.map(square).join('')+'</span><span style="display:inline-flex;align-items:center;gap:3px;margin-left:12px;white-space:nowrap">'+(r.selectedIcon?square(r.selectedIcon):'')+'<span style="font-weight:800;color:'+(r.result==='成功'?'#4ade80':r.result==='失敗'?'#f87171':'#cbd5e1')+'">'+(r.result==='成功'?'⭕':r.result==='失敗'?'❌':'')+'</span></span></div>'}).join('')||'<span style="color:#94a3b8;font-size:12px">記録なし</span>'};
