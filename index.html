@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.717</title>
+<title>小役カウンター v1.1.718</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -257,7 +257,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.717</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.718</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -356,6 +356,8 @@ const TAKOSLOT_MACHINE='Lタコスロ';
 {const name=TAKOSLOT_MACHINE;const m=state.machines[name]||(state.machines[name]={modes:{},modeOrder:[],settingLevels:[1,2,3,4,5,6]});if(!m.modes['通常'])m.modes['通常']=blankData();if(!Array.isArray(m.modeOrder)||!m.modeOrder.includes('通常'))m.modeOrder=['通常',...(m.modeOrder||[]).filter(x=>x!=='通常')];localStorage.setItem(KEY,JSON.stringify(state));}
 const SUNBREAK_MACHINE='Lモンスターハンター ライズ:サンブレイク';
 {const name=SUNBREAK_MACHINE;const m=state.machines[name]||(state.machines[name]={modes:{},modeOrder:[],settingLevels:[1,2,3,4,5,6]});if(!m.modes['通常'])m.modes['通常']=blankData();if(!Array.isArray(m.modeOrder)||!m.modeOrder.includes('通常'))m.modeOrder=['通常',...(m.modeOrder||[]).filter(x=>x!=='通常')];localStorage.setItem(KEY,JSON.stringify(state));}
+const SUNBREAK_TABLES=[['青クエスト','青クエスト','黄クエスト','黄クエスト','ライゼクス','セルレギオス','オロミドロ亜種','オロミドロ亜種','テオ･テスカトル','テオ･テスカトル','猛焔一閃'],['黄クエスト','黄クエスト','ライゼクス','ライゼクス','セルレギオス','セルレギオス','オロミドロ亜種','オロミドロ亜種','テオ･テスカトル','テオ･テスカトル','猛焔一閃'],['ライゼクス','ライゼクス','セルレギオス','セルレギオス','オロミドロ亜種','オロミドロ亜種','テオ･テスカトル','テオ･テスカトル','AT','+G','猛焔一閃'],['セルレギオス','セルレギオス','オロミドロ亜種','オロミドロ亜種','テオ･テスカトル','テオ･テスカトル','AT','+G','+G','+G','猛焔一閃'],['オロミドロ亜種','オロミドロ亜種','テオ･テスカトル','テオ･テスカトル','AT','+G','+G','+G','+G','+G','猛焔一閃'],['テオ･テスカトル','テオ･テスカトル','AT','+G','+G','+G','+G','+G','+G','+G','猛焔一閃'],['AT','+G','+G','+G','+G','+G','+G','+G','+G','+G','猛焔一閃']];
+function renderSunbreakTables(){let el=document.getElementById('sunbreakTableRef');if(!el){el=document.createElement('section');el.id='sunbreakTableRef';document.querySelector('.modeSwitch').insertAdjacentElement('afterend',el)}el.hidden=state.selected!==SUNBREAK_MACHINE;if(el.hidden)return;const selected=Math.max(0,Math.min(6,Number(localStorage.getItem('sunbreak_table_index'))||0));el.innerHTML='<div style="display:flex;align-items:center;gap:8px;margin:10px 0;font-size:13px;font-weight:700">アイコンテーブル <select id="sunbreakTableSelect" style="background:#243041;color:white;border:1px solid #64748b;border-radius:7px;padding:7px;flex:1">'+SUNBREAK_TABLES.map((_,i)=>'<option value="'+i+'" '+(selected===i?'selected':'')+'>テーブル'+(i+1)+'</option>').join('')+'</select></div><div id="sunbreakTableRows" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px"></div>';const draw=i=>{document.getElementById('sunbreakTableRows').innerHTML=SUNBREAK_TABLES[i].map((v,n)=>'<div style="border:1px solid #475569;border-radius:6px;padding:7px 5px;font-size:11px;text-align:center;background:#1e293b"><span style="color:#94a3b8">'+(n+1)+'個目 </span><b>'+v+'</b></div>').join('')};draw(selected);el.querySelector('select').addEventListener('change',e=>{localStorage.setItem('sunbreak_table_index',e.target.value);draw(Number(e.target.value))})}
 const SENGOKU_OTOME5_MACHINE='L戦国乙女5';
 {
  const name=SENGOKU_OTOME5_MACHINE;
@@ -1351,7 +1353,7 @@ function render(){
       if(changed)localStorage.setItem(KEY,JSON.stringify(state));
     }
   }
-  renderMachineSelect();renderModeSwitch();
+  renderMachineSelect();renderModeSwitch();renderSunbreakTables();
   syncEntryMode();
   if(entryMode==='income'){renderIncome();return;}
   // キャラ紹介・ボイスとおみくじではゲーム数入力行を表示しない
