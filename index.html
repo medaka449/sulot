@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.739</title>
+<title>小役カウンター v1.1.740</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -257,7 +257,7 @@ body:has(.counterGrid.kabaneriFortuneGrid) .counterGrid.kabaneriFortuneGrid{marg
 
 </main>
 <section id="entryModeScreen" hidden aria-label="入力モード選択"><h1>モードを選択</h1><button id="entryCounter" type="button">カウンターモード</button><button id="entryIncome" type="button">収支入力</button></section>
-<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.739</div></section>
+<section id="machineListScreen" class="machineListScreen" aria-label="機種一覧画面"><div class="machineListHeader"><div class="machineListTitle"><button id="machineListBack" class="mainBack" type="button" aria-label="モード選択に戻る" title="モード選択に戻る">&lt;</button><span>機種一覧</span></div><div class="machineListHeaderActions"><button id="machineListCreateBtn" class="machineListCreateBtn" type="button">新規作成</button><button id="machineListEditBtn" class="machineListEditBtn" type="button">編集</button></div></div><div id="machineListScreenItems" class="machineList"></div><div class="machineListVersion">Ver. 1.1.740</div></section>
 <div class="modal" id="modal"><div class="sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="label" id="modalTitle">機種を追加</div><div style="display:flex;gap:8px;align-items:center"><button id="manageAdd" class="headerBtn" type="button" style="display:none">＋</button><button id="manageEdit" class="headerBtn" type="button" style="display:none">編集</button><button id="closeTop" class="headerBtn" type="button">閉じる</button></div></div><div style="margin-top:7px"><input id="newMachine" maxlength="40" placeholder="例：マイジャグラーV"></div><div class="sheetRow"><button id="close">閉じる</button><button class="primary" id="add">追加</button></div><div id="machines"></div><div id="modeSettings" style="display:none"></div><div id="historyView" style="display:none"></div></div></div>
 <script>
 // スマホの意図しない拡大を防止
@@ -371,14 +371,19 @@ function renderSunbreakTables(){
  let pickedIcon='';
  const menu=el.querySelector('#sunbreakIconChoices'),toggle=el.querySelector('#sunbreakDropdownToggle');
  const close=()=>{menu.hidden=true;toggle.setAttribute('aria-expanded','false')};
- menu.innerHTML=SUNBREAK_TABLES.map((table,i)=>'<button type="button" data-table="'+i+'" style="display:flex;align-items:center;gap:2px;width:100%;padding:7px 2px;margin:2px 0;background:#1e293b;color:white;border:1px solid #475569;border-radius:6px"><span style="flex:none;width:12px;font-size:11px">'+(i+1)+'</span><span style="display:flex;gap:1px;align-items:center;justify-content:space-between;flex:1;min-width:0">'+table.map(square).join('')+'</span></button>').join('')+'<button type="button" data-airou="1" style="display:flex;align-items:center;gap:7px;width:100%;padding:9px 7px;margin:3px 0;background:#1e293b;color:white;border:1px solid #475569;border-radius:6px;font-size:12px">アイルー福引き</button>';
- menu.querySelector('[data-airou]').onclick=()=>{picked=7;formBox.querySelector('#sunbreakDropdownValue').textContent='アイルー福引き';close()};
- menu.querySelectorAll('[data-table]').forEach(btn=>btn.onclick=()=>{picked=Number(btn.dataset.table);formBox.querySelector('#sunbreakDropdownValue').innerHTML='<span style="display:flex;align-items:center;gap:1px;min-width:0"><span style="font-size:11px">'+(picked+1)+'</span>'+SUNBREAK_TABLES[picked].map(square).join('')+'</span>';close()});
+ menu.innerHTML=SUNBREAK_TABLES.map((table,i)=>'<button type="button" data-table="'+i+'" style="display:flex;align-items:center;gap:2px;width:100%;padding:7px 2px;margin:2px 0;background:#1e293b;color:white;border:1px solid #475569;border-radius:6px"><span style="display:flex;gap:1px;align-items:center;justify-content:space-between;flex:1;min-width:0">'+table.map(square).join('')+'</span></button>').join('')+'<button type="button" data-airou="1" style="display:flex;align-items:center;gap:7px;width:100%;padding:9px 7px;margin:3px 0;background:#1e293b;color:white;border:1px solid #475569;border-radius:6px;font-size:12px">アイルー福引き</button>';
+ menu.querySelector('[data-airou]').onclick=()=>{picked=7;formBox.querySelector('#sunbreakDropdownValue').textContent='アイルー福引き';refreshIconChoices();close()};
+ menu.querySelectorAll('[data-table]').forEach(btn=>btn.onclick=()=>{picked=Number(btn.dataset.table);formBox.querySelector('#sunbreakDropdownValue').innerHTML='<span style="display:flex;align-items:center;gap:1px;min-width:0">'+SUNBREAK_TABLES[picked].map(square).join('')+'</span>';refreshIconChoices();close()});
  toggle.onclick=()=>{menu.hidden=!menu.hidden;toggle.setAttribute('aria-expanded',String(!menu.hidden));if(!menu.hidden){iconMenu.hidden=true;iconMenu.style.display='none';iconToggle.setAttribute('aria-expanded','false')}};
  const iconMenu=el.querySelector('#sunbreakSingleChoices'),iconToggle=el.querySelector('#sunbreakIconToggle');
  const iconNames=['青クエスト','黄クエスト','ライゼクス','セルレギオス','オロミドロ亜種','テオ･テスカトル','AT','+G','猛焔一閃'];
- iconMenu.innerHTML=iconNames.map((v,i)=>'<button type="button" data-single-icon="'+i+'" title="'+v+'" style="padding:4px;background:#1e293b;border:1px solid #475569;border-radius:5px">'+square(v)+'</button>').join('');
- iconMenu.querySelectorAll('[data-single-icon]').forEach(btn=>btn.onclick=()=>{pickedIcon=iconNames[Number(btn.dataset.singleIcon)];formBox.querySelector('#sunbreakIconValue').innerHTML=square(pickedIcon);iconMenu.hidden=true;iconToggle.setAttribute('aria-expanded','false')});
+ const refreshIconChoices=()=>{
+  const available=picked>=0&&picked<7?[...new Set(SUNBREAK_TABLES[picked])]:picked===7?[]:[];
+  if(pickedIcon&&!available.includes(pickedIcon)){pickedIcon='';formBox.querySelector('#sunbreakIconValue').textContent='獲得アイコン'}
+  iconMenu.innerHTML=available.map(v=>'<button type="button" data-single-icon="'+iconNames.indexOf(v)+'" title="'+v+'" style="padding:4px;background:#1e293b;border:1px solid #475569;border-radius:5px">'+square(v)+'</button>').join('');
+  iconMenu.querySelectorAll('[data-single-icon]').forEach(btn=>btn.onclick=()=>{pickedIcon=iconNames[Number(btn.dataset.singleIcon)];formBox.querySelector('#sunbreakIconValue').innerHTML=square(pickedIcon);iconMenu.hidden=true;iconMenu.style.display='none';iconToggle.setAttribute('aria-expanded','false')});
+ };
+ refreshIconChoices();
  iconToggle.onclick=()=>{iconMenu.hidden=!iconMenu.hidden;iconMenu.style.display=iconMenu.hidden?'none':'grid';iconToggle.setAttribute('aria-expanded',String(!iconMenu.hidden));if(!iconMenu.hidden)close()};
  document.addEventListener('pointerdown',function sunbreakOutsideClose(e){const current=document.getElementById('sunbreakFixedInput');if(!current){document.removeEventListener('pointerdown',sunbreakOutsideClose);return}if(!current.contains(e.target)){menu.hidden=true;toggle.setAttribute('aria-expanded','false');iconMenu.hidden=true;iconToggle.setAttribute('aria-expanded','false')}}, {signal:(window.sunbreakOutsideAbort?.abort(),window.sunbreakOutsideAbort=new AbortController(),window.sunbreakOutsideAbort.signal)});
 
