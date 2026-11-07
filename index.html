@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.763</title>
+<title>小役カウンター v1.1.764</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -391,7 +391,7 @@ function renderSunbreakTables(){
  const updateRound=()=>{const round='AT'+nextRound()+'回目';let bz=1;for(const r of d.sunbreakRecords)bz=r.result==='成功'?1:bz+1;const label=formBox.querySelector('#sunbreakRoundLabel');if(label)label.textContent=round+'・BZ'+bz+'回目';const historyHeading=el.querySelector('#sunbreakHistoryRound');if(historyHeading)historyHeading.textContent=round};
  const formBox=el.firstElementChild;
  const bzRoundAt=index=>{let n=1;for(let i=0;i<index;i++)n=d.sunbreakRecords[i].result==='成功'?1:n+1;return n};
- const history=()=>{updateRound();el.querySelector('#sunbreakHistory').innerHTML=d.sunbreakRecords.map((r,j)=>{const arr=Array.isArray(r.icons)?r.icons:(Number.isInteger(r.table)&&SUNBREAK_TABLES[r.table]?SUNBREAK_TABLES[r.table]:[r.icon]);return '<div style="display:flex;align-items:center;gap:6px;padding:6px 2px;border-bottom:1px solid #334155"><span style="font-size:11px;color:#94a3b8">'+'BZ'+bzRoundAt(j)+'回目'+'</span><span style="display:flex;gap:1px;align-items:center;justify-content:space-between;flex:1;min-width:0">'+arr.map(square).join('')+'</span><span style="display:inline-flex;align-items:center;gap:3px;margin-left:12px;white-space:nowrap">'+(r.selectedIcon?square(r.selectedIcon):'')+'<span style="font-weight:800;color:'+(r.result==='成功'?'#4ade80':r.result==='失敗'?'#f87171':'#cbd5e1')+'">'+(r.result==='成功'?'⭕':r.result==='失敗'?'❌':'')+'</span></span></div>'}).join('')||''};
+ const history=()=>{updateRound();el.querySelector('#sunbreakHistory').innerHTML=d.sunbreakRecords.map((r,j)=>{const atNumber=Number(r.atRound)||1;const previousAt=j>0?(Number(d.sunbreakRecords[j-1].atRound)||1):0;const atHeading=atNumber!==previousAt?'<div style="font-size:12px;font-weight:800;padding:9px 2px 3px">AT'+atNumber+'回目</div>':'';const arr=Array.isArray(r.icons)?r.icons:(Number.isInteger(r.table)&&SUNBREAK_TABLES[r.table]?SUNBREAK_TABLES[r.table]:[r.icon]);return atHeading+'<div style="display:flex;align-items:center;gap:6px;padding:6px 2px;border-bottom:1px solid #334155"><span style="font-size:11px;color:#94a3b8">'+'BZ'+bzRoundAt(j)+'回目'+'</span><span style="display:flex;gap:1px;align-items:center;justify-content:space-between;flex:1;min-width:0">'+arr.map(square).join('')+'</span><span style="display:inline-flex;align-items:center;gap:3px;margin-left:12px;white-space:nowrap">'+(r.selectedIcon?square(r.selectedIcon):'')+'<span style="font-weight:800;color:'+(r.result==='成功'?'#4ade80':r.result==='失敗'?'#f87171':'#cbd5e1')+'">'+(r.result==='成功'?'⭕':r.result==='失敗'?'❌':'')+'</span></span></div>'}).join('')||''};
  history();
  const scenarioPanel=el.querySelector('#sunbreakScenarioPanel');
  const scenarioToggle=el.querySelector('#sunbreakScenarioToggle');
