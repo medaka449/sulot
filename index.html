@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.766</title>
+<title>小役カウンター v1.1.767</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -3135,6 +3135,25 @@ function judgeSetting(){
       u.expected.forEach((p,j)=>{if(allowedJudge.includes(j+1)&&p>0){const lambda=u.exposure*p,k=u.count;logs[j]=(Number.isFinite(logs[j])?logs[j]:0)+k*Math.log(lambda)-lambda-(k>1?(k*Math.log(k)-k):0)}});
     }});
   });
+  // RE:2：青・緑の心音リプレイからGバトル当選した割合（二項尤度）。
+  if(state.selected==='SバイオハザードRE:2'){
+    const replayCounters=current()?.modes?.['通常']?.counters||[];
+    const getReplayCount=name=>Math.max(0,Math.floor(Number(replayCounters.find(c=>c.name===name)?.count)||0));
+    [
+      {key:'re2-blue-replay',label:'青リプレイ Gバトル当選率',base:'心音青リプレイ',rates:[.4,.4,.4,.8,1.2,1.6]},
+      {key:'re2-green-replay',label:'緑リプレイ Gバトル当選率',base:'心音緑リプレイ',rates:[.4,.8,.8,1.2,1.6,1.6]}
+    ].forEach(f=>{
+      const total=getReplayCount(f.base),hits=getReplayCount(f.base+'当選');
+      judgeFactors.push({key:f.key,label:f.label,detail:total?(hits+' / '+total+'回 ('+(hits/total*100).toFixed(2)+'%)'):'未入力',apply:logs=>{
+        if(!total||hits>total)return;
+        f.rates.forEach((pct,i)=>{
+          if(!allowedJudge.includes(i+1)||!Number.isFinite(logs[i]))return;
+          const p=pct/100;
+          logs[i]+=hits*Math.log(p)+(total-hits)*Math.log(1-p);
+        });
+      }});
+    });
+  }
   // ディスクUR：REG中の示唆5種を多項分布として一括評価する。
   // 1回のREG示唆を複数の独立試行として重複評価しない。
   if(state.selected===DISC_UR_MACHINE){
