@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.765</title>
+<title>小役カウンター v1.1.766</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -136,6 +136,7 @@ footer{text-align:center;color:#8b98aa;font-size:12px;font-weight:700;padding:12
 #entryModeScreen{padding:24px 14px}#entryModeScreen[hidden]{display:none}#entryModeScreen h1{font-size:22px;margin:12px 0 24px}#entryModeScreen button{display:block;width:100%;padding:22px 12px;margin:14px 0;border:1px solid #303a48;border-radius:14px;background:#151b23;color:#fff;font-size:20px;font-weight:800}#entryModeScreen button:active{background:#2563eb}
 
 .incomeCalendarNav{display:flex;align-items:center;justify-content:space-between;margin:12px 0}.incomeCalendarNav button{width:38px;height:36px;border-radius:9px;background:#222a35;color:#fff;font-size:22px}.incomeMonthTotal{font-size:15px;font-weight:700;margin-bottom:12px}.incomeCalendarGrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}.calendarWeekday{text-align:center;font-size:12px;color:#aeb8c6;padding:5px 0}.calendarDay{min-width:0;min-height:65px;padding:5px 1px;background:#151b23;border:1px solid #27303c;border-radius:7px;color:#fff;display:flex;flex-direction:column;align-items:center;gap:8px}.calendarDay span{font-size:14px}.calendarDay b{font-size:9px;line-height:1.2;overflow-wrap:anywhere}.calendarDay.selected{border:2px solid #60a5fa;background:#1e3250}.calendarDay .profit{color:#60a5fa}.calendarDay .loss{color:#f87171}.incomeSelectedTotal{margin:14px 0 5px;font-size:16px;font-weight:800}
+body:has(#sunbreakTableRef[hidden]) #sunbreakFixedInput{display:none!important}
 </style></style>
 <style>.topGrid .gameInputNoOuter{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:4px 0!important;box-sizing:border-box;min-width:0}.topGrid .gameInputNoOuter .ginput{width:100%;box-sizing:border-box}</style>
 <style>.counter.settingRates,.counter.settingRates .settingRateView,.counter.settingRates .settingRateList,.counter.settingRates .settingRateItem,.counter.settingRates .settingRateItem b{overflow:visible!important;max-height:none!important}</style>
@@ -361,7 +362,7 @@ function renderSunbreakTables(){
  document.getElementById('sunbreakFixedInput')?.remove();
  let el=document.getElementById('sunbreakTableRef');
  if(!el){el=document.createElement('section');el.id='sunbreakTableRef';document.querySelector('#counters').insertAdjacentElement('afterend',el)}
- el.hidden=state.selected!==SUNBREAK_MACHINE;if(el.hidden)return;
+ el.hidden=state.selected!==SUNBREAK_MACHINE;if(el.hidden){document.getElementById('sunbreakFixedInput')?.remove();return;}
  const d=state.machines[SUNBREAK_MACHINE].modes['通常'];
  if(!Array.isArray(d.sunbreakRecords))d.sunbreakRecords=[];
  const icons={'青クエスト':['#2563eb','Q'],'黄クエスト':['#eab308','Q'],'ライゼクス':['#2563eb','ラ'],'セルレギオス':['#16a34a','セ'],'オロミドロ亜種':['#dc2626','オ'],'テオ･テスカトル':['#9333ea','テ'],'AT':['#475569','AT'],'+G':['#f97316','G'],'猛焔一閃':['linear-gradient(135deg,#ef4444,#f59e0b,#facc15,#22c55e,#3b82f6,#8b5cf6,#ec4899)','']};
