@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.768</title>
+<title>小役カウンター v1.1.769</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -1048,6 +1048,23 @@ function saveCounterFast(card,counter,data){
     requestAnimationFrame(()=>{counterRenderQueued=false;render()});
   }
 }
+// Safariで別タブへ移動する直前にも最新のカウントを確実に保存する。
+function persistOnTabLeave(){
+  try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){console.warn('カウント保存失敗',e)}
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistOnTabLeave()});
+window.addEventListener('pagehide',persistOnTabLeave);
+// Safariのページ復元時に保存データが更新されていれば再読み込みする。
+window.addEventListener('pageshow',event=>{
+  if(!event.persisted)return;
+  try{
+    const stored=localStorage.getItem(KEY);
+    if(stored&&stored!==JSON.stringify(state)){
+      const recovered=JSON.parse(stored);
+      if(recovered&&recovered.machines){state=recovered;render()}
+    }
+  }catch(e){console.warn('カウント復元失敗',e)}
+});
 function save(){cleanBioRe3Modes();localStorage.setItem(KEY,JSON.stringify(state));render()}
 function kabaneriPointAction(name){
   const data=currentData();
