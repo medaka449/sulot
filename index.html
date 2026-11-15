@@ -10,7 +10,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./icon.svg">
-<title>小役カウンター v1.1.767</title>
+<title>小役カウンター v1.1.768</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -1092,7 +1092,7 @@ function showKabaneriPointHistory(){
   panel.append(close,title);
   const table=document.createElement('table');table.style.cssText='width:100%;border-collapse:collapse;text-align:center;font-size:13px';
   const head=document.createElement('tr');
-  ['回','当選','15pt以上','1pt・不明'].forEach(label=>{const th=document.createElement('th');th.textContent=label;th.style.cssText='padding:7px 3px;border-bottom:1px solid #64748b';head.appendChild(th)});
+  ['回','当選','10pt以上','1pt・不明'].forEach(label=>{const th=document.createElement('th');th.textContent=label;th.style.cssText='padding:7px 3px;border-bottom:1px solid #64748b';head.appendChild(th)});
   table.appendChild(head);
   (data.pointHistory||[]).forEach((entry,i)=>{const tr=document.createElement('tr');[i+1,entry.type,entry.high,entry.other].forEach((v,j)=>{const td=document.createElement('td');td.textContent=String(v??'');td.style.cssText='padding:8px 3px;border-bottom:1px solid #334155'+(j===1?';font-weight:700;color:'+(entry.type==='無名当選'?'#f87171':entry.type==='生駒当選'?'#4ade80':'#fff'):'');tr.appendChild(td)});table.appendChild(tr)});
   if(!(data.pointHistory||[]).length){const msg=document.createElement('p');msg.textContent='まだ記録がありません';panel.appendChild(msg)}
@@ -1427,7 +1427,7 @@ function render(){
         const bellRates=['1/121.1','1/114.4','1/112.8','1/106.2','1/104.2','1/99.1'];
         if(JSON.stringify(lowerBell.settingRates)!==JSON.stringify(bellRates)){lowerBell.settingRates=bellRates;changed=true}
       }
-      const normalLabels=['15pt以上','1pt・不明','15pt以上','1pt・不明','発光','非発光'];
+      const normalLabels=['10pt以上','1pt・不明','10pt以上','1pt・不明','発光','非発光'];
       normal.counters.slice(0,6).forEach((item,i)=>{
         if(item && item.name!==normalLabels[i]){item.name=normalLabels[i];changed=true}
       });
